@@ -24,7 +24,7 @@
 "]" 			{ return COLCHETE_DIREITA; }
 ";" 			{ return PONTO_E_VIRGULA; }
 "," 			{ return VIRGULA; }
-\. 				{ return PONTO; }
+\.				{ return PONTO; }
 
 "&&" 			{ return E_LOGICO; }
 "&" 			{ return E_LOGICO_CURTO_CIRCUITO; }
@@ -55,7 +55,7 @@
 
 "for"			{ return FOR; }
 "endfor"		{ return END_FOR; }
-"do"		    { return DO; }
+"do"			{ return DO; }
 "while"			{ return WHILE; }
 "endwhile"		{ return END_WHILE; }
 "switch"		{ return SWITCH; }
@@ -79,15 +79,12 @@
 
 
 
-"char" 	 		{ return CARACTERE; }
-"string"     	{ return STRING; }
-"int"   		{ return INTEIRO; }
-"float"       	{ return FLOAT; }
-"double"       	{ return DOUBLE; }
-"bool"   		{ return BOOLEANO; }
-
-
-
+"char"			{ return CARACTERE; }
+"string"		{ return STRING; }
+"int"			{ return INTEIRO; }
+"float"			{ return FLOAT; }
+"double"		{ return DOUBLE; }
+"bool"			{ return BOOLEANO; }
 
 
 
