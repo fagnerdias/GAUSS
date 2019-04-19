@@ -16,45 +16,75 @@
 
 %%
 
-"{" 	{ return CHAVE_ESQUERDA; }
-"}" 	{ return CHAVE_DIREITA; }
-"(" 	{ return PARENTESE_ESQUERDA; }
-")" 	{ return PARENTESE_DIREITA; }
-"[" 	{ return COLCHETE_ESQUERDA; }
-"]" 	{ return COLCHETE_DIREITA; }
-";" 	{ return PONTO_E_VIRGULA; }
-"," 	{ return VIRGULA; }
-\. 		{ return PONTO; }
+"{" 			{ return CHAVE_ESQUERDA; }
+"}" 			{ return CHAVE_DIREITA; }
+"(" 			{ return PARENTESE_ESQUERDA; }
+")" 			{ return PARENTESE_DIREITA; }
+"[" 			{ return COLCHETE_ESQUERDA; }
+"]" 			{ return COLCHETE_DIREITA; }
+";" 			{ return PONTO_E_VIRGULA; }
+"," 			{ return VIRGULA; }
+\. 				{ return PONTO; }
 
-&{2} 	{ return E_LOGICO; }
-"&" 	{ return E_LOGICO_CURTO_CIRCUITO; }
-|{2}	{ return OU_LOGICO; }
-"|"		{ return OU_LOGICO_CURTO_CIRCUITO; }
-"!" 	{ return EXCLAMASCAO; }
-
-
-"*"		{ return ASTERISCO; }
-"%"		{ return MODULO; }
-"/" 	{ return BARRA; }
-"\" 	{ return CONTRA_BARRA; }
-"+" 	{ return MAIS; }
-"-" 	{ return MENOS; }
-
-"<" 	{ return MENOR_QUE; }
-">" 	{ return MAIOR_QUE; }
-"<="	{ return MENOR_OU_IGUAL_A; }
-">="	{ return MAIOR_OU_IGUAL_A; }
-={2}	{ return IGUAL_A; }
-"!="	{ return DIFERENTE_DE; }
+"&&" 			{ return E_LOGICO; }
+"&" 			{ return E_LOGICO_CURTO_CIRCUITO; }
+"||"			{ return OU_LOGICO; }
+"|"				{ return OU_LOGICO_CURTO_CIRCUITO; }
+"!" 			{ return EXCLAMACAO; }
 
 
-+{2}       { return INCREMENTO; }
--{2}       { return DECREMENTO; }
-"="        { return ATRIBUICAO; }
+"*"				{ return ASTERISCO; }
+"%"				{ return MODULO; }
+"/" 			{ return BARRA; }
+"+" 			{ return MAIS; }
+"-" 			{ return MENOS_UNARIO; }
+"^" 			{ return EXPONENCIACAO; }
+
+"<" 			{ return MENOR_QUE; }
+">" 			{ return MAIOR_QUE; }
+"<="			{ return MENOR_OU_IGUAL_A; }
+">="			{ return MAIOR_OU_IGUAL_A; }
+"=="			{ return IGUAL_A; }
+"!="			{ return DIFERENTE_DE; }
+
+
+"++"			{ return INCREMENTO; }
+"--"			{ return DECREMENTO; }
+"="				{ return ATRIBUICAO; }
+
+
+"for"			{ return FOR; }
+"endfor"		{ return END_FOR; }
+"do"		    { return DO; }
+"while"			{ return WHILE; }
+"endwhile"		{ return END_WHILE; }
+"switch"		{ return SWITCH; }
+"endswitch"		{ return END_SWITCH; }
+"case"			{ return CASE; }
+"endcase"		{ return END_CASE; }
+"default"		{ return DEFAULT; }
+"if"			{ return IF; }
+"endif"			{ return END_IF; }
+"else"			{ return ELSE; }
+"then"			{ return THEN; }
+"struct"		{ return STRUCT; }
+"is"			{ return IS; }
+"end"			{ return END; }
+"func"			{ return FUNCAO; }
+"return"		{ return RETURN; }
+"begin"			{ return BEGIN; }
+"#const"		{ return CONSTANTE; }
+"printf"		{ return PRINTF; }
+"scanf"			{ return SCANF; }
 
 
 
-
+"char" 	 		{ return CARACTERE; }
+"string"     	{ return STRING; }
+"int"   		{ return INTEIRO; }
+"float"       	{ return FLOAT; }
+"double"       	{ return DOUBLE; }
+"bool"   		{ return BOOLEANO; }
 
 
 
