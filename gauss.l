@@ -66,6 +66,7 @@
 "if"			{ return IF; }
 "endif"			{ return END_IF; }
 "else"			{ return ELSE; }
+"elseif"		{ return ELSEIF; }
 "then"			{ return THEN; }
 "struct"		{ return STRUCT; }
 "is"			{ return IS; }
