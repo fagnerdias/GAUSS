@@ -16,6 +16,8 @@
 
 %%
 
+
+
 "{" 			{ printf("CHAVE_ESQUERDA\n"); }
 "}" 			{ printf("CHAVE_DIREITA\n"); }
 "(" 			{ printf("PARENTESE_ESQUERDA\n"); }
@@ -72,7 +74,7 @@
 "is"			{ printf("IS\n"); }
 "end"			{ printf("END\n"); }
 "func"			{ printf("FUNCAO\n"); }
-"return"		{ printf("RETURN;\n"); }
+"return"		{ printf("RETURN\n"); }
 "begin"			{ printf("BEGIN\n"); }
 "#const"		{ printf("CONSTANTE\n"); }
 "printf"		{ printf("PRINTF\n"); }
@@ -86,8 +88,19 @@
 "float"			{ printf("FLOAT\n"); }
 "double"		{ printf("DOUBLE\n"); }
 "bool"			{ printf("BOOLEANO\n"); }
-
-
+"true"			{ printf("TRUE\n"); }
+"false"			{ printf("FALSE\n"); }
+[0-9]+ 			{ printf("DIGITO\n");}
+[ \t\r]+        { /* Espaços em branco */ }
+\n              { yylineno++; }
+[a-zA-Z\_][a-zA-Z0-9\_]* { printf("ID\n"); }
+\"(\\.|[^"])*\"	{ printf("LITERAL_QUALQUER\n"); }
 
 %%
 
+
+int main(int argc, char const *argv[])
+{
+	yylex();
+	return 0;
+}

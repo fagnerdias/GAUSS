@@ -86,6 +86,12 @@
 "float"			{ return FLOAT; }
 "double"		{ return DOUBLE; }
 "bool"			{ return BOOLEANO; }
+[0-9]+ 			{ return DIGITO;}
+[ \t\r]+        { /* Espaços em branco */ }
+\n              { yylineno++; }
+[a-zA-Z\_][a-zA-Z0-9\_]* { return ID; }
+\"(\\.|[^"])*\"	{ return LITERAL_QUALQUER; }
+
 
 
 
