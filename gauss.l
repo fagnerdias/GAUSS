@@ -86,6 +86,8 @@
 "float"			{ return FLOAT; }
 "double"		{ return DOUBLE; }
 "bool"			{ return BOOLEANO; }
+"true"			{ return TRUE; }
+"false"			{ return FALSE; }
 [0-9]+ 			{ return DIGITO;}
 [ \t\r]+        { /* Espaços em branco */ }
 \n              { yylineno++; }
