@@ -34,8 +34,14 @@
 
 
 "*"				{ return ASTERISCO; }
+"%i"			{ return PRINT_INT }
+"%."[0-9]*"f"	{ return PRINT_FLOAT }
+"%c"			{ return PRINT_CHAR }
+"%s"			{ return PRINT_STRING }
 "%"				{ return MODULO; }
 "/" 			{ return BARRA; }
+"++"			{ return INCREMENTO; }
+"--"			{ return DECREMENTO; }
 "+" 			{ return MAIS; }
 "-" 			{ return MENOS_UNARIO; }
 "^" 			{ return EXPONENCIACAO; }
@@ -48,8 +54,6 @@
 "!="			{ return DIFERENTE_DE; }
 
 
-"++"			{ return INCREMENTO; }
-"--"			{ return DECREMENTO; }
 "="				{ return ATRIBUICAO; }
 
 

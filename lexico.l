@@ -36,8 +36,14 @@
 
 
 "*"				{ printf("ASTERISCO\n"); }
+"%i"			{ printf("PRINT_INT") }
+"%."[0-9]*"f"	{ printf("PRINT_FLOAT") }
+"%c"			{ printf("PRINT_CHAR") }
+"%s"			{ printf("PRINT_STRING") }
 "%"				{ printf("MODULO\n"); }
 "/" 			{ printf("BARRA\n"); }
+"++"			{ printf("INCREMENTO\n"); }
+"--"			{ printf("DECREMENTO\n"); }
 "+" 			{ printf("MAIS\n"); }
 "-" 			{ printf("MENOS_UNARIO\n"); }
 "^" 			{ printf("EXPONENCIACAO\n"); }
@@ -50,8 +56,6 @@
 "!="			{ printf("DIFERENTE_DE\n"); }
 
 
-"++"			{ printf("INCREMENTO\n"); }
-"--"			{ printf("DECREMENTO\n"); }
 "="				{ printf("ATRIBUICAO\n"); }
 
 
