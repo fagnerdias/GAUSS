@@ -27,6 +27,7 @@
 ";" 			{ printf("PONTO_E_VIRGULA\n"); }
 "," 			{ printf("VIRGULA\n"); }
 \.				{ printf("PONTO\n"); }
+"void"			{ printf("LITERAL_VOID");}
 
 "&&" 			{ printf("E_LOGICO\n"); }
 "&" 			{ printf("E_LOGICO_CURTO_CIRCUITO\n"); }
@@ -36,10 +37,6 @@
 
 
 "*"				{ printf("ASTERISCO\n"); }
-"%i"			{ printf("PRINT_INT") }
-"%."[0-9]*"f"	{ printf("PRINT_FLOAT") }
-"%c"			{ printf("PRINT_CHAR") }
-"%s"			{ printf("PRINT_STRING") }
 "%"				{ printf("MODULO\n"); }
 "/" 			{ printf("BARRA\n"); }
 "++"			{ printf("INCREMENTO\n"); }
@@ -94,11 +91,11 @@
 "bool"			{ printf("BOOLEANO\n"); }
 "true"			{ printf("TRUE\n"); }
 "false"			{ printf("FALSE\n"); }
-[0-9]+ 			{ printf("DIGITO\n");}
+[0-9]+ 			{ printf("LITERAL_INTEIRO\n");}
 [ \t\r]+        { /* Espaços em branco */ }
 \n              { yylineno++; }
 [a-zA-Z\_][a-zA-Z0-9\_]* { printf("ID\n"); }
-\"(\\.|[^"])*\"	{ printf("LITERAL_QUALQUER\n"); }
+\"(\\.|[^"])*\"	{ printf("LITERAL_STRING\n"); }
 
 %%
 
