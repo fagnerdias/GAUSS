@@ -1,3 +1,5 @@
+// comentario 
+
 func QuickSort (int vetor[], int inicio, int fim) return void is
 begin
 	int pivo, i, j,  aux;
@@ -34,4 +36,15 @@ func main(argumentos) return int is
 begin
 	int vetor[10] = {10,9,8,5,4};
 	quicksort(vetor, 0, 5);
+
+
+	/* Isto eh um comentario
+
+    * jdhdhd
+
+	 */
+
+
+// comentario 2i83837
 end main
+

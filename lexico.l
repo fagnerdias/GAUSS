@@ -83,19 +83,26 @@
 
 
 
-"char"			{ printf("CARACTERE\n"); }
-"string"		{ printf("STRING\n"); }
-"int"			{ printf("INTEIRO\n"); }
-"float"			{ printf("FLOAT\n"); }
-"double"		{ printf("DOUBLE\n"); }
-"bool"			{ printf("BOOLEANO\n"); }
+"char"			{ printf("TIPO_CARACTERE\n"); }
+"string"		{ printf("TIPO_STRING\n"); }
+"int"			{ printf("TIPO_INTEIRO\n"); }
+"float"			{ printf("TIPO_FLOAT\n"); }
+"double"		{ printf("TIPO_DOUBLE\n"); }
+"bool"			{ printf("TIPO_BOOLEANO\n"); }
 "true"			{ printf("TRUE\n"); }
 "false"			{ printf("FALSE\n"); }
 [0-9]+ 			{ printf("LITERAL_INTEIRO\n");}
+[0-9]*"."[0-9]+ { printf("LITERAL_REAL\n");}
 [ \t\r]+        { /* Espaços em branco */ }
 \n              { yylineno++; }
 [a-zA-Z\_][a-zA-Z0-9\_]* { printf("ID\n"); }
 \"(\\.|[^"])*\"	{ printf("LITERAL_STRING\n"); }
+
+
+ \/\*(\\.|[^"])*\*\/ 	{ printf("COMENTARIO\n"); }	
+ 
+ \/\/(.+)\n 			{ printf("COMENTARIO\n"); }	
+
 
 %%
 
