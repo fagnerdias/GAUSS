@@ -10,7 +10,7 @@ Projeto da disciplina de engenharia de linguagens do curso de Engenharia de Soft
 
  1. Primeiro passo:
 
-	1.1.  Execute o comando: $ lex gauss.l
+	1.1.  Execute o comando: $ lex lexico.l
 
 	1.2. Após isso, se estiver tudo correto, o lex vai gerar um arquivo gauss.yy.c 
 
