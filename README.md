@@ -20,7 +20,7 @@ Projeto da disciplina de engenharia de linguagens do curso de Engenharia de Soft
 
  3. Terceiro passo:
 
-	3.1 Agora pra executar é só rodar: ./gauss < arquivo_texto.txt
+	3.1 Agora pra executar é só rodar: ./gauss < exemplo.txt
 
 # Equipe	
 
