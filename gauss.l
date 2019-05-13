@@ -11,6 +11,9 @@
 /* Definições  C */
 %{
     #include <stdio.h>
+    #include "y.tab.h"
+  
+  extern int yyerror (char *msg);  
 %}
 
 
@@ -99,14 +102,15 @@
 [a-zA-Z\_][a-zA-Z0-9\_]* { return (ID); }
 \"(\\.|[^"])*\"	{ return (LITERAL_QUALQUER); }
 
+\/\*(\\.|[^"])*\*\/ 	{ return("COMENTARIO\n"); }	
+ 
+ \/\/(.+)\n 			{ return("COMENTARIO\n"); }	
+
 
 
 
 %%
 
-
-int main(int argc, char const *argv[])
-{
-	yylex();
-	return 0;
-}
+#ifndef yywrap
+   int yywrap (void) {return 1;}
+#endif
