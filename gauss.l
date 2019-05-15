@@ -28,6 +28,7 @@
 ";" 			{ return (PONTO_E_VIRGULA); }
 "," 			{ return (VIRGULA); }
 \.				{ return (PONTO); }
+":"				{ return (DOIS_PONTOS); }
 
 "&&" 			{ return (E_LOGICO); }
 "&" 			{ return (E_LOGICO_CURTO_CIRCUITO); }
@@ -60,7 +61,9 @@
 
 "="				{ return (ATRIBUICAO); }
 
-
+"JUMP" 			{ return (JUMP); }
+"BREAK" 		{ return (BREAK); }
+"NULL"			{ return (NULL); }
 "for"			{ return (FOR); }
 "endfor"		{ return (END_FOR); }
 "do"			{ return (DO); }
