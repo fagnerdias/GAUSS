@@ -57,9 +57,16 @@
 ">="			{ return (MAIOR_OU_IGUAL_A); }
 "=="			{ return (IGUAL_A); }
 
+"+="			{ return (MAIS_IGUAL); }
+"-="			{ return (MENOS_IGUAL); }
+"*="			{ return (VEZES_IGUAL); }
+"/="			{ return (DIV_IGUAL); }
+"^="			{ return (EXPONENCIACAO_IGUAL); }
 
 
 "="				{ return (ATRIBUICAO); }
+
+"?"				{ return (OPERADOR_TERNARIO); }
 
 "JUMP" 			{ return (JUMP); }
 "BREAK" 		{ return (BREAK); }
@@ -83,6 +90,7 @@
 "is"			{ return (IS); }
 "end"			{ return (END); }
 "func"			{ return (FUNCAO); }
+"proc"			{ return (PROC); }
 "return"		{ return (RETURN); }
 "begin"			{ return (BEGIN); }
 "#const"		{ return (CONSTANTE); }

@@ -22,10 +22,12 @@
 %token PONTO_E_VIRGULA VIRGULA PONTO DOIS_PONTOS
 %token E_LOGICO E_LOGICO_CURTO_CIRCUITO OU_LOGICO OU_LOGICO_CURTO_CIRCUITO EXCLAMACAO
 %token ASTERISCO PRINT_INT PRINT_FLOAT PRINT_CHAR PRINT_STRING MODULO
-%token BARRA INCREMENTO DECREMENTO MAIS MENOS_UNARIO EXPONENCIACAO ATRIBUICAO
+%token BARRA INCREMENTO DECREMENTO MAIS MENOS_UNARIO EXPONENCIACAO ATRIBUICAO OPERADOR_TERNARIO
 %token MENOR_QUE MAIOR_QUE MENOR_OU_IGUAL_A MAIOR_OU_IGUAL_A IGUAL_A DIFERENTE_DE
-%token FOR END_FOR DO WHILE END_WHILE SWITCH END_SWITCH CASE END_CASE DEFAULT IF END_IF ELSE ELSEIF THEN STRUCT IS END FUNCAO RETURN BEGIN CONSTANTE PRINTF SCANF 
-%token CARACTERE STRING INTEIRO FLOAT DOUBLE
+%token MAIS_IGUAL MENOS_IGUAL VEZES_IGUAL DIV_IGUAL EXPONENCIACAO_IGUAL
+%token FOR END_FOR DO WHILE END_WHILE SWITCH END_SWITCH CASE END_CASE DEFAULT 
+%token IF END_IF ELSE ELSEIF THEN STRUCT IS END FUNCAO PROC RETURN BEGIN CONSTANTE PRINTF SCANF 
+%token CARACTERE STRING INTEIRO FLOAT DOUBLE VOID
 %token BOOLEANO TRUE FALSE JUMP BREAK NULL
 %token <iValue> DIGITO
 %token <sValue> ID
@@ -33,7 +35,7 @@
 
 %start prog
 
-%type <sValue> stm
+%type <sValue> stmt
 
 
 %%
@@ -47,18 +49,19 @@ stmts               : stmt                            {}
 stmt                : if_stmt                         {}
                     | while_stmt                      {}
                     | switch_stmt                     {}
-                    | assing                          {}
+                    | assign                          {}
                     | for_stmt                        {}
                     | JUMP                            {}
                     | BREAK                           {}
+                    | procedimento_call				  {}
+                    | declaracao					  {}
                     ;
 
-expressoes          : expressao                       {}
-                    | expressao operador expressoes   {}
-                    ;
-
-expressao           : valor operador valor            {}
-                    | valor                           {}
+expressao           : expressao                       {}
+                    | expressao operador expressao    {}
+                    | valor 						  {}
+                    | LITERAL_QUALQUER				  {}
+                    | function_call					  {}
                     ;
 
 operador            : MAIS                            {}
@@ -75,6 +78,13 @@ operador_unario     : INCREMENTO                      {}
                     | DECREMENTO                      {}
                     ;
 
+operador_composto	: MAIS_IGUAL					  {}
+					| MENOS_IGUAL					  {}
+					| VEZES_IGUAL					  {}
+					| DIV_IGUAL						  {}
+					| EXPONENCIACAO_IGUAL			  {}
+					;
+
 vars                : var                             {}
                     | var VIRGULA vars                {}
                     ;
@@ -83,7 +93,7 @@ valores             : valor                           {}
                     | valor VIRGULA valores           {}
                     ;
 
-valores             : var                             {}
+valor 	            : var                             {}
                     | NULL                            {}
                     | ID                              {}
                     ;
@@ -97,12 +107,28 @@ var                 : ID                              {}
 type                : ID                              {}
                     ;
 
-assing              : assing_simples                  {}
-                    | assing_unaria                   {}
-                    | assing_composta                 {}
-                    | assing_paralela                 {}    
-                    | assing_ternaria                 {}
-                    ;                    
+assign              : assign_simples                  {}
+                    | assign_unaria                   {}
+                    | assign_composta                 {}
+                    | assign_paralela                 {}    
+                    | assign_ternaria                 {}
+                    ;              
+
+assign_simples		: valor IGUAL_A expressao		  {}
+					;
+
+assign_unaria		: valor operador_unario			  {}
+					| operador_unario valor 		  {}
+					;
+
+assign_composta		: var operador_composto valor 	  {}
+					;
+
+assign_paralela		: vars IGUAL_A valores			  {}
+					;
+
+assign_ternaria   	: expressao OPERADOR_TERNARIO 
+					stmts DOIS_PONTOS stmts 		  {}
 
 if_stmt             : IF PARENTESE_DIREITA expressao 
                     PARENTESE_ESQUERDA THEN stmts 
@@ -136,12 +162,12 @@ case_stmt           : case                            {}
                     ;
 
 case                : CASE PARENTESE_DIREITA 
-                    expessao PARENTESE_ESQUERDA 
+                    expressao_constante PARENTESE_ESQUERDA 
                     DOIS_PONTOS stmts                 {}
                     ;
 
 while_stmt          : WHILE PARENTESE_DIREITA 
-                    expressoes PARENTESE_ESQUERDA 
+                    expressao PARENTESE_ESQUERDA 
                     THEN stmts END_WHILE              {}
                     ;
 
@@ -150,31 +176,55 @@ for_stmt            : FOR PARENTESE_DIREITA
                     THEN stmts END_FOR                {}
                     ;
 
-for_cond            : assing PONTO_E_VIRGULA 
-                    expressoes PONTO_E_VIRGULA assing {}
-                    | PONTO_E_VIRGULA expressoes 
-                    PONTO_E_VIRGULA assing            {}
-                    | assing PONTO_E_VIRGULA 
-                    expressoes PONTO_E_VIRGULA        {}
+for_cond            : assign PONTO_E_VIRGULA 
+                    expressao PONTO_E_VIRGULA assign  {}
+                    | PONTO_E_VIRGULA expressao 
+                    PONTO_E_VIRGULA assign            {}
+                    | assign PONTO_E_VIRGULA 
+                    expressao PONTO_E_VIRGULA         {}
                     | PONTO_E_VIRGULA PONTO_E_VIRGULA
-                    expressoes                        {}
+                    expressao                         {}
                     ;
 
-function            : FUNCAO ID PARENTESE_DIREITA 
-                    params RETURN return_type IS 
-                    BEGIN stmts                       {}
+function_def        : FUNCAO ID 
+					PARENTESE_DIREITA params 
+					PARENTESE_ESQUERDA 
+					RETURN return_type IS BEGIN 
+					stmts 
+					END                   			  {}
                     ;
 
-params              : param
-                    | param VIRGULA params
+procedimento_def    : PROC ID 
+					PARENTESE_DIREITA params 
+					PARENTESE_ESQUERDA
+					IS BEGIN 
+					stmts 
+					END                   			  {}
                     ;
 
-param               : 
-                    | var
+function_call       : ID PARENTESE_ESQUERDA args PARENTESE_DIREITA               		{}
                     ;
 
-return_type         : VOID
-                    | type
+procedimento_call   : ID PARENTESE_ESQUERDA args PARENTESE_DIREITA         			  {}
+                    ;
+
+params              : declaracao
+                    | declaracao VIRGULA params
+                    ;
+
+args				: expressao 					  {}
+					| expressao VIRGULA expressao
+
+declaracao			: type ids						  {}
+                    | function_def					  {}
+                    | procedimento_def				  {}
+					;
+
+ids 				: ID VIRGULA ids				  {}
+					;
+
+return_type         : VOID 							  {}
+                    | type 							  {}
                     ;
 
 %%
