@@ -18,6 +18,7 @@
   char * sValue;  /* string value */
 }
 
+%token GLOBAL SUBPROG MAIN
 %token CHAVE_ESQUERDA CHAVE_DIREITA PARENTESE_ESQUERDA PARENTESE_DIREITA COLCHETE_ESQUERDA COLCHETE_DIREITA 
 %token PONTO_E_VIRGULA VIRGULA PONTO DOIS_PONTOS
 %token E_LOGICO E_LOGICO_CURTO_CIRCUITO OU_LOGICO OU_LOGICO_CURTO_CIRCUITO EXCLAMACAO
@@ -39,8 +40,28 @@
 
 
 %%
-prog                : stmts                           {}
+prog                : globais subprog main			  {}
                     ;
+
+globais				: 
+					| GLOBAL BEGIN declaracoes END 	  {}
+					;
+
+subprog 			: 
+					| SUBPROG BEGIN subprogramas END  {}
+					;
+
+subprogramas		: subprograma subprogramas		  {}
+					;
+
+subprograma			: 								  {}
+					| function_def					  {}
+					| procedimento_def				  {}
+					;
+
+main				:
+					| MAIN BEGIN stmts END 			  {}
+					;
 
 stmts               : stmt                            {}
                     | stmt PONTO_E_VIRGULA stmts      {}
@@ -56,7 +77,7 @@ stmt                : if_stmt                         {}
                     | procedimento_call				  {}
                     | declaracao					  {}
                     ;
-
+/* todo: expressao pode vir entre parenteses */
 expressao           : expressao                       {}
                     | expressao operador expressao    {}
                     | valor 						  {}
@@ -202,10 +223,12 @@ procedimento_def    : PROC ID
 					END                   			  {}
                     ;
 
-function_call       : ID PARENTESE_ESQUERDA args PARENTESE_DIREITA               		{}
+function_call       : ID PARENTESE_ESQUERDA args 
+					PARENTESE_DIREITA                 {}
                     ;
 
-procedimento_call   : ID PARENTESE_ESQUERDA args PARENTESE_DIREITA         			  {}
+procedimento_call   : ID PARENTESE_ESQUERDA args 
+					PARENTESE_DIREITA         		  {}
                     ;
 
 params              : declaracao
@@ -214,10 +237,16 @@ params              : declaracao
 
 args				: expressao 					  {}
 					| expressao VIRGULA expressao
+					;
 
-declaracao			: type ids						  {}
-                    | function_def					  {}
-                    | procedimento_def				  {}
+/* adicionar constante */
+declaracoes 		: declaracao					  {}
+					| declaracao PONTO_E_VIRGULA 
+					declaracoes						  {}
+					;
+
+declaracao			: 
+					| type ids						  {}
 					;
 
 ids 				: ID VIRGULA ids				  {}

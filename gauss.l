@@ -19,6 +19,9 @@
 
 %%
 
+"GLOBAL"		{ return (GLOBAL); }
+"SUBPROG"		{ return (SUBPROG); }
+"MAIN"			{ return (MAIN); }
 "{" 			{ return (CHAVE_ESQUERDA); }
 "}" 			{ return (CHAVE_DIREITA); }
 "(" 			{ return (PARENTESE_ESQUERDA); }
