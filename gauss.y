@@ -60,30 +60,13 @@ elses_opcoes        : {}
                     | else {}
                     | elseif {}
                     ;
+                    
 else                : ELSE THEN stmts {}
                     ;
+
 elseif              : ELSE if_stmt {}
                     ;
-              /*
-aa                  :   else_if_list {}
-                    | {}
-                    ;
 
-elses               : else                                  {}
-                    | else_if_list aux                      {}
-                    ;
-
-aux                 : else                                  {}
-                    ;
-
-else_if_list        : ELSEIF                                {}
-                    | else_if_list                          {}
-                    ;
-
-bb                  : ELSE {}
-                    |   {}
-                    ;
-*/
 /************ ATRIBUICOES *****/
 atribuicoes         : atribuicao_simples                    {}
                     | atribuicao_unaria                     {}
