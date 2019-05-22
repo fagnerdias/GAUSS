@@ -51,38 +51,47 @@ stmt                : if_stmt                       {}
                     ;
 
 if_stmt             : IF PARENTESE_DIREITA valor PARENTESE_ESQUERDA THEN stmts 
-                    aa bb END_IF          {}
+                    elses_opcoes END_IF                            {}
                     ;
 
-aa                  : else_if_list {}
+elses_opcoes        : {}
+                    | else {}
+                    | elseif {}
+                    ;
+else                : ELSE THEN stmts {}
+                    ;
+elseif              : ELSE if_stmt
+              /*
+aa                  :   else_if_list {}
+                    | {}
+                    ;
+
+elses               : else                                  {}
+                    | else_if_list aux                      {}
+                    ;
+
+aux                 : else                                  {}
+                    ;
+
+else_if_list        : ELSEIF                                {}
+                    | else_if_list                          {}
+                    ;
+
+bb                  : ELSE {}
                     |   {}
-                    ;
-
-bb                  : else {}
-                    |   {}
-                    ;
-
-/*
-else_if             :       {}
-                    | ELSEIF PARENTESE_DIREITA valor PARENTESE_ESQUERDA THEN stmts                        {}
-                    | else_if END_IF      {}
-                    ;
-
-else                :                               {}
-                    | ELSE stmts                      {}
                     ;
 */
 /************ ATRIBUICOES *****/
-atribuicoes         : atribuicao_simples            {}
-                    | atribuicao_unaria                {}
-                    | atribuicao_composta               {} 
+atribuicoes         : atribuicao_simples                    {}
+                    | atribuicao_unaria                     {}
+                    | atribuicao_composta                   {} 
                     ;
 
-atribuicao_simples  : type ID IGUAL_A valor  {}
+atribuicao_simples  : type ID IGUAL_A valor                 {}
                     ;
 
-atribuicao_unaria   : var operador_unario           {}
-                    | operador_unario var           {}
+atribuicao_unaria   : var operador_unario                   {}
+                    | operador_unario var                   {}
                     ;
 
 atribuicao_composta : var operador_composto valor     {}
