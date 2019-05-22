@@ -11,7 +11,7 @@
 /* Definições  C */
 %{
     #include <stdio.h>
-    #include "gauss.tab.h"
+    #include "y.tab.h"
   
   extern int yyerror (char *msg);  
 %}
@@ -39,10 +39,10 @@
 
 
 "*"				{ return (ASTERISCO); }
-"%i"			{ return (PRINT_INT }
-"%."[0-9]*"f"	{ return (PRINT_FLOAT }
-"%c"			{ return (PRINT_CHAR }
-"%s"			{ return (PRINT_STRING }
+"%i"			{ return (PRINT_INT); }
+"%."[0-9]*"f"	{ return (PRINT_FLOAT); }
+"%c"			{ return (PRINT_CHAR); }
+"%s"			{ return (PRINT_STRING); }
 "%"				{ return (MODULO); }
 "/" 			{ return (BARRA); }
 "++"			{ return (INCREMENTO); }
@@ -70,7 +70,7 @@
 
 "JUMP" 			{ return (JUMP); }
 "BREAK" 		{ return (BREAK); }
-"NULL"			{ return (NULL); }
+"NULL"			{ return (TNULL); }
 "for"			{ return (FOR); }
 "endfor"		{ return (END_FOR); }
 "do"			{ return (DO); }
@@ -92,7 +92,7 @@
 "func"			{ return (FUNCAO); }
 "proc"			{ return (PROC); }
 "return"		{ return (RETURN); }
-"begin"			{ return (BEGIN); }
+"begin"			{ return (TBEGIN); }
 "#const"		{ return (CONSTANTE); }
 "printf"		{ return (PRINTF); }
 "scanf"			{ return (SCANF); }
@@ -109,13 +109,13 @@
 "false"			{ return (FALSE); }
 [0-9]+ 			{ return (DIGITO);}
 [ \t\r]+        { /* Espaços em branco */ }
-\n              { yylineno++); }
+\n              { yylineno++; }
 [a-zA-Z\_][a-zA-Z0-9\_]* { return (ID); }
 \"(\\.|[^"])*\"	{ return (LITERAL_QUALQUER); }
 
-\/\*(\\.|[^"])*\*\/ 	{ return("COMENTARIO\n"); }	
+\/\*(\\.|[^"])*\*\/ 	{ ; }	
  
- \/\/(.+)\n 			{ return("COMENTARIO\n"); }	
+ \/\/(.+)\n 			{ ; }	
 
 
 

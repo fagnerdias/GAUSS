@@ -6,6 +6,8 @@
   extern int yylineno;
   extern char * yytext; 
 
+  //typedef enum {false, true} bool;
+
 
 %}
 
@@ -13,7 +15,7 @@
   int    iValue;  /* integer value */
   float  fValue;  /* float value */
   double dValue;  /* double value */
-  bool   bValue;  /* boolean value */
+  int   bValue;  /* boolean value */
   char   cValue;  /* char value */
   char * sValue;  /* string value */
 }
@@ -26,9 +28,9 @@
 %token MENOR_QUE MAIOR_QUE MENOR_OU_IGUAL_A MAIOR_OU_IGUAL_A IGUAL_A DIFERENTE_DE
 %token MAIS_IGUAL MENOS_IGUAL VEZES_IGUAL DIV_IGUAL EXPONENCIACAO_IGUAL
 %token FOR END_FOR DO WHILE END_WHILE SWITCH END_SWITCH CASE END_CASE DEFAULT 
-%token IF END_IF ELSE ELSEIF THEN STRUCT IS END FUNCAO PROC RETURN BEGIN CONSTANTE PRINTF SCANF 
+%token IF END_IF ELSE ELSEIF THEN STRUCT IS END FUNCAO PROC RETURN TBEGIN CONSTANTE PRINTF SCANF 
 %token CARACTERE STRING INTEIRO FLOAT DOUBLE VOID
-%token BOOLEANO TRUE FALSE JUMP BREAK NULL
+%token BOOLEANO TRUE FALSE JUMP BREAK TNULL
 %token <iValue> DIGITO
 %token <sValue> ID
 %token LITERAL_QUALQUER
@@ -60,7 +62,8 @@ elses_opcoes        : {}
                     ;
 else                : ELSE THEN stmts {}
                     ;
-elseif              : ELSE if_stmt
+elseif              : ELSE if_stmt {}
+                    ;
               /*
 aa                  :   else_if_list {}
                     | {}
