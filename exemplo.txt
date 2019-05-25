@@ -1,8 +1,6 @@
-// comentario 
-
 func QuickSort (int vetor[], int inicio, int fim) return void is
 begin
-	int pivo, i, j,  aux;
+	int pivo, i, j,aux;
 	i, j = inicio, fim-1;
 	pivo = vetor[(inicio+fim)/2];
 

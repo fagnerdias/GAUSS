@@ -11,9 +11,10 @@
 /* Definições  C */
 %{
     #include <stdio.h>
-    #include "y.tab.h"
+    #include "gauss.tab.h"
   
-  extern int yyerror (char *msg);  
+  extern int yyerror (char *msg); 
+  int yylineno; 
 %}
 
 
@@ -105,10 +106,11 @@
 "float"			{ return (FLOAT); }
 "double"		{ return (DOUBLE); }
 "bool"			{ return (BOOLEANO); }
+"void"			{ return (VOID); }
 "true"			{ return (TRUE); }
 "false"			{ return (FALSE); }
 [0-9]+ 			{ return (DIGITO);}
-[ \t\r]+        { /* Espaços em branco */ }
+[ \t\r]+        { /* Espaços em branco */; }
 \n              { yylineno++; }
 [a-zA-Z\_][a-zA-Z0-9\_]* { return (ID); }
 \"(\\.|[^"])*\"	{ return (LITERAL_QUALQUER); }

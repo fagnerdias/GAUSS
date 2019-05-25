@@ -38,70 +38,79 @@
 %start prog
 
 %type <sValue> stmt
+%type <sValue> funcao
 
 
 %%
-prog                : stmts                           {}
+prog                : subprog stmts                           {}
                     ;
 
-stmts               : stmt                            {}
+subprog             : funcao                        {}
+                    | subprog funcao                        {}
+                    ;
+
+funcao              : FUNCAO ID  PARENTESE_ESQUERDA args 
+                      PARENTESE_DIREITA RETURN type IS
+                      TBEGIN stmts END ID               {}
+                    ;
+
+args                : type id {}
+                    | type id COLCHETE_ESQUERDA COLCHETE_DIREITA VIRGULA args {}
+                    | type id VIRGULA args                    {}
+                    ;                    
+
+stmts               : stmt PONTO_E_VIRGULA                      {}
                     | stmt PONTO_E_VIRGULA stmts      {}
                     ;
 
-stmt                : if_stmt                       {} 
+stmt                : decl {}
                     | atribuicoes                         {}
                     ;
 
-if_stmt             : IF PARENTESE_DIREITA valor PARENTESE_ESQUERDA THEN stmts 
-                    elses_opcoes END_IF                            {}
+decl                : type id {}
+                    | type vars {}      
                     ;
 
-elses_opcoes        : {}
-                    | else {}
-                    | elseif {}
-                    ;
-else                : ELSE THEN stmts {}
-                    ;
-elseif              : ELSE if_stmt {}
-                    ;
-              /*
-aa                  :   else_if_list {}
-                    | {}
-                    ;
-
-elses               : else                                  {}
-                    | else_if_list aux                      {}
-                    ;
-
-aux                 : else                                  {}
-                    ;
-
-else_if_list        : ELSEIF                                {}
-                    | else_if_list                          {}
-                    ;
-
-bb                  : ELSE {}
-                    |   {}
-                    ;
-*/
-/************ ATRIBUICOES *****/
 atribuicoes         : atribuicao_simples                    {}
                     | atribuicao_unaria                     {}
                     | atribuicao_composta                   {} 
+                    | atribuicao_paralela {}
                     ;
 
-atribuicao_simples  : type ID IGUAL_A valor                 {}
+type                : CARACTERE {}
+                    | STRING {}
+                    | INTEIRO {}
+                    | FLOAT {}
+                    | DOUBLE {}
+                    | VOID         {}
+                    | BOOLEANO                              {}
                     ;
 
-atribuicao_unaria   : var operador_unario                   {}
-                    | operador_unario var                   {}
+
+vars                : 
+                    | id VIRGULA vars {}  
                     ;
 
-atribuicao_composta : var operador_composto valor     {}
+atribuicao_simples  : id ATRIBUICAO id                 {}
+                    ;
+
+atribuicao_unaria   : id operador_unario                   {}
+                    | operador_unario id                   {}
+                    ;
+
+atribuicao_composta : id operador_composto id     {}
+                    ;
+
+atribuicao_paralela : vars ATRIBUICAO vars {}
                     ;
 
 operador_unario     : INCREMENTO                      {}
                     | DECREMENTO                      {}
+                    ;
+
+operador            : MAIS {}           
+                    | MENOS_UNARIO {}
+                    | EXPONENCIACAO {}
                     ;
 
 operador_composto   : MAIS_IGUAL                      {}
@@ -110,15 +119,13 @@ operador_composto   : MAIS_IGUAL                      {}
                     | DIV_IGUAL                       {}
                     | EXPONENCIACAO_IGUAL             {}
                     ;
+                                                                             
 
-type                : ID                              {}
-                    ;
+id                  : ID {}
+                    | DIGITO {}
+                    ;                    
 
-valor               : ID                              {}
-                    ;
-
-var                 : ID                              {}
-                    ;
+                                                            
 
 %%
 
