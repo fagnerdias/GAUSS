@@ -47,8 +47,8 @@ prog                : subprog                           {}
 subprog             : funcao                        {}
                     | subprog funcao                        {}
                     ;
-stmts               : stmt PONTO_E_VIRGULA                          {}
-                    | stmt PONTO_E_VIRGULA stmts      {}
+stmts               : stmt                           {}
+                    | stmt stmts      {}
                     ;
 
 decl                : type ID {}
@@ -57,16 +57,16 @@ decl                : type ID {}
                     | type atribuicoes {}
                     ;
 
-stmt                : decl {}
+stmt                : decl PONTO_E_VIRGULA {} 
                     | if_stmt                       {}
                     | while_stmt {} 
-                    | atribuicoes                         {}
+                    | atribuicoes PONTO_E_VIRGULA                     {}
                     ;
 
 if_stmt             : IF PARENTESE_ESQUERDA valor PARENTESE_DIREITA THEN stmts elses_opcoes END_IF                            {}                    
                     ;
 
-while_stmt          : WHILE PARENTESE_ESQUERDA expressoes PARENTESE_DIREITA stmts END_WHILE  {}
+while_stmt          : WHILE PARENTESE_ESQUERDA valor PARENTESE_DIREITA stmts END_WHILE  {}
                     ;                 
 
 elses_opcoes        : {}
@@ -81,17 +81,17 @@ elseif              : ELSE if_stmt {}
 atribuicoes         : atribuicao_simples                    {}
                     | atribuicao_unaria                     {}
                     | atribuicao_composta                   {} 
-                    | atribuicao_paralela {}
+                    | atribuicao_paralela                   {}
                     ;
 
-atribuicao_simples  : ID ATRIBUICAO id                 {}
+atribuicao_simples  : id ATRIBUICAO expressoes {}
                     ;
 
-atribuicao_unaria   : ID operador_unario                   {}
+atribuicao_unaria   : id operador_unario                   {}
                     | operador_unario ID                   {}
                     ;
 
-atribuicao_composta : ID operador_composto valor     {}
+atribuicao_composta : id operador_composto valor     {}
                     ;
 
 atribuicao_paralela : vars ATRIBUICAO exprecoes_list {}
@@ -132,11 +132,14 @@ type                : CARACTERE {}
                     | BOOLEANO                              {}
                     ;
  
+/*Colocar demais operadores*/
 
-valor               : id {}                              
+
+valor               : expressoes E_LOGICO expressoes {}  
+                    | expressoes {}                          
                     ;
 
-expressoes           : 
+expressoes          : 
                     | id {}
                     | id operador id {}
                     | id operador_comp id {}
