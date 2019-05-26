@@ -54,6 +54,7 @@ stmts               : stmt PONTO_E_VIRGULA                          {}
 decl                : type ID 
                     | type vars {}
                     | type vars decl {}
+                    | type atribuicoes {}
                     ;
 
 stmt                : decl {}
@@ -156,7 +157,7 @@ args                : type ID {}
 
 funcao              :FUNCAO ID PARENTESE_ESQUERDA PARENTESE_DIREITA RETURN type IS
                       TBEGIN stmts END                {} 
-                    |FUNCAO ID  PARENTESE_ESQUERDA args 
+                    | FUNCAO ID  PARENTESE_ESQUERDA args 
                       PARENTESE_DIREITA RETURN type IS
                       TBEGIN stmts END                {}
                     ;

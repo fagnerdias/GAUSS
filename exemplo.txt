@@ -1,6 +1,7 @@
 func QuickSort () return int is
 begin
-	int pivo;
+	int pivo = 0;
+	 piv , o = i,8;
 end QuickSort
 
 
