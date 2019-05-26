@@ -38,7 +38,6 @@
 %start prog
 
 %type <sValue> stmt
-%type <sValue> funcao
 
 
 %%
@@ -48,33 +47,78 @@ prog                : subprog stmts                           {}
 subprog             : funcao                        {}
                     | subprog funcao                        {}
                     ;
-
-funcao              : FUNCAO ID  PARENTESE_ESQUERDA args 
-                      PARENTESE_DIREITA RETURN type IS
-                      TBEGIN stmts END ID               {}
-                    ;
-
-args                : type id {}
-                    | type id COLCHETE_ESQUERDA COLCHETE_DIREITA VIRGULA args {}
-                    | type id VIRGULA args                    {}
-                    ;                    
-
-stmts               : stmt PONTO_E_VIRGULA                      {}
+stmts               : stmt PONTO_E_VIRGULA                          {}
                     | stmt PONTO_E_VIRGULA stmts      {}
                     ;
 
+decl                : type vars {}
+                    | type vars decl {}
+                    ;
+
 stmt                : decl {}
+                    | if_stmt                       {}
+                    | while_stmt {} 
                     | atribuicoes                         {}
                     ;
 
-decl                : type id {}
-                    | type vars {}      
+if_stmt             : IF PARENTESE_ESQUERDA valor PARENTESE_DIREITA THEN stmts 
+                    elses_opcoes END_IF                            {}                    
                     ;
 
+while_stmt          : WHILE PARENTESE_ESQUERDA valor PARENTESE_DIREITA stmts END_WHILE                  
+
+elses_opcoes        : {}
+                    | else {}
+                    | elseif {}
+                    ;
+else                : ELSE THEN stmts {}
+                    ;
+elseif              : ELSE if_stmt {}
+                    ;
+/************ ATRIBUICOES *****/
 atribuicoes         : atribuicao_simples                    {}
                     | atribuicao_unaria                     {}
                     | atribuicao_composta                   {} 
                     | atribuicao_paralela {}
+                    ;
+
+atribuicao_simples  : ID ATRIBUICAO id                 {}
+                    ;
+
+atribuicao_unaria   : ID operador_unario                   {}
+                    | operador_unario ID                   {}
+                    ;
+
+atribuicao_composta : ID operador_composto valor     {}
+                    ;
+
+atribuicao_paralela : vars ATRIBUICAO exprecoes_list {}
+                    ;
+
+operador_unario     : INCREMENTO                      {}
+                    | DECREMENTO                      {}
+                    ;
+
+operador            : MAIS {}           
+                    | MENOS_UNARIO {}
+                    | EXPONENCIACAO {}
+                    | BARRA {}
+                    | MODULO {}
+                    ;
+                    
+operador_comp       : MENOR_QUE {}
+                    | MAIOR_QUE {}
+                    | MENOR_OU_IGUAL_A {}
+                    | MAIOR_OU_IGUAL_A {}
+                    | IGUAL_A {}
+                    | DIFERENTE_DE {}
+                    ;
+
+operador_composto   : MAIS_IGUAL                      {}
+                    | MENOS_IGUAL                     {}
+                    | VEZES_IGUAL                     {}
+                    | DIV_IGUAL                       {}
+                    | EXPONENCIACAO_IGUAL             {}
                     ;
 
 type                : CARACTERE {}
@@ -85,48 +129,39 @@ type                : CARACTERE {}
                     | VOID         {}
                     | BOOLEANO                              {}
                     ;
+ 
 
-
-vars                : 
-                    | id VIRGULA vars {}  
+valor               : id {}                              
                     ;
 
-atribuicao_simples  : id ATRIBUICAO id                 {}
+exprecoes           : 
+                    | id {}
+                    | id operador id {}
+                    | id operador_comp id {}                    
                     ;
 
-atribuicao_unaria   : id operador_unario                   {}
-                    | operador_unario id                   {}
+exprecoes_list      : exprecoes VIRGULA exprecoes {}
+                    ;                                        
+
+vars                : ID VIRGULA ID {}
+                    | ID VIRGULA vars {}
                     ;
 
-atribuicao_composta : id operador_composto id     {}
+args                : type ID {}
+                    | type ID COLCHETE_ESQUERDA COLCHETE_DIREITA VIRGULA args {}
+                    | type ID VIRGULA args                    {}
                     ;
 
-atribuicao_paralela : vars ATRIBUICAO vars {}
+funcao              : FUNCAO ID  PARENTESE_ESQUERDA args 
+                      PARENTESE_DIREITA RETURN type IS
+                      TBEGIN stmts END                {}
                     ;
-
-operador_unario     : INCREMENTO                      {}
-                    | DECREMENTO                      {}
-                    ;
-
-operador            : MAIS {}           
-                    | MENOS_UNARIO {}
-                    | EXPONENCIACAO {}
-                    ;
-
-operador_composto   : MAIS_IGUAL                      {}
-                    | MENOS_IGUAL                     {}
-                    | VEZES_IGUAL                     {}
-                    | DIV_IGUAL                       {}
-                    | EXPONENCIACAO_IGUAL             {}
-                    ;
-                                                                             
 
 id                  : ID {}
                     | DIGITO {}
-                    ;                    
-
-                                                            
-
+                    | ID COLCHETE_ESQUERDA exprecoes COLCHETE_DIREITA
+                    | PARENTESE_ESQUERDA exprecoes PARENTESE_DIREITA {}
+                    ;
 %%
 
 int main (void) {
