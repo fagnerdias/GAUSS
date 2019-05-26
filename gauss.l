@@ -14,7 +14,7 @@
     #include "gauss.tab.h"
   
   extern int yyerror (char *msg); 
-  int yylineno; 
+  //int yylineno; 
 %}
 
 

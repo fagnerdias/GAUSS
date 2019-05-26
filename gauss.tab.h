@@ -1,23 +1,24 @@
-
-/* A Bison parser, made by GNU Bison 2.4.1.  */
+/* A Bison parser, made by GNU Bison 2.3.  */
 
 /* Skeleton interface for Bison's Yacc-like parsers in C
-   
-      Copyright (C) 1984, 1989, 1990, 2000, 2001, 2002, 2003, 2004, 2005, 2006
+
+   Copyright (C) 1984, 1989, 1990, 2000, 2001, 2002, 2003, 2004, 2005, 2006
    Free Software Foundation, Inc.
-   
-   This program is free software: you can redistribute it and/or modify
+
+   This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
-   the Free Software Foundation, either version 3 of the License, or
-   (at your option) any later version.
-   
+   the Free Software Foundation; either version 2, or (at your option)
+   any later version.
+
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
-   
+
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program; if not, write to the Free Software
+   Foundation, Inc., 51 Franklin Street, Fifth Floor,
+   Boston, MA 02110-1301, USA.  */
 
 /* As a special exception, you may create a larger work that contains
    part or all of the Bison parser skeleton and distribute that work
@@ -28,10 +29,9 @@
    special exception, which will cause the skeleton and the resulting
    Bison output files to be licensed under the GNU General Public
    License without this special exception.
-   
+
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
-
 
 /* Tokens.  */
 #ifndef YYTOKENTYPE
@@ -121,33 +121,109 @@
      LITERAL_QUALQUER = 337
    };
 #endif
+/* Tokens.  */
+#define CHAVE_ESQUERDA 258
+#define CHAVE_DIREITA 259
+#define PARENTESE_ESQUERDA 260
+#define PARENTESE_DIREITA 261
+#define COLCHETE_ESQUERDA 262
+#define COLCHETE_DIREITA 263
+#define PONTO_E_VIRGULA 264
+#define VIRGULA 265
+#define PONTO 266
+#define DOIS_PONTOS 267
+#define E_LOGICO 268
+#define E_LOGICO_CURTO_CIRCUITO 269
+#define OU_LOGICO 270
+#define OU_LOGICO_CURTO_CIRCUITO 271
+#define EXCLAMACAO 272
+#define ASTERISCO 273
+#define PRINT_INT 274
+#define PRINT_FLOAT 275
+#define PRINT_CHAR 276
+#define PRINT_STRING 277
+#define MODULO 278
+#define BARRA 279
+#define INCREMENTO 280
+#define DECREMENTO 281
+#define MAIS 282
+#define MENOS_UNARIO 283
+#define EXPONENCIACAO 284
+#define ATRIBUICAO 285
+#define OPERADOR_TERNARIO 286
+#define MENOR_QUE 287
+#define MAIOR_QUE 288
+#define MENOR_OU_IGUAL_A 289
+#define MAIOR_OU_IGUAL_A 290
+#define IGUAL_A 291
+#define DIFERENTE_DE 292
+#define MAIS_IGUAL 293
+#define MENOS_IGUAL 294
+#define VEZES_IGUAL 295
+#define DIV_IGUAL 296
+#define EXPONENCIACAO_IGUAL 297
+#define FOR 298
+#define END_FOR 299
+#define DO 300
+#define WHILE 301
+#define END_WHILE 302
+#define SWITCH 303
+#define END_SWITCH 304
+#define CASE 305
+#define END_CASE 306
+#define DEFAULT 307
+#define IF 308
+#define END_IF 309
+#define ELSE 310
+#define ELSEIF 311
+#define THEN 312
+#define STRUCT 313
+#define IS 314
+#define END 315
+#define FUNCAO 316
+#define PROC 317
+#define RETURN 318
+#define TBEGIN 319
+#define CONSTANTE 320
+#define PRINTF 321
+#define SCANF 322
+#define CARACTERE 323
+#define STRING 324
+#define INTEIRO 325
+#define FLOAT 326
+#define DOUBLE 327
+#define VOID 328
+#define BOOLEANO 329
+#define TRUE 330
+#define FALSE 331
+#define JUMP 332
+#define BREAK 333
+#define TNULL 334
+#define DIGITO 335
+#define ID 336
+#define LITERAL_QUALQUER 337
+
 
 
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-{
-
-/* Line 1676 of yacc.c  */
 #line 14 "gauss.y"
-
+{
   int    iValue;  /* integer value */
   float  fValue;  /* float value */
   double dValue;  /* double value */
   int   bValue;  /* boolean value */
   char   cValue;  /* char value */
   char * sValue;  /* string value */
-
-
-
-/* Line 1676 of yacc.c  */
-#line 145 "gauss.tab.h"
-} YYSTYPE;
-# define YYSTYPE_IS_TRIVIAL 1
+}
+/* Line 1529 of yacc.c.  */
+#line 222 "gauss.tab.h"
+	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
+# define YYSTYPE_IS_TRIVIAL 1
 #endif
 
 extern YYSTYPE yylval;
-
 
