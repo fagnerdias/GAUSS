@@ -61,11 +61,11 @@ stmt                : decl {}
                     | atribuicoes                         {}
                     ;
 
-if_stmt             : IF PARENTESE_ESQUERDA valor PARENTESE_DIREITA THEN stmts 
-                    elses_opcoes END_IF                            {}                    
+if_stmt             : IF PARENTESE_ESQUERDA valor PARENTESE_DIREITA THEN stmts elses_opcoes END_IF                            {}                    
                     ;
 
-while_stmt          : WHILE PARENTESE_ESQUERDA valor PARENTESE_DIREITA stmts END_WHILE                  
+while_stmt          : WHILE PARENTESE_ESQUERDA expressoes PARENTESE_DIREITA stmts END_WHILE  {}
+                    ;                 
 
 elses_opcoes        : {}
                     | else {}
@@ -134,13 +134,13 @@ type                : CARACTERE {}
 valor               : id {}                              
                     ;
 
-exprecoes           : 
+expressoes           : 
                     | id {}
                     | id operador id {}
                     | id operador_comp id {}                    
                     ;
 
-exprecoes_list      : exprecoes VIRGULA exprecoes {}
+exprecoes_list      : expressoes VIRGULA expressoes {}
                     ;                                        
 
 vars                : ID VIRGULA ID {}
@@ -159,8 +159,8 @@ funcao              : FUNCAO ID  PARENTESE_ESQUERDA args
 
 id                  : ID {}
                     | DIGITO {}
-                    | ID COLCHETE_ESQUERDA exprecoes COLCHETE_DIREITA
-                    | PARENTESE_ESQUERDA exprecoes PARENTESE_DIREITA {}
+                    | ID COLCHETE_ESQUERDA expressoes COLCHETE_DIREITA
+                    | PARENTESE_ESQUERDA expressoes PARENTESE_DIREITA {}
                     ;
 %%
 
