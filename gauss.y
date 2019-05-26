@@ -41,7 +41,7 @@
 
 
 %%
-prog                : subprog stmts                           {}
+prog                : subprog                           {}
                     ;
 
 subprog             : funcao                        {}
@@ -51,7 +51,7 @@ stmts               : stmt PONTO_E_VIRGULA                          {}
                     | stmt PONTO_E_VIRGULA stmts      {}
                     ;
 
-decl                : type ID 
+decl                : type ID {}
                     | type vars {}
                     | type vars decl {}
                     | type atribuicoes {}
@@ -155,11 +155,11 @@ args                : type ID {}
                     | type ID VIRGULA args                    {}
                     ;
 
-funcao              :FUNCAO ID PARENTESE_ESQUERDA PARENTESE_DIREITA RETURN type IS
+funcao              : FUNCAO ID PARENTESE_ESQUERDA PARENTESE_DIREITA RETURN type IS
                       TBEGIN stmts END                {} 
                     | FUNCAO ID  PARENTESE_ESQUERDA args 
                       PARENTESE_DIREITA RETURN type IS
-                      TBEGIN stmts END                {}
+                      TBEGIN stmts END ID               {}
                     ;
 
 id                  : ID {}
