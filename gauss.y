@@ -149,7 +149,8 @@ vars                : ID VIRGULA ID {}
                     | ID VIRGULA vars {}
                     ;
 
-args                : type ID {}
+args                : 
+                    | type ID {}
                     | type ID COLCHETE_ESQUERDA COLCHETE_DIREITA VIRGULA args {}
                     | type ID VIRGULA args                    {}
                     ;
