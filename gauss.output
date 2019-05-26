@@ -1,7 +1,5 @@
 Terminals which are not used
 
-   CHAVE_ESQUERDA
-   CHAVE_DIREITA
    PONTO
    DOIS_PONTOS
    E_LOGICO_CURTO_CIRCUITO
@@ -57,104 +55,116 @@ Grammar
    11     | if_stmt
    12     | while_stmt
    13     | atribuicoes PONTO_E_VIRGULA
+   14     | invoca_procedimento PONTO_E_VIRGULA
 
-   14 if_stmt: IF PARENTESE_ESQUERDA valor PARENTESE_DIREITA THEN stmts elses_opcoes END_IF
+   15 invoca_procedimento: ID PARENTESE_ESQUERDA parametros PARENTESE_DIREITA
 
-   15 while_stmt: WHILE PARENTESE_ESQUERDA valor PARENTESE_DIREITA stmts END_WHILE
+   16 parametros: expressoes
+   17           | expressoes VIRGULA parametros
 
-   16 elses_opcoes: /* empty */
-   17             | else
-   18             | elseif
+   18 if_stmt: IF PARENTESE_ESQUERDA valor PARENTESE_DIREITA THEN stmts elses_opcoes END_IF
 
-   19 else: ELSE THEN stmts
+   19 while_stmt: WHILE PARENTESE_ESQUERDA valor PARENTESE_DIREITA stmts END_WHILE
 
-   20 elseif: ELSE if_stmt
+   20 elses_opcoes: /* empty */
+   21             | else
+   22             | elseif
 
-   21 atribuicoes: atribuicao_simples
-   22            | atribuicao_unaria
-   23            | atribuicao_composta
-   24            | atribuicao_paralela
+   23 else: ELSE THEN stmts
 
-   25 atribuicao_simples: id ATRIBUICAO expressoes
+   24 elseif: ELSE if_stmt
 
-   26 atribuicao_unaria: id operador_unario
-   27                  | operador_unario ID
+   25 atribuicoes: atribuicao_simples
+   26            | atribuicao_unaria
+   27            | atribuicao_composta
+   28            | atribuicao_paralela
 
-   28 atribuicao_composta: id operador_composto valor
+   29 atribuicao_simples: id ATRIBUICAO expressoes
 
-   29 atribuicao_paralela: vars ATRIBUICAO exprecoes_list
+   30 atribuicao_unaria: id operador_unario
+   31                  | operador_unario ID
 
-   30 operador_unario: INCREMENTO
-   31                | DECREMENTO
+   32 atribuicao_composta: id operador_composto valor
 
-   32 operador: MAIS
-   33         | MENOS_UNARIO
-   34         | EXPONENCIACAO
-   35         | BARRA
-   36         | MODULO
+   33 atribuicao_paralela: vars ATRIBUICAO exprecoes_list
 
-   37 operador_comp: MENOR_QUE
-   38              | MAIOR_QUE
-   39              | MENOR_OU_IGUAL_A
-   40              | MAIOR_OU_IGUAL_A
-   41              | IGUAL_A
-   42              | DIFERENTE_DE
+   34 operador_unario: INCREMENTO
+   35                | DECREMENTO
 
-   43 operador_composto: MAIS_IGUAL
-   44                  | MENOS_IGUAL
-   45                  | VEZES_IGUAL
-   46                  | DIV_IGUAL
-   47                  | EXPONENCIACAO_IGUAL
+   36 operador: MAIS
+   37         | MENOS_UNARIO
+   38         | EXPONENCIACAO
+   39         | BARRA
+   40         | MODULO
 
-   48 type: CARACTERE
-   49     | STRING
-   50     | INTEIRO
-   51     | FLOAT
-   52     | DOUBLE
-   53     | VOID
-   54     | BOOLEANO
+   41 operador_comp: MENOR_QUE
+   42              | MAIOR_QUE
+   43              | MENOR_OU_IGUAL_A
+   44              | MAIOR_OU_IGUAL_A
+   45              | IGUAL_A
+   46              | DIFERENTE_DE
 
-   55 valor: expressoes E_LOGICO expressoes
-   56      | expressoes
+   47 operador_composto: MAIS_IGUAL
+   48                  | MENOS_IGUAL
+   49                  | VEZES_IGUAL
+   50                  | DIV_IGUAL
+   51                  | EXPONENCIACAO_IGUAL
 
-   57 expressoes: /* empty */
-   58           | id
-   59           | id operador id
-   60           | id operador_comp id
+   52 type: CARACTERE
+   53     | STRING
+   54     | INTEIRO
+   55     | FLOAT
+   56     | DOUBLE
+   57     | VOID
+   58     | BOOLEANO
 
-   61 exprecoes_list: expressoes VIRGULA expressoes
+   59 valor: expressoes E_LOGICO expressoes
+   60      | expressoes
 
-   62 vars: ID VIRGULA ID
-   63     | ID VIRGULA vars
+   61 expressoes: /* empty */
+   62           | id
+   63           | id operador id
+   64           | id operador_comp id
+   65           | vetorial
 
-   64 args: /* empty */
-   65     | type ID
-   66     | type ID COLCHETE_ESQUERDA COLCHETE_DIREITA VIRGULA args
-   67     | type ID VIRGULA args
+   66 vetorial: CHAVE_ESQUERDA lista_de_digitos CHAVE_DIREITA
 
-   68 funcao: FUNCAO ID PARENTESE_ESQUERDA args PARENTESE_DIREITA RETURN type IS TBEGIN stmts END ID
+   67 lista_de_digitos: DIGITO
+   68                 | DIGITO VIRGULA lista_de_digitos
 
-   69 id: ID
-   70   | DIGITO
-   71   | ID COLCHETE_ESQUERDA expressoes COLCHETE_DIREITA
-   72   | PARENTESE_ESQUERDA expressoes PARENTESE_DIREITA
+   69 exprecoes_list: expressoes VIRGULA expressoes
+
+   70 vars: ID VIRGULA ID
+   71     | ID VIRGULA vars
+
+   72 args: /* empty */
+   73     | type ID
+   74     | type ID COLCHETE_ESQUERDA COLCHETE_DIREITA VIRGULA args
+   75     | type ID VIRGULA args
+
+   76 funcao: FUNCAO ID PARENTESE_ESQUERDA args PARENTESE_DIREITA RETURN type IS TBEGIN stmts END ID
+
+   77 id: ID
+   78   | DIGITO
+   79   | ID COLCHETE_ESQUERDA expressoes COLCHETE_DIREITA
+   80   | PARENTESE_ESQUERDA expressoes PARENTESE_DIREITA
 
 
 Terminals, with rules where they appear
 
 $end (0) 0
 error (256)
-CHAVE_ESQUERDA (258)
-CHAVE_DIREITA (259)
-PARENTESE_ESQUERDA (260) 14 15 68 72
-PARENTESE_DIREITA (261) 14 15 68 72
-COLCHETE_ESQUERDA (262) 66 71
-COLCHETE_DIREITA (263) 66 71
-PONTO_E_VIRGULA (264) 10 13
-VIRGULA (265) 61 62 63 66 67
+CHAVE_ESQUERDA (258) 66
+CHAVE_DIREITA (259) 66
+PARENTESE_ESQUERDA (260) 15 18 19 76 80
+PARENTESE_DIREITA (261) 15 18 19 76 80
+COLCHETE_ESQUERDA (262) 74 79
+COLCHETE_DIREITA (263) 74 79
+PONTO_E_VIRGULA (264) 10 13 14
+VIRGULA (265) 17 68 69 70 71 74 75
 PONTO (266)
 DOIS_PONTOS (267)
-E_LOGICO (268) 55
+E_LOGICO (268) 59
 E_LOGICO_CURTO_CIRCUITO (269)
 OU_LOGICO (270)
 OU_LOGICO_CURTO_CIRCUITO (271)
@@ -164,65 +174,65 @@ PRINT_INT (274)
 PRINT_FLOAT (275)
 PRINT_CHAR (276)
 PRINT_STRING (277)
-MODULO (278) 36
-BARRA (279) 35
-INCREMENTO (280) 30
-DECREMENTO (281) 31
-MAIS (282) 32
-MENOS_UNARIO (283) 33
-EXPONENCIACAO (284) 34
-ATRIBUICAO (285) 25 29
+MODULO (278) 40
+BARRA (279) 39
+INCREMENTO (280) 34
+DECREMENTO (281) 35
+MAIS (282) 36
+MENOS_UNARIO (283) 37
+EXPONENCIACAO (284) 38
+ATRIBUICAO (285) 29 33
 OPERADOR_TERNARIO (286)
-MENOR_QUE (287) 37
-MAIOR_QUE (288) 38
-MENOR_OU_IGUAL_A (289) 39
-MAIOR_OU_IGUAL_A (290) 40
-IGUAL_A (291) 41
-DIFERENTE_DE (292) 42
-MAIS_IGUAL (293) 43
-MENOS_IGUAL (294) 44
-VEZES_IGUAL (295) 45
-DIV_IGUAL (296) 46
-EXPONENCIACAO_IGUAL (297) 47
+MENOR_QUE (287) 41
+MAIOR_QUE (288) 42
+MENOR_OU_IGUAL_A (289) 43
+MAIOR_OU_IGUAL_A (290) 44
+IGUAL_A (291) 45
+DIFERENTE_DE (292) 46
+MAIS_IGUAL (293) 47
+MENOS_IGUAL (294) 48
+VEZES_IGUAL (295) 49
+DIV_IGUAL (296) 50
+EXPONENCIACAO_IGUAL (297) 51
 FOR (298)
 END_FOR (299)
 DO (300)
-WHILE (301) 15
-END_WHILE (302) 15
+WHILE (301) 19
+END_WHILE (302) 19
 SWITCH (303)
 END_SWITCH (304)
 CASE (305)
 END_CASE (306)
 DEFAULT (307)
-IF (308) 14
-END_IF (309) 14
-ELSE (310) 19 20
+IF (308) 18
+END_IF (309) 18
+ELSE (310) 23 24
 ELSEIF (311)
-THEN (312) 14 19
+THEN (312) 18 23
 STRUCT (313)
-IS (314) 68
-END (315) 68
-FUNCAO (316) 68
+IS (314) 76
+END (315) 76
+FUNCAO (316) 76
 PROC (317)
-RETURN (318) 68
-TBEGIN (319) 68
+RETURN (318) 76
+TBEGIN (319) 76
 CONSTANTE (320)
 PRINTF (321)
 SCANF (322)
-CARACTERE (323) 48
-STRING (324) 49
-INTEIRO (325) 50
-FLOAT (326) 51
-DOUBLE (327) 52
-VOID (328) 53
-BOOLEANO (329) 54
+CARACTERE (323) 52
+STRING (324) 53
+INTEIRO (325) 54
+FLOAT (326) 55
+DOUBLE (327) 56
+VOID (328) 57
+BOOLEANO (329) 58
 TRUE (330)
 FALSE (331)
 JUMP (332)
 BREAK (333)
 TNULL (334)
-DIGITO (335) 70
-ID (336) 6 27 62 63 65 66 67 68 69 71
+DIGITO (335) 67 68 78
+ID (336) 6 15 31 70 71 73 74 75 76 77 79
 LITERAL_QUALQUER (337)
 
 
@@ -235,55 +245,63 @@ prog (84)
 subprog (85)
     on left: 2 3, on right: 1 3
 stmts (86)
-    on left: 4 5, on right: 5 14 15 19 68
+    on left: 4 5, on right: 5 18 19 23 76
 decl (87)
     on left: 6 7 8 9, on right: 8 10
 stmt (88)
-    on left: 10 11 12 13, on right: 4 5
-if_stmt (89)
-    on left: 14, on right: 11 20
-while_stmt (90)
-    on left: 15, on right: 12
-elses_opcoes (91)
-    on left: 16 17 18, on right: 14
-else (92)
-    on left: 19, on right: 17
-elseif (93)
-    on left: 20, on right: 18
-atribuicoes (94)
-    on left: 21 22 23 24, on right: 9 13
-atribuicao_simples (95)
-    on left: 25, on right: 21
-atribuicao_unaria (96)
-    on left: 26 27, on right: 22
-atribuicao_composta (97)
-    on left: 28, on right: 23
-atribuicao_paralela (98)
-    on left: 29, on right: 24
-operador_unario (99)
-    on left: 30 31, on right: 26 27
-operador (100)
-    on left: 32 33 34 35 36, on right: 59
-operador_comp (101)
-    on left: 37 38 39 40 41 42, on right: 60
-operador_composto (102)
-    on left: 43 44 45 46 47, on right: 28
-type (103)
-    on left: 48 49 50 51 52 53 54, on right: 6 7 8 9 65 66 67 68
-valor (104)
-    on left: 55 56, on right: 14 15 28
-expressoes (105)
-    on left: 57 58 59 60, on right: 25 55 56 61 71 72
-exprecoes_list (106)
-    on left: 61, on right: 29
-vars (107)
-    on left: 62 63, on right: 7 8 29 63
-args (108)
-    on left: 64 65 66 67, on right: 66 67 68
-funcao (109)
-    on left: 68, on right: 2 3
-id (110)
-    on left: 69 70 71 72, on right: 25 26 28 58 59 60
+    on left: 10 11 12 13 14, on right: 4 5
+invoca_procedimento (89)
+    on left: 15, on right: 14
+parametros (90)
+    on left: 16 17, on right: 15 17
+if_stmt (91)
+    on left: 18, on right: 11 24
+while_stmt (92)
+    on left: 19, on right: 12
+elses_opcoes (93)
+    on left: 20 21 22, on right: 18
+else (94)
+    on left: 23, on right: 21
+elseif (95)
+    on left: 24, on right: 22
+atribuicoes (96)
+    on left: 25 26 27 28, on right: 9 13
+atribuicao_simples (97)
+    on left: 29, on right: 25
+atribuicao_unaria (98)
+    on left: 30 31, on right: 26
+atribuicao_composta (99)
+    on left: 32, on right: 27
+atribuicao_paralela (100)
+    on left: 33, on right: 28
+operador_unario (101)
+    on left: 34 35, on right: 30 31
+operador (102)
+    on left: 36 37 38 39 40, on right: 63
+operador_comp (103)
+    on left: 41 42 43 44 45 46, on right: 64
+operador_composto (104)
+    on left: 47 48 49 50 51, on right: 32
+type (105)
+    on left: 52 53 54 55 56 57 58, on right: 6 7 8 9 73 74 75 76
+valor (106)
+    on left: 59 60, on right: 18 19 32
+expressoes (107)
+    on left: 61 62 63 64 65, on right: 16 17 29 59 60 69 79 80
+vetorial (108)
+    on left: 66, on right: 65
+lista_de_digitos (109)
+    on left: 67 68, on right: 66 68
+exprecoes_list (110)
+    on left: 69, on right: 33
+vars (111)
+    on left: 70 71, on right: 7 8 33 71
+args (112)
+    on left: 72 73 74 75, on right: 74 75 76
+funcao (113)
+    on left: 76, on right: 2 3
+id (114)
+    on left: 77 78 79 80, on right: 29 30 32 62 63 64
 
 
 state 0
@@ -299,7 +317,7 @@ state 0
 
 state 1
 
-   68 funcao: FUNCAO . ID PARENTESE_ESQUERDA args PARENTESE_DIREITA RETURN type IS TBEGIN stmts END ID
+   76 funcao: FUNCAO . ID PARENTESE_ESQUERDA args PARENTESE_DIREITA RETURN type IS TBEGIN stmts END ID
 
     ID  shift, and go to state 5
 
@@ -332,7 +350,7 @@ state 4
 
 state 5
 
-   68 funcao: FUNCAO ID . PARENTESE_ESQUERDA args PARENTESE_DIREITA RETURN type IS TBEGIN stmts END ID
+   76 funcao: FUNCAO ID . PARENTESE_ESQUERDA args PARENTESE_DIREITA RETURN type IS TBEGIN stmts END ID
 
     PARENTESE_ESQUERDA  shift, and go to state 8
 
@@ -353,7 +371,7 @@ state 7
 
 state 8
 
-   68 funcao: FUNCAO ID PARENTESE_ESQUERDA . args PARENTESE_DIREITA RETURN type IS TBEGIN stmts END ID
+   76 funcao: FUNCAO ID PARENTESE_ESQUERDA . args PARENTESE_DIREITA RETURN type IS TBEGIN stmts END ID
 
     CARACTERE  shift, and go to state 9
     STRING     shift, and go to state 10
@@ -363,7 +381,7 @@ state 8
     VOID       shift, and go to state 14
     BOOLEANO   shift, and go to state 15
 
-    $default  reduce using rule 64 (args)
+    $default  reduce using rule 72 (args)
 
     type  go to state 16
     args  go to state 17
@@ -371,98 +389,98 @@ state 8
 
 state 9
 
-   48 type: CARACTERE .
-
-    $default  reduce using rule 48 (type)
-
-
-state 10
-
-   49 type: STRING .
-
-    $default  reduce using rule 49 (type)
-
-
-state 11
-
-   50 type: INTEIRO .
-
-    $default  reduce using rule 50 (type)
-
-
-state 12
-
-   51 type: FLOAT .
-
-    $default  reduce using rule 51 (type)
-
-
-state 13
-
-   52 type: DOUBLE .
+   52 type: CARACTERE .
 
     $default  reduce using rule 52 (type)
 
 
-state 14
+state 10
 
-   53 type: VOID .
+   53 type: STRING .
 
     $default  reduce using rule 53 (type)
 
 
-state 15
+state 11
 
-   54 type: BOOLEANO .
+   54 type: INTEIRO .
 
     $default  reduce using rule 54 (type)
 
 
+state 12
+
+   55 type: FLOAT .
+
+    $default  reduce using rule 55 (type)
+
+
+state 13
+
+   56 type: DOUBLE .
+
+    $default  reduce using rule 56 (type)
+
+
+state 14
+
+   57 type: VOID .
+
+    $default  reduce using rule 57 (type)
+
+
+state 15
+
+   58 type: BOOLEANO .
+
+    $default  reduce using rule 58 (type)
+
+
 state 16
 
-   65 args: type . ID
-   66     | type . ID COLCHETE_ESQUERDA COLCHETE_DIREITA VIRGULA args
-   67     | type . ID VIRGULA args
+   73 args: type . ID
+   74     | type . ID COLCHETE_ESQUERDA COLCHETE_DIREITA VIRGULA args
+   75     | type . ID VIRGULA args
 
     ID  shift, and go to state 18
 
 
 state 17
 
-   68 funcao: FUNCAO ID PARENTESE_ESQUERDA args . PARENTESE_DIREITA RETURN type IS TBEGIN stmts END ID
+   76 funcao: FUNCAO ID PARENTESE_ESQUERDA args . PARENTESE_DIREITA RETURN type IS TBEGIN stmts END ID
 
     PARENTESE_DIREITA  shift, and go to state 19
 
 
 state 18
 
-   65 args: type ID .
-   66     | type ID . COLCHETE_ESQUERDA COLCHETE_DIREITA VIRGULA args
-   67     | type ID . VIRGULA args
+   73 args: type ID .
+   74     | type ID . COLCHETE_ESQUERDA COLCHETE_DIREITA VIRGULA args
+   75     | type ID . VIRGULA args
 
     COLCHETE_ESQUERDA  shift, and go to state 20
     VIRGULA            shift, and go to state 21
 
-    $default  reduce using rule 65 (args)
+    $default  reduce using rule 73 (args)
 
 
 state 19
 
-   68 funcao: FUNCAO ID PARENTESE_ESQUERDA args PARENTESE_DIREITA . RETURN type IS TBEGIN stmts END ID
+   76 funcao: FUNCAO ID PARENTESE_ESQUERDA args PARENTESE_DIREITA . RETURN type IS TBEGIN stmts END ID
 
     RETURN  shift, and go to state 22
 
 
 state 20
 
-   66 args: type ID COLCHETE_ESQUERDA . COLCHETE_DIREITA VIRGULA args
+   74 args: type ID COLCHETE_ESQUERDA . COLCHETE_DIREITA VIRGULA args
 
     COLCHETE_DIREITA  shift, and go to state 23
 
 
 state 21
 
-   67 args: type ID VIRGULA . args
+   75 args: type ID VIRGULA . args
 
     CARACTERE  shift, and go to state 9
     STRING     shift, and go to state 10
@@ -472,7 +490,7 @@ state 21
     VOID       shift, and go to state 14
     BOOLEANO   shift, and go to state 15
 
-    $default  reduce using rule 64 (args)
+    $default  reduce using rule 72 (args)
 
     type  go to state 16
     args  go to state 24
@@ -480,7 +498,7 @@ state 21
 
 state 22
 
-   68 funcao: FUNCAO ID PARENTESE_ESQUERDA args PARENTESE_DIREITA RETURN . type IS TBEGIN stmts END ID
+   76 funcao: FUNCAO ID PARENTESE_ESQUERDA args PARENTESE_DIREITA RETURN . type IS TBEGIN stmts END ID
 
     CARACTERE  shift, and go to state 9
     STRING     shift, and go to state 10
@@ -495,28 +513,28 @@ state 22
 
 state 23
 
-   66 args: type ID COLCHETE_ESQUERDA COLCHETE_DIREITA . VIRGULA args
+   74 args: type ID COLCHETE_ESQUERDA COLCHETE_DIREITA . VIRGULA args
 
     VIRGULA  shift, and go to state 26
 
 
 state 24
 
-   67 args: type ID VIRGULA args .
+   75 args: type ID VIRGULA args .
 
-    $default  reduce using rule 67 (args)
+    $default  reduce using rule 75 (args)
 
 
 state 25
 
-   68 funcao: FUNCAO ID PARENTESE_ESQUERDA args PARENTESE_DIREITA RETURN type . IS TBEGIN stmts END ID
+   76 funcao: FUNCAO ID PARENTESE_ESQUERDA args PARENTESE_DIREITA RETURN type . IS TBEGIN stmts END ID
 
     IS  shift, and go to state 27
 
 
 state 26
 
-   66 args: type ID COLCHETE_ESQUERDA COLCHETE_DIREITA VIRGULA . args
+   74 args: type ID COLCHETE_ESQUERDA COLCHETE_DIREITA VIRGULA . args
 
     CARACTERE  shift, and go to state 9
     STRING     shift, and go to state 10
@@ -526,7 +544,7 @@ state 26
     VOID       shift, and go to state 14
     BOOLEANO   shift, and go to state 15
 
-    $default  reduce using rule 64 (args)
+    $default  reduce using rule 72 (args)
 
     type  go to state 16
     args  go to state 28
@@ -534,21 +552,21 @@ state 26
 
 state 27
 
-   68 funcao: FUNCAO ID PARENTESE_ESQUERDA args PARENTESE_DIREITA RETURN type IS . TBEGIN stmts END ID
+   76 funcao: FUNCAO ID PARENTESE_ESQUERDA args PARENTESE_DIREITA RETURN type IS . TBEGIN stmts END ID
 
     TBEGIN  shift, and go to state 29
 
 
 state 28
 
-   66 args: type ID COLCHETE_ESQUERDA COLCHETE_DIREITA VIRGULA args .
+   74 args: type ID COLCHETE_ESQUERDA COLCHETE_DIREITA VIRGULA args .
 
-    $default  reduce using rule 66 (args)
+    $default  reduce using rule 74 (args)
 
 
 state 29
 
-   68 funcao: FUNCAO ID PARENTESE_ESQUERDA args PARENTESE_DIREITA RETURN type IS TBEGIN . stmts END ID
+   76 funcao: FUNCAO ID PARENTESE_ESQUERDA args PARENTESE_DIREITA RETURN type IS TBEGIN . stmts END ID
 
     PARENTESE_ESQUERDA  shift, and go to state 30
     INCREMENTO          shift, and go to state 31
@@ -568,93 +586,98 @@ state 29
     stmts                go to state 37
     decl                 go to state 38
     stmt                 go to state 39
-    if_stmt              go to state 40
-    while_stmt           go to state 41
-    atribuicoes          go to state 42
-    atribuicao_simples   go to state 43
-    atribuicao_unaria    go to state 44
-    atribuicao_composta  go to state 45
-    atribuicao_paralela  go to state 46
-    operador_unario      go to state 47
-    type                 go to state 48
-    vars                 go to state 49
-    id                   go to state 50
+    invoca_procedimento  go to state 40
+    if_stmt              go to state 41
+    while_stmt           go to state 42
+    atribuicoes          go to state 43
+    atribuicao_simples   go to state 44
+    atribuicao_unaria    go to state 45
+    atribuicao_composta  go to state 46
+    atribuicao_paralela  go to state 47
+    operador_unario      go to state 48
+    type                 go to state 49
+    vars                 go to state 50
+    id                   go to state 51
 
 
 state 30
 
-   72 id: PARENTESE_ESQUERDA . expressoes PARENTESE_DIREITA
+   80 id: PARENTESE_ESQUERDA . expressoes PARENTESE_DIREITA
 
+    CHAVE_ESQUERDA      shift, and go to state 52
     PARENTESE_ESQUERDA  shift, and go to state 30
     DIGITO              shift, and go to state 35
-    ID                  shift, and go to state 51
+    ID                  shift, and go to state 53
 
-    $default  reduce using rule 57 (expressoes)
+    $default  reduce using rule 61 (expressoes)
 
-    expressoes  go to state 52
-    id          go to state 53
+    expressoes  go to state 54
+    vetorial    go to state 55
+    id          go to state 56
 
 
 state 31
 
-   30 operador_unario: INCREMENTO .
+   34 operador_unario: INCREMENTO .
 
-    $default  reduce using rule 30 (operador_unario)
+    $default  reduce using rule 34 (operador_unario)
 
 
 state 32
 
-   31 operador_unario: DECREMENTO .
+   35 operador_unario: DECREMENTO .
 
-    $default  reduce using rule 31 (operador_unario)
+    $default  reduce using rule 35 (operador_unario)
 
 
 state 33
 
-   15 while_stmt: WHILE . PARENTESE_ESQUERDA valor PARENTESE_DIREITA stmts END_WHILE
+   19 while_stmt: WHILE . PARENTESE_ESQUERDA valor PARENTESE_DIREITA stmts END_WHILE
 
-    PARENTESE_ESQUERDA  shift, and go to state 54
+    PARENTESE_ESQUERDA  shift, and go to state 57
 
 
 state 34
 
-   14 if_stmt: IF . PARENTESE_ESQUERDA valor PARENTESE_DIREITA THEN stmts elses_opcoes END_IF
+   18 if_stmt: IF . PARENTESE_ESQUERDA valor PARENTESE_DIREITA THEN stmts elses_opcoes END_IF
 
-    PARENTESE_ESQUERDA  shift, and go to state 55
+    PARENTESE_ESQUERDA  shift, and go to state 58
 
 
 state 35
 
-   70 id: DIGITO .
+   78 id: DIGITO .
 
-    $default  reduce using rule 70 (id)
+    $default  reduce using rule 78 (id)
 
 
 state 36
 
-   62 vars: ID . VIRGULA ID
-   63     | ID . VIRGULA vars
-   69 id: ID .
-   71   | ID . COLCHETE_ESQUERDA expressoes COLCHETE_DIREITA
+   15 invoca_procedimento: ID . PARENTESE_ESQUERDA parametros PARENTESE_DIREITA
+   70 vars: ID . VIRGULA ID
+   71     | ID . VIRGULA vars
+   77 id: ID .
+   79   | ID . COLCHETE_ESQUERDA expressoes COLCHETE_DIREITA
 
-    COLCHETE_ESQUERDA  shift, and go to state 56
-    VIRGULA            shift, and go to state 57
+    PARENTESE_ESQUERDA  shift, and go to state 59
+    COLCHETE_ESQUERDA   shift, and go to state 60
+    VIRGULA             shift, and go to state 61
 
-    $default  reduce using rule 69 (id)
+    $default  reduce using rule 77 (id)
 
 
 state 37
 
-   68 funcao: FUNCAO ID PARENTESE_ESQUERDA args PARENTESE_DIREITA RETURN type IS TBEGIN stmts . END ID
+   76 funcao: FUNCAO ID PARENTESE_ESQUERDA args PARENTESE_DIREITA RETURN type IS TBEGIN stmts . END ID
 
-    END  shift, and go to state 58
+    END  shift, and go to state 62
 
 
 state 38
 
    10 stmt: decl . PONTO_E_VIRGULA
 
-    PONTO_E_VIRGULA  shift, and go to state 59
+    PONTO_E_VIRGULA  shift, and go to state 63
 
 
 state 39
@@ -679,79 +702,87 @@ state 39
 
     $default  reduce using rule 4 (stmts)
 
-    stmts                go to state 60
+    stmts                go to state 64
     decl                 go to state 38
     stmt                 go to state 39
-    if_stmt              go to state 40
-    while_stmt           go to state 41
-    atribuicoes          go to state 42
-    atribuicao_simples   go to state 43
-    atribuicao_unaria    go to state 44
-    atribuicao_composta  go to state 45
-    atribuicao_paralela  go to state 46
-    operador_unario      go to state 47
-    type                 go to state 48
-    vars                 go to state 49
-    id                   go to state 50
+    invoca_procedimento  go to state 40
+    if_stmt              go to state 41
+    while_stmt           go to state 42
+    atribuicoes          go to state 43
+    atribuicao_simples   go to state 44
+    atribuicao_unaria    go to state 45
+    atribuicao_composta  go to state 46
+    atribuicao_paralela  go to state 47
+    operador_unario      go to state 48
+    type                 go to state 49
+    vars                 go to state 50
+    id                   go to state 51
 
 
 state 40
+
+   14 stmt: invoca_procedimento . PONTO_E_VIRGULA
+
+    PONTO_E_VIRGULA  shift, and go to state 65
+
+
+state 41
 
    11 stmt: if_stmt .
 
     $default  reduce using rule 11 (stmt)
 
 
-state 41
+state 42
 
    12 stmt: while_stmt .
 
     $default  reduce using rule 12 (stmt)
 
 
-state 42
+state 43
 
    13 stmt: atribuicoes . PONTO_E_VIRGULA
 
-    PONTO_E_VIRGULA  shift, and go to state 61
-
-
-state 43
-
-   21 atribuicoes: atribuicao_simples .
-
-    $default  reduce using rule 21 (atribuicoes)
+    PONTO_E_VIRGULA  shift, and go to state 66
 
 
 state 44
 
-   22 atribuicoes: atribuicao_unaria .
+   25 atribuicoes: atribuicao_simples .
 
-    $default  reduce using rule 22 (atribuicoes)
+    $default  reduce using rule 25 (atribuicoes)
 
 
 state 45
 
-   23 atribuicoes: atribuicao_composta .
+   26 atribuicoes: atribuicao_unaria .
 
-    $default  reduce using rule 23 (atribuicoes)
+    $default  reduce using rule 26 (atribuicoes)
 
 
 state 46
 
-   24 atribuicoes: atribuicao_paralela .
+   27 atribuicoes: atribuicao_composta .
 
-    $default  reduce using rule 24 (atribuicoes)
+    $default  reduce using rule 27 (atribuicoes)
 
 
 state 47
 
-   27 atribuicao_unaria: operador_unario . ID
+   28 atribuicoes: atribuicao_paralela .
 
-    ID  shift, and go to state 62
+    $default  reduce using rule 28 (atribuicoes)
 
 
 state 48
+
+   31 atribuicao_unaria: operador_unario . ID
+
+    ID  shift, and go to state 67
+
+
+state 49
 
     6 decl: type . ID
     7     | type . vars
@@ -762,203 +793,249 @@ state 48
     INCREMENTO          shift, and go to state 31
     DECREMENTO          shift, and go to state 32
     DIGITO              shift, and go to state 35
-    ID                  shift, and go to state 63
+    ID                  shift, and go to state 68
 
-    atribuicoes          go to state 64
-    atribuicao_simples   go to state 43
-    atribuicao_unaria    go to state 44
-    atribuicao_composta  go to state 45
-    atribuicao_paralela  go to state 46
-    operador_unario      go to state 47
-    vars                 go to state 65
-    id                   go to state 50
-
-
-state 49
-
-   29 atribuicao_paralela: vars . ATRIBUICAO exprecoes_list
-
-    ATRIBUICAO  shift, and go to state 66
+    atribuicoes          go to state 69
+    atribuicao_simples   go to state 44
+    atribuicao_unaria    go to state 45
+    atribuicao_composta  go to state 46
+    atribuicao_paralela  go to state 47
+    operador_unario      go to state 48
+    vars                 go to state 70
+    id                   go to state 51
 
 
 state 50
 
-   25 atribuicao_simples: id . ATRIBUICAO expressoes
-   26 atribuicao_unaria: id . operador_unario
-   28 atribuicao_composta: id . operador_composto valor
+   33 atribuicao_paralela: vars . ATRIBUICAO exprecoes_list
 
-    INCREMENTO           shift, and go to state 31
-    DECREMENTO           shift, and go to state 32
-    ATRIBUICAO           shift, and go to state 67
-    MAIS_IGUAL           shift, and go to state 68
-    MENOS_IGUAL          shift, and go to state 69
-    VEZES_IGUAL          shift, and go to state 70
-    DIV_IGUAL            shift, and go to state 71
-    EXPONENCIACAO_IGUAL  shift, and go to state 72
-
-    operador_unario    go to state 73
-    operador_composto  go to state 74
+    ATRIBUICAO  shift, and go to state 71
 
 
 state 51
 
-   69 id: ID .
-   71   | ID . COLCHETE_ESQUERDA expressoes COLCHETE_DIREITA
+   29 atribuicao_simples: id . ATRIBUICAO expressoes
+   30 atribuicao_unaria: id . operador_unario
+   32 atribuicao_composta: id . operador_composto valor
 
-    COLCHETE_ESQUERDA  shift, and go to state 56
+    INCREMENTO           shift, and go to state 31
+    DECREMENTO           shift, and go to state 32
+    ATRIBUICAO           shift, and go to state 72
+    MAIS_IGUAL           shift, and go to state 73
+    MENOS_IGUAL          shift, and go to state 74
+    VEZES_IGUAL          shift, and go to state 75
+    DIV_IGUAL            shift, and go to state 76
+    EXPONENCIACAO_IGUAL  shift, and go to state 77
 
-    $default  reduce using rule 69 (id)
+    operador_unario    go to state 78
+    operador_composto  go to state 79
 
 
 state 52
 
-   72 id: PARENTESE_ESQUERDA expressoes . PARENTESE_DIREITA
+   66 vetorial: CHAVE_ESQUERDA . lista_de_digitos CHAVE_DIREITA
 
-    PARENTESE_DIREITA  shift, and go to state 75
+    DIGITO  shift, and go to state 80
+
+    lista_de_digitos  go to state 81
 
 
 state 53
 
-   58 expressoes: id .
-   59           | id . operador id
-   60           | id . operador_comp id
+   77 id: ID .
+   79   | ID . COLCHETE_ESQUERDA expressoes COLCHETE_DIREITA
 
-    MODULO            shift, and go to state 76
-    BARRA             shift, and go to state 77
-    MAIS              shift, and go to state 78
-    MENOS_UNARIO      shift, and go to state 79
-    EXPONENCIACAO     shift, and go to state 80
-    MENOR_QUE         shift, and go to state 81
-    MAIOR_QUE         shift, and go to state 82
-    MENOR_OU_IGUAL_A  shift, and go to state 83
-    MAIOR_OU_IGUAL_A  shift, and go to state 84
-    IGUAL_A           shift, and go to state 85
-    DIFERENTE_DE      shift, and go to state 86
+    COLCHETE_ESQUERDA  shift, and go to state 60
 
-    $default  reduce using rule 58 (expressoes)
-
-    operador       go to state 87
-    operador_comp  go to state 88
+    $default  reduce using rule 77 (id)
 
 
 state 54
 
-   15 while_stmt: WHILE PARENTESE_ESQUERDA . valor PARENTESE_DIREITA stmts END_WHILE
+   80 id: PARENTESE_ESQUERDA expressoes . PARENTESE_DIREITA
 
-    PARENTESE_ESQUERDA  shift, and go to state 30
-    DIGITO              shift, and go to state 35
-    ID                  shift, and go to state 51
-
-    $default  reduce using rule 57 (expressoes)
-
-    valor       go to state 89
-    expressoes  go to state 90
-    id          go to state 53
+    PARENTESE_DIREITA  shift, and go to state 82
 
 
 state 55
 
-   14 if_stmt: IF PARENTESE_ESQUERDA . valor PARENTESE_DIREITA THEN stmts elses_opcoes END_IF
+   65 expressoes: vetorial .
 
-    PARENTESE_ESQUERDA  shift, and go to state 30
-    DIGITO              shift, and go to state 35
-    ID                  shift, and go to state 51
-
-    $default  reduce using rule 57 (expressoes)
-
-    valor       go to state 91
-    expressoes  go to state 90
-    id          go to state 53
+    $default  reduce using rule 65 (expressoes)
 
 
 state 56
 
-   71 id: ID COLCHETE_ESQUERDA . expressoes COLCHETE_DIREITA
+   62 expressoes: id .
+   63           | id . operador id
+   64           | id . operador_comp id
 
-    PARENTESE_ESQUERDA  shift, and go to state 30
-    DIGITO              shift, and go to state 35
-    ID                  shift, and go to state 51
+    MODULO            shift, and go to state 83
+    BARRA             shift, and go to state 84
+    MAIS              shift, and go to state 85
+    MENOS_UNARIO      shift, and go to state 86
+    EXPONENCIACAO     shift, and go to state 87
+    MENOR_QUE         shift, and go to state 88
+    MAIOR_QUE         shift, and go to state 89
+    MENOR_OU_IGUAL_A  shift, and go to state 90
+    MAIOR_OU_IGUAL_A  shift, and go to state 91
+    IGUAL_A           shift, and go to state 92
+    DIFERENTE_DE      shift, and go to state 93
 
-    $default  reduce using rule 57 (expressoes)
+    $default  reduce using rule 62 (expressoes)
 
-    expressoes  go to state 92
-    id          go to state 53
+    operador       go to state 94
+    operador_comp  go to state 95
 
 
 state 57
 
-   62 vars: ID VIRGULA . ID
-   63     | ID VIRGULA . vars
+   19 while_stmt: WHILE PARENTESE_ESQUERDA . valor PARENTESE_DIREITA stmts END_WHILE
 
-    ID  shift, and go to state 93
+    CHAVE_ESQUERDA      shift, and go to state 52
+    PARENTESE_ESQUERDA  shift, and go to state 30
+    DIGITO              shift, and go to state 35
+    ID                  shift, and go to state 53
 
-    vars  go to state 94
+    $default  reduce using rule 61 (expressoes)
+
+    valor       go to state 96
+    expressoes  go to state 97
+    vetorial    go to state 55
+    id          go to state 56
 
 
 state 58
 
-   68 funcao: FUNCAO ID PARENTESE_ESQUERDA args PARENTESE_DIREITA RETURN type IS TBEGIN stmts END . ID
+   18 if_stmt: IF PARENTESE_ESQUERDA . valor PARENTESE_DIREITA THEN stmts elses_opcoes END_IF
 
-    ID  shift, and go to state 95
+    CHAVE_ESQUERDA      shift, and go to state 52
+    PARENTESE_ESQUERDA  shift, and go to state 30
+    DIGITO              shift, and go to state 35
+    ID                  shift, and go to state 53
+
+    $default  reduce using rule 61 (expressoes)
+
+    valor       go to state 98
+    expressoes  go to state 97
+    vetorial    go to state 55
+    id          go to state 56
 
 
 state 59
+
+   15 invoca_procedimento: ID PARENTESE_ESQUERDA . parametros PARENTESE_DIREITA
+
+    CHAVE_ESQUERDA      shift, and go to state 52
+    PARENTESE_ESQUERDA  shift, and go to state 30
+    DIGITO              shift, and go to state 35
+    ID                  shift, and go to state 53
+
+    $default  reduce using rule 61 (expressoes)
+
+    parametros  go to state 99
+    expressoes  go to state 100
+    vetorial    go to state 55
+    id          go to state 56
+
+
+state 60
+
+   79 id: ID COLCHETE_ESQUERDA . expressoes COLCHETE_DIREITA
+
+    CHAVE_ESQUERDA      shift, and go to state 52
+    PARENTESE_ESQUERDA  shift, and go to state 30
+    DIGITO              shift, and go to state 35
+    ID                  shift, and go to state 53
+
+    $default  reduce using rule 61 (expressoes)
+
+    expressoes  go to state 101
+    vetorial    go to state 55
+    id          go to state 56
+
+
+state 61
+
+   70 vars: ID VIRGULA . ID
+   71     | ID VIRGULA . vars
+
+    ID  shift, and go to state 102
+
+    vars  go to state 103
+
+
+state 62
+
+   76 funcao: FUNCAO ID PARENTESE_ESQUERDA args PARENTESE_DIREITA RETURN type IS TBEGIN stmts END . ID
+
+    ID  shift, and go to state 104
+
+
+state 63
 
    10 stmt: decl PONTO_E_VIRGULA .
 
     $default  reduce using rule 10 (stmt)
 
 
-state 60
+state 64
 
     5 stmts: stmt stmts .
 
     $default  reduce using rule 5 (stmts)
 
 
-state 61
+state 65
+
+   14 stmt: invoca_procedimento PONTO_E_VIRGULA .
+
+    $default  reduce using rule 14 (stmt)
+
+
+state 66
 
    13 stmt: atribuicoes PONTO_E_VIRGULA .
 
     $default  reduce using rule 13 (stmt)
 
 
-state 62
+state 67
 
-   27 atribuicao_unaria: operador_unario ID .
+   31 atribuicao_unaria: operador_unario ID .
 
-    $default  reduce using rule 27 (atribuicao_unaria)
+    $default  reduce using rule 31 (atribuicao_unaria)
 
 
-state 63
+state 68
 
     6 decl: type ID .
-   62 vars: ID . VIRGULA ID
-   63     | ID . VIRGULA vars
-   69 id: ID .
-   71   | ID . COLCHETE_ESQUERDA expressoes COLCHETE_DIREITA
+   70 vars: ID . VIRGULA ID
+   71     | ID . VIRGULA vars
+   77 id: ID .
+   79   | ID . COLCHETE_ESQUERDA expressoes COLCHETE_DIREITA
 
-    COLCHETE_ESQUERDA  shift, and go to state 56
-    VIRGULA            shift, and go to state 57
+    COLCHETE_ESQUERDA  shift, and go to state 60
+    VIRGULA            shift, and go to state 61
 
     PONTO_E_VIRGULA  reduce using rule 6 (decl)
-    $default         reduce using rule 69 (id)
+    $default         reduce using rule 77 (id)
 
 
-state 64
+state 69
 
     9 decl: type atribuicoes .
 
     $default  reduce using rule 9 (decl)
 
 
-state 65
+state 70
 
     7 decl: type vars .
     8     | type vars . decl
-   29 atribuicao_paralela: vars . ATRIBUICAO exprecoes_list
+   33 atribuicao_paralela: vars . ATRIBUICAO exprecoes_list
 
-    ATRIBUICAO  shift, and go to state 66
+    ATRIBUICAO  shift, and go to state 71
     CARACTERE   shift, and go to state 9
     STRING      shift, and go to state 10
     INTEIRO     shift, and go to state 11
@@ -969,495 +1046,366 @@ state 65
 
     $default  reduce using rule 7 (decl)
 
-    decl  go to state 96
-    type  go to state 48
-
-
-state 66
-
-   29 atribuicao_paralela: vars ATRIBUICAO . exprecoes_list
-
-    PARENTESE_ESQUERDA  shift, and go to state 30
-    DIGITO              shift, and go to state 35
-    ID                  shift, and go to state 51
-
-    $default  reduce using rule 57 (expressoes)
-
-    expressoes      go to state 97
-    exprecoes_list  go to state 98
-    id              go to state 53
-
-
-state 67
-
-   25 atribuicao_simples: id ATRIBUICAO . expressoes
-
-    PARENTESE_ESQUERDA  shift, and go to state 30
-    DIGITO              shift, and go to state 35
-    ID                  shift, and go to state 51
-
-    $default  reduce using rule 57 (expressoes)
-
-    expressoes  go to state 99
-    id          go to state 53
-
-
-state 68
-
-   43 operador_composto: MAIS_IGUAL .
-
-    $default  reduce using rule 43 (operador_composto)
-
-
-state 69
-
-   44 operador_composto: MENOS_IGUAL .
-
-    $default  reduce using rule 44 (operador_composto)
-
-
-state 70
-
-   45 operador_composto: VEZES_IGUAL .
-
-    $default  reduce using rule 45 (operador_composto)
+    decl  go to state 105
+    type  go to state 49
 
 
 state 71
 
-   46 operador_composto: DIV_IGUAL .
+   33 atribuicao_paralela: vars ATRIBUICAO . exprecoes_list
 
-    $default  reduce using rule 46 (operador_composto)
+    CHAVE_ESQUERDA      shift, and go to state 52
+    PARENTESE_ESQUERDA  shift, and go to state 30
+    DIGITO              shift, and go to state 35
+    ID                  shift, and go to state 53
+
+    $default  reduce using rule 61 (expressoes)
+
+    expressoes      go to state 106
+    vetorial        go to state 55
+    exprecoes_list  go to state 107
+    id              go to state 56
 
 
 state 72
 
-   47 operador_composto: EXPONENCIACAO_IGUAL .
+   29 atribuicao_simples: id ATRIBUICAO . expressoes
 
-    $default  reduce using rule 47 (operador_composto)
+    CHAVE_ESQUERDA      shift, and go to state 52
+    PARENTESE_ESQUERDA  shift, and go to state 30
+    DIGITO              shift, and go to state 35
+    ID                  shift, and go to state 53
+
+    $default  reduce using rule 61 (expressoes)
+
+    expressoes  go to state 108
+    vetorial    go to state 55
+    id          go to state 56
 
 
 state 73
 
-   26 atribuicao_unaria: id operador_unario .
+   47 operador_composto: MAIS_IGUAL .
 
-    $default  reduce using rule 26 (atribuicao_unaria)
+    $default  reduce using rule 47 (operador_composto)
 
 
 state 74
 
-   28 atribuicao_composta: id operador_composto . valor
+   48 operador_composto: MENOS_IGUAL .
 
-    PARENTESE_ESQUERDA  shift, and go to state 30
-    DIGITO              shift, and go to state 35
-    ID                  shift, and go to state 51
-
-    $default  reduce using rule 57 (expressoes)
-
-    valor       go to state 100
-    expressoes  go to state 90
-    id          go to state 53
+    $default  reduce using rule 48 (operador_composto)
 
 
 state 75
 
-   72 id: PARENTESE_ESQUERDA expressoes PARENTESE_DIREITA .
+   49 operador_composto: VEZES_IGUAL .
 
-    $default  reduce using rule 72 (id)
+    $default  reduce using rule 49 (operador_composto)
 
 
 state 76
 
-   36 operador: MODULO .
+   50 operador_composto: DIV_IGUAL .
 
-    $default  reduce using rule 36 (operador)
+    $default  reduce using rule 50 (operador_composto)
 
 
 state 77
 
-   35 operador: BARRA .
+   51 operador_composto: EXPONENCIACAO_IGUAL .
 
-    $default  reduce using rule 35 (operador)
+    $default  reduce using rule 51 (operador_composto)
 
 
 state 78
 
-   32 operador: MAIS .
+   30 atribuicao_unaria: id operador_unario .
 
-    $default  reduce using rule 32 (operador)
+    $default  reduce using rule 30 (atribuicao_unaria)
 
 
 state 79
 
-   33 operador: MENOS_UNARIO .
+   32 atribuicao_composta: id operador_composto . valor
 
-    $default  reduce using rule 33 (operador)
+    CHAVE_ESQUERDA      shift, and go to state 52
+    PARENTESE_ESQUERDA  shift, and go to state 30
+    DIGITO              shift, and go to state 35
+    ID                  shift, and go to state 53
+
+    $default  reduce using rule 61 (expressoes)
+
+    valor       go to state 109
+    expressoes  go to state 97
+    vetorial    go to state 55
+    id          go to state 56
 
 
 state 80
 
-   34 operador: EXPONENCIACAO .
+   67 lista_de_digitos: DIGITO .
+   68                 | DIGITO . VIRGULA lista_de_digitos
 
-    $default  reduce using rule 34 (operador)
+    VIRGULA  shift, and go to state 110
+
+    $default  reduce using rule 67 (lista_de_digitos)
 
 
 state 81
 
-   37 operador_comp: MENOR_QUE .
+   66 vetorial: CHAVE_ESQUERDA lista_de_digitos . CHAVE_DIREITA
 
-    $default  reduce using rule 37 (operador_comp)
+    CHAVE_DIREITA  shift, and go to state 111
 
 
 state 82
 
-   38 operador_comp: MAIOR_QUE .
+   80 id: PARENTESE_ESQUERDA expressoes PARENTESE_DIREITA .
 
-    $default  reduce using rule 38 (operador_comp)
+    $default  reduce using rule 80 (id)
 
 
 state 83
 
-   39 operador_comp: MENOR_OU_IGUAL_A .
+   40 operador: MODULO .
 
-    $default  reduce using rule 39 (operador_comp)
+    $default  reduce using rule 40 (operador)
 
 
 state 84
 
-   40 operador_comp: MAIOR_OU_IGUAL_A .
+   39 operador: BARRA .
 
-    $default  reduce using rule 40 (operador_comp)
+    $default  reduce using rule 39 (operador)
 
 
 state 85
 
-   41 operador_comp: IGUAL_A .
+   36 operador: MAIS .
 
-    $default  reduce using rule 41 (operador_comp)
+    $default  reduce using rule 36 (operador)
 
 
 state 86
 
-   42 operador_comp: DIFERENTE_DE .
+   37 operador: MENOS_UNARIO .
 
-    $default  reduce using rule 42 (operador_comp)
+    $default  reduce using rule 37 (operador)
 
 
 state 87
 
-   59 expressoes: id operador . id
+   38 operador: EXPONENCIACAO .
 
-    PARENTESE_ESQUERDA  shift, and go to state 30
-    DIGITO              shift, and go to state 35
-    ID                  shift, and go to state 51
-
-    id  go to state 101
+    $default  reduce using rule 38 (operador)
 
 
 state 88
 
-   60 expressoes: id operador_comp . id
+   41 operador_comp: MENOR_QUE .
 
-    PARENTESE_ESQUERDA  shift, and go to state 30
-    DIGITO              shift, and go to state 35
-    ID                  shift, and go to state 51
-
-    id  go to state 102
+    $default  reduce using rule 41 (operador_comp)
 
 
 state 89
 
-   15 while_stmt: WHILE PARENTESE_ESQUERDA valor . PARENTESE_DIREITA stmts END_WHILE
+   42 operador_comp: MAIOR_QUE .
 
-    PARENTESE_DIREITA  shift, and go to state 103
+    $default  reduce using rule 42 (operador_comp)
 
 
 state 90
 
-   55 valor: expressoes . E_LOGICO expressoes
-   56      | expressoes .
+   43 operador_comp: MENOR_OU_IGUAL_A .
 
-    E_LOGICO  shift, and go to state 104
-
-    $default  reduce using rule 56 (valor)
+    $default  reduce using rule 43 (operador_comp)
 
 
 state 91
 
-   14 if_stmt: IF PARENTESE_ESQUERDA valor . PARENTESE_DIREITA THEN stmts elses_opcoes END_IF
+   44 operador_comp: MAIOR_OU_IGUAL_A .
 
-    PARENTESE_DIREITA  shift, and go to state 105
+    $default  reduce using rule 44 (operador_comp)
 
 
 state 92
 
-   71 id: ID COLCHETE_ESQUERDA expressoes . COLCHETE_DIREITA
+   45 operador_comp: IGUAL_A .
 
-    COLCHETE_DIREITA  shift, and go to state 106
+    $default  reduce using rule 45 (operador_comp)
 
 
 state 93
 
-   62 vars: ID . VIRGULA ID
-   62     | ID VIRGULA ID .
-   63     | ID . VIRGULA vars
+   46 operador_comp: DIFERENTE_DE .
 
-    VIRGULA  shift, and go to state 57
-
-    $default  reduce using rule 62 (vars)
+    $default  reduce using rule 46 (operador_comp)
 
 
 state 94
 
-   63 vars: ID VIRGULA vars .
+   63 expressoes: id operador . id
 
-    $default  reduce using rule 63 (vars)
+    PARENTESE_ESQUERDA  shift, and go to state 30
+    DIGITO              shift, and go to state 35
+    ID                  shift, and go to state 53
+
+    id  go to state 112
 
 
 state 95
 
-   68 funcao: FUNCAO ID PARENTESE_ESQUERDA args PARENTESE_DIREITA RETURN type IS TBEGIN stmts END ID .
+   64 expressoes: id operador_comp . id
 
-    $default  reduce using rule 68 (funcao)
+    PARENTESE_ESQUERDA  shift, and go to state 30
+    DIGITO              shift, and go to state 35
+    ID                  shift, and go to state 53
+
+    id  go to state 113
 
 
 state 96
+
+   19 while_stmt: WHILE PARENTESE_ESQUERDA valor . PARENTESE_DIREITA stmts END_WHILE
+
+    PARENTESE_DIREITA  shift, and go to state 114
+
+
+state 97
+
+   59 valor: expressoes . E_LOGICO expressoes
+   60      | expressoes .
+
+    E_LOGICO  shift, and go to state 115
+
+    $default  reduce using rule 60 (valor)
+
+
+state 98
+
+   18 if_stmt: IF PARENTESE_ESQUERDA valor . PARENTESE_DIREITA THEN stmts elses_opcoes END_IF
+
+    PARENTESE_DIREITA  shift, and go to state 116
+
+
+state 99
+
+   15 invoca_procedimento: ID PARENTESE_ESQUERDA parametros . PARENTESE_DIREITA
+
+    PARENTESE_DIREITA  shift, and go to state 117
+
+
+state 100
+
+   16 parametros: expressoes .
+   17           | expressoes . VIRGULA parametros
+
+    VIRGULA  shift, and go to state 118
+
+    $default  reduce using rule 16 (parametros)
+
+
+state 101
+
+   79 id: ID COLCHETE_ESQUERDA expressoes . COLCHETE_DIREITA
+
+    COLCHETE_DIREITA  shift, and go to state 119
+
+
+state 102
+
+   70 vars: ID . VIRGULA ID
+   70     | ID VIRGULA ID .
+   71     | ID . VIRGULA vars
+
+    VIRGULA  shift, and go to state 61
+
+    $default  reduce using rule 70 (vars)
+
+
+state 103
+
+   71 vars: ID VIRGULA vars .
+
+    $default  reduce using rule 71 (vars)
+
+
+state 104
+
+   76 funcao: FUNCAO ID PARENTESE_ESQUERDA args PARENTESE_DIREITA RETURN type IS TBEGIN stmts END ID .
+
+    $default  reduce using rule 76 (funcao)
+
+
+state 105
 
     8 decl: type vars decl .
 
     $default  reduce using rule 8 (decl)
 
 
-state 97
-
-   61 exprecoes_list: expressoes . VIRGULA expressoes
-
-    VIRGULA  shift, and go to state 107
-
-
-state 98
-
-   29 atribuicao_paralela: vars ATRIBUICAO exprecoes_list .
-
-    $default  reduce using rule 29 (atribuicao_paralela)
-
-
-state 99
-
-   25 atribuicao_simples: id ATRIBUICAO expressoes .
-
-    $default  reduce using rule 25 (atribuicao_simples)
-
-
-state 100
-
-   28 atribuicao_composta: id operador_composto valor .
-
-    $default  reduce using rule 28 (atribuicao_composta)
-
-
-state 101
-
-   59 expressoes: id operador id .
-
-    $default  reduce using rule 59 (expressoes)
-
-
-state 102
-
-   60 expressoes: id operador_comp id .
-
-    $default  reduce using rule 60 (expressoes)
-
-
-state 103
-
-   15 while_stmt: WHILE PARENTESE_ESQUERDA valor PARENTESE_DIREITA . stmts END_WHILE
-
-    PARENTESE_ESQUERDA  shift, and go to state 30
-    INCREMENTO          shift, and go to state 31
-    DECREMENTO          shift, and go to state 32
-    WHILE               shift, and go to state 33
-    IF                  shift, and go to state 34
-    CARACTERE           shift, and go to state 9
-    STRING              shift, and go to state 10
-    INTEIRO             shift, and go to state 11
-    FLOAT               shift, and go to state 12
-    DOUBLE              shift, and go to state 13
-    VOID                shift, and go to state 14
-    BOOLEANO            shift, and go to state 15
-    DIGITO              shift, and go to state 35
-    ID                  shift, and go to state 36
-
-    stmts                go to state 108
-    decl                 go to state 38
-    stmt                 go to state 39
-    if_stmt              go to state 40
-    while_stmt           go to state 41
-    atribuicoes          go to state 42
-    atribuicao_simples   go to state 43
-    atribuicao_unaria    go to state 44
-    atribuicao_composta  go to state 45
-    atribuicao_paralela  go to state 46
-    operador_unario      go to state 47
-    type                 go to state 48
-    vars                 go to state 49
-    id                   go to state 50
-
-
-state 104
-
-   55 valor: expressoes E_LOGICO . expressoes
-
-    PARENTESE_ESQUERDA  shift, and go to state 30
-    DIGITO              shift, and go to state 35
-    ID                  shift, and go to state 51
-
-    $default  reduce using rule 57 (expressoes)
-
-    expressoes  go to state 109
-    id          go to state 53
-
-
-state 105
-
-   14 if_stmt: IF PARENTESE_ESQUERDA valor PARENTESE_DIREITA . THEN stmts elses_opcoes END_IF
-
-    THEN  shift, and go to state 110
-
-
 state 106
 
-   71 id: ID COLCHETE_ESQUERDA expressoes COLCHETE_DIREITA .
+   69 exprecoes_list: expressoes . VIRGULA expressoes
 
-    $default  reduce using rule 71 (id)
+    VIRGULA  shift, and go to state 120
 
 
 state 107
 
-   61 exprecoes_list: expressoes VIRGULA . expressoes
+   33 atribuicao_paralela: vars ATRIBUICAO exprecoes_list .
 
-    PARENTESE_ESQUERDA  shift, and go to state 30
-    DIGITO              shift, and go to state 35
-    ID                  shift, and go to state 51
-
-    $default  reduce using rule 57 (expressoes)
-
-    expressoes  go to state 111
-    id          go to state 53
+    $default  reduce using rule 33 (atribuicao_paralela)
 
 
 state 108
 
-   15 while_stmt: WHILE PARENTESE_ESQUERDA valor PARENTESE_DIREITA stmts . END_WHILE
+   29 atribuicao_simples: id ATRIBUICAO expressoes .
 
-    END_WHILE  shift, and go to state 112
+    $default  reduce using rule 29 (atribuicao_simples)
 
 
 state 109
 
-   55 valor: expressoes E_LOGICO expressoes .
+   32 atribuicao_composta: id operador_composto valor .
 
-    $default  reduce using rule 55 (valor)
+    $default  reduce using rule 32 (atribuicao_composta)
 
 
 state 110
 
-   14 if_stmt: IF PARENTESE_ESQUERDA valor PARENTESE_DIREITA THEN . stmts elses_opcoes END_IF
+   68 lista_de_digitos: DIGITO VIRGULA . lista_de_digitos
 
-    PARENTESE_ESQUERDA  shift, and go to state 30
-    INCREMENTO          shift, and go to state 31
-    DECREMENTO          shift, and go to state 32
-    WHILE               shift, and go to state 33
-    IF                  shift, and go to state 34
-    CARACTERE           shift, and go to state 9
-    STRING              shift, and go to state 10
-    INTEIRO             shift, and go to state 11
-    FLOAT               shift, and go to state 12
-    DOUBLE              shift, and go to state 13
-    VOID                shift, and go to state 14
-    BOOLEANO            shift, and go to state 15
-    DIGITO              shift, and go to state 35
-    ID                  shift, and go to state 36
+    DIGITO  shift, and go to state 80
 
-    stmts                go to state 113
-    decl                 go to state 38
-    stmt                 go to state 39
-    if_stmt              go to state 40
-    while_stmt           go to state 41
-    atribuicoes          go to state 42
-    atribuicao_simples   go to state 43
-    atribuicao_unaria    go to state 44
-    atribuicao_composta  go to state 45
-    atribuicao_paralela  go to state 46
-    operador_unario      go to state 47
-    type                 go to state 48
-    vars                 go to state 49
-    id                   go to state 50
+    lista_de_digitos  go to state 121
 
 
 state 111
 
-   61 exprecoes_list: expressoes VIRGULA expressoes .
+   66 vetorial: CHAVE_ESQUERDA lista_de_digitos CHAVE_DIREITA .
 
-    $default  reduce using rule 61 (exprecoes_list)
+    $default  reduce using rule 66 (vetorial)
 
 
 state 112
 
-   15 while_stmt: WHILE PARENTESE_ESQUERDA valor PARENTESE_DIREITA stmts END_WHILE .
+   63 expressoes: id operador id .
 
-    $default  reduce using rule 15 (while_stmt)
+    $default  reduce using rule 63 (expressoes)
 
 
 state 113
 
-   14 if_stmt: IF PARENTESE_ESQUERDA valor PARENTESE_DIREITA THEN stmts . elses_opcoes END_IF
+   64 expressoes: id operador_comp id .
 
-    ELSE  shift, and go to state 114
-
-    $default  reduce using rule 16 (elses_opcoes)
-
-    elses_opcoes  go to state 115
-    else          go to state 116
-    elseif        go to state 117
+    $default  reduce using rule 64 (expressoes)
 
 
 state 114
 
-   19 else: ELSE . THEN stmts
-   20 elseif: ELSE . if_stmt
-
-    IF    shift, and go to state 34
-    THEN  shift, and go to state 118
-
-    if_stmt  go to state 119
-
-
-state 115
-
-   14 if_stmt: IF PARENTESE_ESQUERDA valor PARENTESE_DIREITA THEN stmts elses_opcoes . END_IF
-
-    END_IF  shift, and go to state 120
-
-
-state 116
-
-   17 elses_opcoes: else .
-
-    $default  reduce using rule 17 (elses_opcoes)
-
-
-state 117
-
-   18 elses_opcoes: elseif .
-
-    $default  reduce using rule 18 (elses_opcoes)
-
-
-state 118
-
-   19 else: ELSE THEN . stmts
+   19 while_stmt: WHILE PARENTESE_ESQUERDA valor PARENTESE_DIREITA . stmts END_WHILE
 
     PARENTESE_ESQUERDA  shift, and go to state 30
     INCREMENTO          shift, and go to state 31
@@ -1474,38 +1422,268 @@ state 118
     DIGITO              shift, and go to state 35
     ID                  shift, and go to state 36
 
-    stmts                go to state 121
+    stmts                go to state 122
     decl                 go to state 38
     stmt                 go to state 39
-    if_stmt              go to state 40
-    while_stmt           go to state 41
-    atribuicoes          go to state 42
-    atribuicao_simples   go to state 43
-    atribuicao_unaria    go to state 44
-    atribuicao_composta  go to state 45
-    atribuicao_paralela  go to state 46
-    operador_unario      go to state 47
-    type                 go to state 48
-    vars                 go to state 49
-    id                   go to state 50
+    invoca_procedimento  go to state 40
+    if_stmt              go to state 41
+    while_stmt           go to state 42
+    atribuicoes          go to state 43
+    atribuicao_simples   go to state 44
+    atribuicao_unaria    go to state 45
+    atribuicao_composta  go to state 46
+    atribuicao_paralela  go to state 47
+    operador_unario      go to state 48
+    type                 go to state 49
+    vars                 go to state 50
+    id                   go to state 51
+
+
+state 115
+
+   59 valor: expressoes E_LOGICO . expressoes
+
+    CHAVE_ESQUERDA      shift, and go to state 52
+    PARENTESE_ESQUERDA  shift, and go to state 30
+    DIGITO              shift, and go to state 35
+    ID                  shift, and go to state 53
+
+    $default  reduce using rule 61 (expressoes)
+
+    expressoes  go to state 123
+    vetorial    go to state 55
+    id          go to state 56
+
+
+state 116
+
+   18 if_stmt: IF PARENTESE_ESQUERDA valor PARENTESE_DIREITA . THEN stmts elses_opcoes END_IF
+
+    THEN  shift, and go to state 124
+
+
+state 117
+
+   15 invoca_procedimento: ID PARENTESE_ESQUERDA parametros PARENTESE_DIREITA .
+
+    $default  reduce using rule 15 (invoca_procedimento)
+
+
+state 118
+
+   17 parametros: expressoes VIRGULA . parametros
+
+    CHAVE_ESQUERDA      shift, and go to state 52
+    PARENTESE_ESQUERDA  shift, and go to state 30
+    DIGITO              shift, and go to state 35
+    ID                  shift, and go to state 53
+
+    $default  reduce using rule 61 (expressoes)
+
+    parametros  go to state 125
+    expressoes  go to state 100
+    vetorial    go to state 55
+    id          go to state 56
 
 
 state 119
 
-   20 elseif: ELSE if_stmt .
+   79 id: ID COLCHETE_ESQUERDA expressoes COLCHETE_DIREITA .
 
-    $default  reduce using rule 20 (elseif)
+    $default  reduce using rule 79 (id)
 
 
 state 120
 
-   14 if_stmt: IF PARENTESE_ESQUERDA valor PARENTESE_DIREITA THEN stmts elses_opcoes END_IF .
+   69 exprecoes_list: expressoes VIRGULA . expressoes
 
-    $default  reduce using rule 14 (if_stmt)
+    CHAVE_ESQUERDA      shift, and go to state 52
+    PARENTESE_ESQUERDA  shift, and go to state 30
+    DIGITO              shift, and go to state 35
+    ID                  shift, and go to state 53
+
+    $default  reduce using rule 61 (expressoes)
+
+    expressoes  go to state 126
+    vetorial    go to state 55
+    id          go to state 56
 
 
 state 121
 
-   19 else: ELSE THEN stmts .
+   68 lista_de_digitos: DIGITO VIRGULA lista_de_digitos .
 
-    $default  reduce using rule 19 (else)
+    $default  reduce using rule 68 (lista_de_digitos)
+
+
+state 122
+
+   19 while_stmt: WHILE PARENTESE_ESQUERDA valor PARENTESE_DIREITA stmts . END_WHILE
+
+    END_WHILE  shift, and go to state 127
+
+
+state 123
+
+   59 valor: expressoes E_LOGICO expressoes .
+
+    $default  reduce using rule 59 (valor)
+
+
+state 124
+
+   18 if_stmt: IF PARENTESE_ESQUERDA valor PARENTESE_DIREITA THEN . stmts elses_opcoes END_IF
+
+    PARENTESE_ESQUERDA  shift, and go to state 30
+    INCREMENTO          shift, and go to state 31
+    DECREMENTO          shift, and go to state 32
+    WHILE               shift, and go to state 33
+    IF                  shift, and go to state 34
+    CARACTERE           shift, and go to state 9
+    STRING              shift, and go to state 10
+    INTEIRO             shift, and go to state 11
+    FLOAT               shift, and go to state 12
+    DOUBLE              shift, and go to state 13
+    VOID                shift, and go to state 14
+    BOOLEANO            shift, and go to state 15
+    DIGITO              shift, and go to state 35
+    ID                  shift, and go to state 36
+
+    stmts                go to state 128
+    decl                 go to state 38
+    stmt                 go to state 39
+    invoca_procedimento  go to state 40
+    if_stmt              go to state 41
+    while_stmt           go to state 42
+    atribuicoes          go to state 43
+    atribuicao_simples   go to state 44
+    atribuicao_unaria    go to state 45
+    atribuicao_composta  go to state 46
+    atribuicao_paralela  go to state 47
+    operador_unario      go to state 48
+    type                 go to state 49
+    vars                 go to state 50
+    id                   go to state 51
+
+
+state 125
+
+   17 parametros: expressoes VIRGULA parametros .
+
+    $default  reduce using rule 17 (parametros)
+
+
+state 126
+
+   69 exprecoes_list: expressoes VIRGULA expressoes .
+
+    $default  reduce using rule 69 (exprecoes_list)
+
+
+state 127
+
+   19 while_stmt: WHILE PARENTESE_ESQUERDA valor PARENTESE_DIREITA stmts END_WHILE .
+
+    $default  reduce using rule 19 (while_stmt)
+
+
+state 128
+
+   18 if_stmt: IF PARENTESE_ESQUERDA valor PARENTESE_DIREITA THEN stmts . elses_opcoes END_IF
+
+    ELSE  shift, and go to state 129
+
+    $default  reduce using rule 20 (elses_opcoes)
+
+    elses_opcoes  go to state 130
+    else          go to state 131
+    elseif        go to state 132
+
+
+state 129
+
+   23 else: ELSE . THEN stmts
+   24 elseif: ELSE . if_stmt
+
+    IF    shift, and go to state 34
+    THEN  shift, and go to state 133
+
+    if_stmt  go to state 134
+
+
+state 130
+
+   18 if_stmt: IF PARENTESE_ESQUERDA valor PARENTESE_DIREITA THEN stmts elses_opcoes . END_IF
+
+    END_IF  shift, and go to state 135
+
+
+state 131
+
+   21 elses_opcoes: else .
+
+    $default  reduce using rule 21 (elses_opcoes)
+
+
+state 132
+
+   22 elses_opcoes: elseif .
+
+    $default  reduce using rule 22 (elses_opcoes)
+
+
+state 133
+
+   23 else: ELSE THEN . stmts
+
+    PARENTESE_ESQUERDA  shift, and go to state 30
+    INCREMENTO          shift, and go to state 31
+    DECREMENTO          shift, and go to state 32
+    WHILE               shift, and go to state 33
+    IF                  shift, and go to state 34
+    CARACTERE           shift, and go to state 9
+    STRING              shift, and go to state 10
+    INTEIRO             shift, and go to state 11
+    FLOAT               shift, and go to state 12
+    DOUBLE              shift, and go to state 13
+    VOID                shift, and go to state 14
+    BOOLEANO            shift, and go to state 15
+    DIGITO              shift, and go to state 35
+    ID                  shift, and go to state 36
+
+    stmts                go to state 136
+    decl                 go to state 38
+    stmt                 go to state 39
+    invoca_procedimento  go to state 40
+    if_stmt              go to state 41
+    while_stmt           go to state 42
+    atribuicoes          go to state 43
+    atribuicao_simples   go to state 44
+    atribuicao_unaria    go to state 45
+    atribuicao_composta  go to state 46
+    atribuicao_paralela  go to state 47
+    operador_unario      go to state 48
+    type                 go to state 49
+    vars                 go to state 50
+    id                   go to state 51
+
+
+state 134
+
+   24 elseif: ELSE if_stmt .
+
+    $default  reduce using rule 24 (elseif)
+
+
+state 135
+
+   18 if_stmt: IF PARENTESE_ESQUERDA valor PARENTESE_DIREITA THEN stmts elses_opcoes END_IF .
+
+    $default  reduce using rule 18 (if_stmt)
+
+
+state 136
+
+   23 else: ELSE THEN stmts .
+
+    $default  reduce using rule 23 (else)

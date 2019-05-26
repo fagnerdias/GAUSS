@@ -1,17 +1,18 @@
+// comentario 
+
 func QuickSort (int vetor[], int inicio, int fim) return void is
 begin
 	int pivo, i, j,  aux;
 	i, j = inicio, fim-1;
 	pivo = vetor[(inicio+fim)/2];
+
 	while (i <= j)
 		while (vetor[i] < pivo && i < fim)
-			i = i + 1;
-		endwhile
-		
+			i = i+1;
+		endwhile	
 		while(values[j] > pivo && j > inicio)
 			j = j-1;
 		endwhile
-
 		if(i <= j) then
 			aux = vetor[i];
 			vetor[i] = vetor[j];
@@ -26,12 +27,12 @@ begin
 		QuickSort(vetor, inicio, j+1);
 	endif
 
-	if(i < end) then
-		QuickSort(vetor, i, end);	
+	if(i < fim) then
+		QuickSort(vetor, i, fim);	
 	endif
 end QuickSort
 
-func main(argumentos) return int is
+func main(int argumentos) return int is
 begin
 	int vetor[10] = {10,9,8,5,4};
 	quicksort(vetor, 0, 5);

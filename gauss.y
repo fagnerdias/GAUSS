@@ -61,9 +61,21 @@ stmt                : decl PONTO_E_VIRGULA {}
                     | if_stmt                       {}
                     | while_stmt {} 
                     | atribuicoes PONTO_E_VIRGULA                     {}
+                    | invoca_procedimento PONTO_E_VIRGULA{}
                     ;
 
-if_stmt             : IF PARENTESE_ESQUERDA valor PARENTESE_DIREITA THEN stmts elses_opcoes END_IF                            {}                    
+invoca_procedimento : ID PARENTESE_ESQUERDA parametros PARENTESE_DIREITA {}
+                    ;
+
+
+                    ;   
+parametros          : expressoes {}
+                    | expressoes VIRGULA parametros {}
+                    ;  
+
+
+
+if_stmt             : IF PARENTESE_ESQUERDA valor PARENTESE_DIREITA THEN stmts elses_opcoes END_IF                {}                    
                     ;
 
 while_stmt          : WHILE PARENTESE_ESQUERDA valor PARENTESE_DIREITA stmts END_WHILE  {}
@@ -143,7 +155,15 @@ expressoes          :
                     | id {}
                     | id operador id {}
                     | id operador_comp id {}
+                    | vetorial {} 
                     ;
+
+vetorial            : CHAVE_ESQUERDA lista_de_digitos CHAVE_DIREITA {}  
+                        
+                    ;   
+lista_de_digitos    : DIGITO {}
+                    | DIGITO VIRGULA lista_de_digitos {}
+                    ;               
 
 exprecoes_list      : expressoes VIRGULA expressoes {}
                     ;                                        
