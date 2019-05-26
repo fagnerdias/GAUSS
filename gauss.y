@@ -140,7 +140,6 @@ expressoes           :
                     | id {}
                     | id operador id {}
                     | id operador_comp id {}
-                    | expressoes E_LOGICO expressoes {}                    
                     ;
 
 exprecoes_list      : expressoes VIRGULA expressoes {}
@@ -155,9 +154,7 @@ args                : type ID {}
                     | type ID VIRGULA args                    {}
                     ;
 
-funcao              : FUNCAO ID PARENTESE_ESQUERDA PARENTESE_DIREITA RETURN type IS
-                      TBEGIN stmts END                {} 
-                    | FUNCAO ID  PARENTESE_ESQUERDA args 
+funcao              : FUNCAO ID  PARENTESE_ESQUERDA args 
                       PARENTESE_DIREITA RETURN type IS
                       TBEGIN stmts END ID               {}
                     ;
