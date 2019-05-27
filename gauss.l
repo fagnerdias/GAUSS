@@ -13,8 +13,8 @@
     #include <stdio.h>
     #include "gauss.tab.h"
   
-  extern int yyerror (char *msg); 
-  //int yylineno; 
+  	extern int yyerror (char *msg); 
+  	//int yylineno; 
 %}
 
 
@@ -115,7 +115,7 @@
 [a-zA-Z\_][a-zA-Z0-9\_]* { return (ID); }
 \"(\\.|[^"])*\"	{ return (LITERAL_QUALQUER); }
 
-\/\*(\\.|[^"])*\*\/ 	{ ; }	
+"/*"((\*+[^/*])|([^*]))*\**"*/"		{ ; }	
  
  \/\/(.+)\n 			{ ; }	
 
