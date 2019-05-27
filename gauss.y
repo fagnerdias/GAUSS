@@ -41,28 +41,29 @@
 
 
 %%
-prog                : subprog                           {}
+prog                : subprog           {}
                     ;
 
-subprog             : funcao                        {}
-                    | subprog funcao                        {}
+subprog             : funcao                {}
+                    | subprog funcao        {}
                     ;
-stmts               : stmt                           {}
-                    | stmt stmts      {}
-                    ;
-
-decl                : type ID {}
-                    | type vars {}
-                    | type vars decl {}
-                    | type atribuicoes {}
+stmts               : stmt              {}
+                    | stmt stmts        {}
                     ;
 
-stmt                : decl PONTO_E_VIRGULA {} 
-                    | if_stmt                       {}
-                    | while_stmt {} 
-                    | for_stmt {}
-                    | atribuicoes PONTO_E_VIRGULA                     {}
-                    | invoca_procedimento PONTO_E_VIRGULA{}
+decl                : type ID           {}
+                    | type vars         {}
+                    | type vars decl    {}
+                    | type atribuicoes  {}
+                    ;
+
+stmt                : decl PONTO_E_VIRGULA                              {} 
+                    | if_stmt                                           {}
+                    | while_stmt                                        {} 
+                    | for_stmt                                          {}
+                    | atribuicoes PONTO_E_VIRGULA                       {}
+                    | invoca_procedimento PONTO_E_VIRGULA               {}
+                    | switch_stmt                                       {}
                     ;
 
 invoca_procedimento : ID PARENTESE_ESQUERDA parametros PARENTESE_DIREITA {}
@@ -76,7 +77,7 @@ parametros          : expressoes {}
 
 
 
-if_stmt             : IF PARENTESE_ESQUERDA valor PARENTESE_DIREITA THEN stmts elses_opcoes END_IF                {}                    
+if_stmt             : IF PARENTESE_ESQUERDA valor PARENTESE_DIREITA THEN stmts elses_opcoes END_IF {}
                     ;
 
 while_stmt          : WHILE PARENTESE_ESQUERDA valor PARENTESE_DIREITA stmts END_WHILE  {}
@@ -97,6 +98,22 @@ else                : ELSE THEN stmts {}
                     ;
 elseif              : ELSE if_stmt {}
                     ;
+
+switch_stmt         : SWITCH PARENTESE_ESQUERDA valor PARENTESE_DIREITA 
+                        case_stmt default END_SWITCH      {}  
+                    ;
+
+default             : 
+                    | DEFAULT stmts
+                    ;
+
+case_stmt           : case                            {}
+                    | case case_stmt                  {}
+                    ;
+
+case                : CASE PARENTESE_ESQUERDA id PARENTESE_DIREITA DOIS_PONTOS stmts       {}
+                    ;
+
 /************ ATRIBUICOES *****/
 atribuicoes         : atribuicao_simples                    {}
                     | atribuicao_unaria                     {}
@@ -114,26 +131,26 @@ atribuicao_unaria   : id operador_unario                   {}
 atribuicao_composta : id operador_composto valor     {}
                     ;
 
-atribuicao_paralela : vars ATRIBUICAO exprecoes_list {}
+atribuicao_paralela : vars ATRIBUICAO expressoes_list {}
                     ;
 
-operador_unario     : INCREMENTO                      {}
-                    | DECREMENTO                      {}
+operador_unario     : INCREMENTO        {}
+                    | DECREMENTO        {}
                     ;
 
-operador            : MAIS {}           
-                    | MENOS_UNARIO {}
-                    | EXPONENCIACAO {}
-                    | BARRA {}
-                    | MODULO {}
+operador            : MAIS              {}           
+                    | MENOS_UNARIO      {}
+                    | EXPONENCIACAO     {}
+                    | BARRA             {}
+                    | MODULO            {}
                     ;
                     
-operador_comp       : MENOR_QUE {}
-                    | MAIOR_QUE {}
-                    | MENOR_OU_IGUAL_A {}
-                    | MAIOR_OU_IGUAL_A {}
-                    | IGUAL_A {}
-                    | DIFERENTE_DE {}
+operador_comp       : MENOR_QUE         {}
+                    | MAIOR_QUE         {}
+                    | MENOR_OU_IGUAL_A  {}
+                    | MAIOR_OU_IGUAL_A  {}
+                    | IGUAL_A           {}
+                    | DIFERENTE_DE      {}
                     ;
 
 operador_composto   : MAIS_IGUAL                      {}
@@ -143,41 +160,41 @@ operador_composto   : MAIS_IGUAL                      {}
                     | EXPONENCIACAO_IGUAL             {}
                     ;
 
-type                : CARACTERE {}
-                    | STRING {}
-                    | INTEIRO {}
-                    | FLOAT {}
-                    | DOUBLE {}
-                    | VOID         {}
-                    | BOOLEANO                              {}
+type                : CARACTERE     {}
+                    | STRING        {}
+                    | INTEIRO       {}
+                    | FLOAT         {}
+                    | DOUBLE        {}
+                    | VOID          {}
+                    | BOOLEANO      {}
                     ;
  
 /*Colocar demais operadores*/
 
 
-valor               : expressoes E_LOGICO expressoes {}  
-                    | expressoes {}                          
+valor               : expressoes E_LOGICO expressoes    {}  
+                    | expressoes                        {}                          
                     ;
 
 expressoes          : 
-                    | id {}
-                    | id operador id {}
-                    | id operador_comp id {}
-                    | vetorial {} 
+                    | id                    {}
+                    | id operador id        {}
+                    | id operador_comp id   {}
+                    | vetorial              {} 
                     ;
 
 vetorial            : CHAVE_ESQUERDA lista_de_digitos CHAVE_DIREITA {}  
                         
                     ;   
-lista_de_digitos    : DIGITO {}
-                    | DIGITO VIRGULA lista_de_digitos {}
+lista_de_digitos    : DIGITO                            {}
+                    | DIGITO VIRGULA lista_de_digitos   {}
                     ;               
 
-exprecoes_list      : expressoes VIRGULA expressoes {}
+expressoes_list      : expressoes VIRGULA expressoes {}
                     ;                                        
 
-vars                : ID VIRGULA ID {}
-                    | ID VIRGULA vars {}
+vars                : ID VIRGULA ID     {}
+                    | ID VIRGULA vars   {}
                     ;
 
 args                : 
