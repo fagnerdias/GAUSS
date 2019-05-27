@@ -60,6 +60,7 @@ decl                : type ID {}
 stmt                : decl PONTO_E_VIRGULA {} 
                     | if_stmt                       {}
                     | while_stmt {} 
+                    | for_stmt {}
                     | atribuicoes PONTO_E_VIRGULA                     {}
                     | invoca_procedimento PONTO_E_VIRGULA{}
                     ;
@@ -79,7 +80,14 @@ if_stmt             : IF PARENTESE_ESQUERDA valor PARENTESE_DIREITA THEN stmts e
                     ;
 
 while_stmt          : WHILE PARENTESE_ESQUERDA valor PARENTESE_DIREITA stmts END_WHILE  {}
-                    ;                 
+                    ;
+
+for_stmt            : FOR PARENTESE_ESQUERDA 
+                            decl PONTO_E_VIRGULA 
+                            valor PONTO_E_VIRGULA 
+                            atribuicoes PARENTESE_DIREITA 
+                        stmts END_FOR  {}
+                    ;                  
 
 elses_opcoes        : {}
                     | else {}
