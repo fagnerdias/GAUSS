@@ -76,10 +76,6 @@ parametros          : expressoes {}
                     ;  
 
 
-
-if_stmt             : IF PARENTESE_ESQUERDA valor PARENTESE_DIREITA THEN stmts elses_opcoes END_IF {}
-                    ;
-
 while_stmt          : WHILE PARENTESE_ESQUERDA valor PARENTESE_DIREITA stmts END_WHILE  {}
                     ;
 
@@ -90,17 +86,21 @@ for_stmt            : FOR PARENTESE_ESQUERDA
                         stmts END_FOR  {}
                     ;                  
 
-elses_opcoes        : {}
-                    | else {}
-                    | elseif {}
-                    ;
-else                : ELSE THEN stmts {}
-                    ;
-elseif              : ELSE if_stmt {}
+
+if_stmt             : IF PARENTESE_ESQUERDA valor PARENTESE_DIREITA THEN stmts elses_opcoes END_IF {}
                     ;
 
+if_stmt_in_else     : IF PARENTESE_ESQUERDA valor PARENTESE_DIREITA THEN stmts elses_opcoes {}
+                    ;
+
+elses_opcoes        : {}
+                    | ELSE THEN stmts {}
+                    | ELSE if_stmt_in_else {}
+                    ;
+                    
 switch_stmt         : SWITCH PARENTESE_ESQUERDA valor PARENTESE_DIREITA 
-                        case_stmt default END_SWITCH      {}  
+
+case_stmt default END_SWITCH      {}  
                     ;
 
 default             : 
