@@ -53,7 +53,7 @@ stmts               : stmt              {}
                     | stmt stmts        {}
                     ;
 
-decl                : type ID           {}
+decl                : type id           {}
                     | type vars         {}
                     | type vars decl    {}
                     | type atribuicoes  {}
@@ -185,7 +185,7 @@ valor               : expressoes E_LOGICO expressoes    {}
                     | expressoes                        {}                          
                     ;
 
-expressoes          : 
+expressoes          : {}
                     | id                    {}
                     | id operador id        {}
                     | id operador_comp id   {}
@@ -219,7 +219,7 @@ funcao              : FUNCAO ID  PARENTESE_ESQUERDA args
 
 id                  : ID {}
                     | DIGITO {}
-                    | ID COLCHETE_ESQUERDA expressoes COLCHETE_DIREITA
+                    | ID COLCHETE_ESQUERDA expressoes COLCHETE_DIREITA {}
                     | PARENTESE_ESQUERDA expressoes PARENTESE_DIREITA {}
                     ;
 %%

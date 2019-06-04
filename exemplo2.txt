@@ -1,15 +1,15 @@
-// comentario 
-
 	struct novotipo is
 		float x;
-		int vetor;
+		int vetor[];
+		int (fdef);
 	endstruct
-	
+
 func QuickSort (int vetor[], int inicio, int fim) return void is
 begin
 	int pivo, i, j,  aux;
 	i, j = inicio, fim-1;
 	pivo = vetor[(inicio+fim)/2];
+	int x = 10;
 
 	while (i <= j)
 		while (vetor[i] < pivo && i < fim)
