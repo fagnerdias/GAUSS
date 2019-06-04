@@ -14,7 +14,7 @@
     #include "gauss.tab.h"
   
   	extern int yyerror (char *msg); 
-  	//int yylineno; 
+  	int yylineno; 
 %}
 
 
@@ -88,6 +88,7 @@
 "elseif"		{ return (ELSEIF); }
 "then"			{ return (THEN); }
 "struct"		{ return (STRUCT); }
+"endstruct"		{ return (ENDSTRUCT); }
 "is"			{ return (IS); }
 "end"			{ return (END); }
 "func"			{ return (FUNCAO); }

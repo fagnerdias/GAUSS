@@ -1,5 +1,10 @@
 // comentario 
 
+	struct novotipo is
+		float x;
+		int vetor;
+	endstruct
+	
 func QuickSort (int vetor[], int inicio, int fim) return void is
 begin
 	int pivo, i, j,  aux;
@@ -34,6 +39,8 @@ end QuickSort
 
 func main() return int is
 begin
+
+
 	//declaracoes
 	int vetor[10] = {10,9,8,5,4};
 	int k = 0;
