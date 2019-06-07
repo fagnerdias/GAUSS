@@ -2,6 +2,16 @@
 #define TABELAHASH_H
 
 /* Node for storing an item in a Doubly Linked List */
+typedef struct infoVariavel{
+	char *valor;
+	char *escopo;
+	char *tipo;
+}InfoVariavel;
+
+typedef struct valor
+{
+	InfoVariavel variavel;
+}valor;
 
 struct node 
 
@@ -9,26 +19,13 @@ struct node
 
 	int key;
 
-	struct valor value;
+	valor value;
 
 	struct node *next;
 
 	struct node *prev;
 
 };
-
-struct infoVariavel{
-	char *id;
-	char *escopo;
-	char *tipo;
-};
-
-struct valor
-{
-	struct infoVariavel variavel;
-};
-
- 
 
 /* For storing a Linked List at each index of Hash table */
 

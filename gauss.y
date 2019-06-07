@@ -46,8 +46,8 @@ prog                : subprog       { $$ = $1}
                     | struct_list subprog   {}
                     ;
 
-subprog             : funcao                    {$$ = gerarNoFuncao($1)}
-                    | subprog funcao            {$$ = gerarLista($2,$1)}
+subprog             : funcao                    {}
+                    | subprog funcao            {}
                     ;
 
 stmts               : stmt              {}

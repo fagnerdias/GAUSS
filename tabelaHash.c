@@ -55,7 +55,7 @@ int find(struct node *list, int key)
 
 } 
 
-void insert(int key, struct valor value);
+void insert(int key, struct valor value)
 {
 
 	float n = 0.0;
@@ -480,7 +480,7 @@ void display()
 
                         {
 
-				printf("key= %d  value= %d\t", temp->key, temp->value);
+				printf("key= %d  value= %s\t", temp->key, temp->value.variavel.valor);
 
 				temp = temp->next;
 
@@ -532,66 +532,4 @@ int size_of_array()
  
 
 int main()
-{
-	int choice, key, value, n, c;
- 
-    array = (struct arrayitem*) malloc(max * sizeof(struct arrayitem*));
-    init_array();
- 
-    do {
-        printf("Implementation of Hash Table in C chaining with Doubly Linked List \n\n");
-        printf("MENU-: \n1.Inserting item in the Hash Table"
-                              "\n2.Removing item from the Hash Table" 
-                              "\n3.Check the size of Hash Table" 
-                              "\n4.Display a Hash Table"
-               "\n\n Please enter your choice-:");
- 
-        scanf("%d", &choice);
- 
-        switch(choice) 
-                {
- 
-        case 1:
- 
-              printf("Inserting element in Hash Table\n");
-              printf("Enter key and value-:\t");
-              scanf("%d %d", &key, &value);
-              insert(key, value);
- 
-              break;
- 
-        case 2:
- 
-              printf("Deleting in Hash Table \n Enter the key to delete-:");
-              scanf("%d", &key);
-              remove_element(key);
- 
-              break;
- 
-        case 3:
- 
-              n = size_of_array();
-              printf("Size of Hash Table is-: %d\n", n);
- 
-              break;
- 
-        case 4:
- 
-              display();
- 
-              break;
- 
-        default:
- 
-               printf("Wrong Input\n");
- 
-        }
- 
-        printf("\n Do you want to continue-:(press 1 for yes)\t");
-        scanf("%d", &c);
- 
-    }while(c == 1);
- 
- 
- 
-}
+{}
