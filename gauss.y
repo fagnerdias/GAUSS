@@ -1,6 +1,7 @@
 %{
 	#include <stdio.h>
     #include "tabelaHash.h"
+    #include <string.h>
 
   int yylex(void);
   int yyerror(char *s);
@@ -32,17 +33,16 @@
 %token MAIS_IGUAL MENOS_IGUAL VEZES_IGUAL DIV_IGUAL EXPONENCIACAO_IGUAL
 %token FOR END_FOR DO WHILE END_WHILE SWITCH END_SWITCH CASE END_CASE DEFAULT 
 %token IF END_IF ELSE ELSEIF THEN STRUCT ENDSTRUCT IS END 
-%token FUNCAO PROC RETURN TBEGIN CONSTANTE PRINTF SCANF 
-%token CARACTERE STRING INTEIRO FLOAT DOUBLE VOID
-%token BOOLEANO TRUE FALSE JUMP BREAK TNULL
+%token <sValue> FUNCAO PROC RETURN TBEGIN CONSTANTE PRINTF SCANF 
+%token <sValue> CARACTERE STRING INTEIRO FLOAT DOUBLE VOID
+%token <sValue> BOOLEANO TRUE FALSE JUMP BREAK TNULL
 %token <iValue> DIGITO
 %token <sValue> ID
 %token LITERAL_QUALQUER
 
-%start prog
+%type <sValue> args type
 
-%type <sValue> subprog struct_list 
-%type <sValue> FUNCAO
+%start prog
 
 
 
@@ -212,15 +212,15 @@ vars                : ID VIRGULA ID     {}
                     | ID VIRGULA vars   {}
                     ;
 
-args                : 
-                    | type ID {}
-                    | type ID COLCHETE_ESQUERDA COLCHETE_DIREITA VIRGULA args {}
-                    | type ID VIRGULA args                    {}
+args                :  {$$ = ''}
+                    | type ID {$$ = strcat($1, $2)}
+                    | type ID COLCHETE_ESQUERDA COLCHETE_DIREITA VIRGULA args {$$ = ''}
+                    | type ID VIRGULA args                    {$$ = ''}
                     ;
 
 funcao              : FUNCAO ID  PARENTESE_ESQUERDA args 
                       PARENTESE_DIREITA RETURN type IS
-                      TBEGIN stmts END ID               {makeValorFunc($2, $4, $7, )}
+                      TBEGIN stmts END ID               {makeValorFunc($2, $7, $4)}
                     ;
 
 id                  : ID {}
@@ -234,12 +234,13 @@ int main (void) {
   return yyparse ( );
 }
 
-valor makeValorFunc(char *nome, char *retorno, char qntParams, char *tiposParams){
+valor makeValorFunc(char *nome, char *retorno, char *tiposParams){
     valor temp;
     temp.funcao->id = nome;
     temp.funcao->retorno = retorno;
-    temp.funcao->qntParams = qntParams - '0';
     temp.funcao->tiposParams = tiposParams;
+
+    return null;
 }
 
 
