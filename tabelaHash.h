@@ -3,6 +3,7 @@
 
 /* Node for storing an item in a Doubly Linked List */
 typedef struct infoVariavel{
+	char *id;
 	char *valor;
 	char *escopo;
 	char *tipo;
@@ -11,7 +12,18 @@ typedef struct infoVariavel{
 typedef struct valor
 {
 	InfoVariavel variavel;
+	Func_t funcao;
 }valor;
+
+typedef struct func
+{	
+	char *id;
+	char *retorno;
+	int qntParams;
+	char *tipoParams;
+	Func_t *next;
+
+}Func_t;
 
 struct node 
 

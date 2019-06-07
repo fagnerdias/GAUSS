@@ -9,6 +9,8 @@
 
   //typedef enum {false, true} bool;
 
+  valor makeValorFunc(char *nome, char *retorno, char *Params);
+
 
 %}
 
@@ -29,7 +31,8 @@
 %token MENOR_QUE MAIOR_QUE MENOR_OU_IGUAL_A MAIOR_OU_IGUAL_A IGUAL_A DIFERENTE_DE
 %token MAIS_IGUAL MENOS_IGUAL VEZES_IGUAL DIV_IGUAL EXPONENCIACAO_IGUAL
 %token FOR END_FOR DO WHILE END_WHILE SWITCH END_SWITCH CASE END_CASE DEFAULT 
-%token IF END_IF ELSE ELSEIF THEN STRUCT ENDSTRUCT IS END FUNCAO PROC RETURN TBEGIN CONSTANTE PRINTF SCANF 
+%token IF END_IF ELSE ELSEIF THEN STRUCT ENDSTRUCT IS END 
+%token FUNCAO PROC RETURN TBEGIN CONSTANTE PRINTF SCANF 
 %token CARACTERE STRING INTEIRO FLOAT DOUBLE VOID
 %token BOOLEANO TRUE FALSE JUMP BREAK TNULL
 %token <iValue> DIGITO
@@ -38,11 +41,13 @@
 
 %start prog
 
-%type <sValue> stmt
+%type <sValue> subprog struct_list 
+%type <sValue> FUNCAO
+
 
 
 %%
-prog                : subprog       { $$ = $1}
+prog                : subprog       {}
                     | struct_list subprog   {}
                     ;
 
@@ -215,7 +220,7 @@ args                :
 
 funcao              : FUNCAO ID  PARENTESE_ESQUERDA args 
                       PARENTESE_DIREITA RETURN type IS
-                      TBEGIN stmts END ID               {}
+                      TBEGIN stmts END ID               {makeValorFunc($2, $4, $7, )}
                     ;
 
 id                  : ID {}
@@ -228,6 +233,15 @@ id                  : ID {}
 int main (void) {
   return yyparse ( );
 }
+
+valor makeValorFunc(char *nome, char *retorno, char qntParams, char *tiposParams){
+    valor temp;
+    temp.funcao->id = nome;
+    temp.funcao->retorno = retorno;
+    temp.funcao->qntParams = qntParams - '0';
+    temp.funcao->tiposParams = tiposParams;
+}
+
 
 int yyerror (char *msg) {
   fprintf (stderr, "%d: %s at '%s'\n", yylineno, msg, yytext);
