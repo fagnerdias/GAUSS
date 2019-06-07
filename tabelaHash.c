@@ -1,61 +1,9 @@
 #include<stdio.h>
 
 #include<stdlib.h>
+#include "tabelaHash.h"
 
  
-
-/* Node for storing an item in a Doubly Linked List */
-
-struct node 
-
-{
-
-	int key;
-
-	int value;
-
-	struct node *next;
-
-	struct node *prev;
-
-};
-
- 
-
-/* For storing a Linked List at each index of Hash table */
-
-struct arrayitem 
-
-{
-
- 
-
-	struct node *head;
-
-	/* head pointing the first element of Linked List at an index of Hash table */
-
- 
-
-	struct node *tail;
-
-	/* tail pointing the last element of Linked List at an index of Hash table */
-
- 
-
-};
-
- 
-
-struct arrayitem *array;
-
-int size = 0;         /* Determines the no. of elements present in Hash table */
-
-int max = 10;	      /* Determines the maximum capacity of Hash table array */
-
- 
-
-/* This function creates an index corresponding to the every given key */
-
 int hashcode(int key)
 
 {
@@ -64,15 +12,6 @@ int hashcode(int key)
 
 }
 
- 
-
-struct node* get_element(struct node *list, int find_index);
-
-void remove_element(int key);
-
-void rehash();
-
-void init_array();
 
 /*
 
@@ -116,8 +55,7 @@ int find(struct node *list, int key)
 
 } 
 
-void insert(int key, int value)
-
+void insert(int key, struct valor value);
 {
 
 	float n = 0.0;
@@ -158,7 +96,7 @@ void insert(int key, int value)
 
  
 
-		printf("\n  %d (key) and %d (value) has been inserted  \n", key, value);
+		printf("\n  %d (key) and %d (value) has been inserted  \n", key, 1);
 
 		array[index].head = item;
 
@@ -200,7 +138,7 @@ void insert(int key, int value)
 
 			size++;
 
-			printf("\n %d (key) and %d (value) has been inserted \n", key, value);
+			printf("\n %d (key) and %d (value) has been inserted \n", key, 1);
 
  
 
@@ -490,7 +428,7 @@ void remove_element(int key)
 
 			}
 
- 
+ 			free(temp);
 
 			printf("This key has been removed\n");
 

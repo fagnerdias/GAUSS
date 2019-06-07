@@ -1,5 +1,6 @@
 %{
-	#include<stdio.h>
+	#include <stdio.h>
+    #include "tabelaHash.h"
 
   int yylex(void);
   int yyerror(char *s);
@@ -41,12 +42,12 @@
 
 
 %%
-prog                : subprog       {}
-                    | struct_list subprog
+prog                : subprog       { $$ = $1}
+                    | struct_list subprog   {}
                     ;
 
-subprog             : funcao                    {}
-                    | subprog funcao            {}
+subprog             : funcao                    {$$ = gerarNoFuncao($1)}
+                    | subprog funcao            {$$ = gerarLista($2,$1)}
                     ;
 
 stmts               : stmt              {}
@@ -83,7 +84,7 @@ parametros          : expressoes {}
                     ;  
 
 decl_list           : decl PONTO_E_VIRGULA {}
-                    | decl PONTO_E_VIRGULA decl_list
+                    | decl PONTO_E_VIRGULA decl_list    {}
                     ;
 
 while_stmt          : WHILE PARENTESE_ESQUERDA valor PARENTESE_DIREITA stmts END_WHILE  {}
