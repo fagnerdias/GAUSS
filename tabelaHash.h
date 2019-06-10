@@ -18,17 +18,17 @@ struct func
 
 };
 
-struct valor
+typedef struct Valor
 {
 	struct infoVariavel variavel;
 	struct func funcao;
-};
+}Valor;
 
 struct node 
 {
-	int key;
+	char *key;
 
-	struct valor value;
+	Valor value;
 
 	struct node *next;
 	struct node *prev;
@@ -52,21 +52,21 @@ int max = 999999;	      /* Determines the maximum capacity of Hash table array *
 
 struct node* get_element(struct node *list, int find_index);
 
-void remove_element(int key);
+void remove_element(char *key);
 
 void rehash();
 
 void init_array();
 
-int find(struct node *list, int key);
+int find(struct node *list, char *key);
 
-void insert(char * key, struct valor value);
+void insert(char * key, Valor value);
 
 void display();
 
 int size_of_array();
 
-int hashcode(int key);
+int hashcode(char *key);
 
 
 #endif

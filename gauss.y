@@ -1,7 +1,7 @@
 %{
 	#include <stdio.h>
     #include <stdlib.h>
-    #include "tabelaHash.h"
+    #include "tabelaHash.c"
     #include <string.h>
     #include <conio.h>
 
@@ -15,8 +15,8 @@
 
   //typedef enum {false, true} bool;
 
-  struct valor makeValorFunc(char *nome, char *retorno, char *Params);
-  struct valor make_pointerID(char* tipo, char* nome, int tamanho);
+  Valor makeValorFunc(char *key, char *nome, char *retorno, char *Params);
+  Valor make_pointerID(char* tipo, char* nome);
 
 %}
 
@@ -27,7 +27,6 @@
   int   bValue;  /* boolean value */
   char   cValue;  /* char value */
   char * sValue;  /* string value */
-  struct valor sStruct;
 }
 
 %token CHAVE_ESQUERDA CHAVE_DIREITA PARENTESE_ESQUERDA PARENTESE_DIREITA COLCHETE_ESQUERDA COLCHETE_DIREITA 
@@ -47,7 +46,7 @@
 %token LITERAL_QUALQUER
 
 %type <sValue> args type 
-%type <sStruct> id
+%type <sValue> id
 
 %start prog
 
@@ -69,7 +68,7 @@ stmts               : stmt              {}
 decl                : type id {
                                 insert(
                                     strcat(itoa(escopo, buffer,10), $2),
-                                    make_poiterID($2, $1));
+                                    make_pointerID( $1, $2 ));
                             }
                     | type vars         {}
                     | type vars decl    {}
@@ -252,17 +251,23 @@ vars                : ID VIRGULA ID     {}
 
 args                :  {$$ = ""}
                     | type ID {$$ = strcat($1, $2)}
-                    | type ID COLCHETE_ESQUERDA COLCHETE_DIREITA VIRGULA args {$$ = ''}
-                    | type ID VIRGULA args                    {$$ = ''}
+                    | type ID COLCHETE_ESQUERDA COLCHETE_DIREITA VIRGULA args {$$ = ""}
+                    | type ID VIRGULA args                    {$$ = ""}
                     ;
 
 funcao              : FUNCAO ID  PARENTESE_ESQUERDA args 
                       PARENTESE_DIREITA RETURN type IS
-                      TBEGIN stmts END ID               {makeValorFunc($2, $7, $4)}
+                      TBEGIN stmts END ID        {
+                                                  makeValorFunc(
+                                                      strcat(itoa(escopo, buffer,10), $2), 
+                                                      $2, 
+                                                      $7, 
+                                                      $4)
+                                                 }
                     ;
 
 id                  : ID { $$ = $1}
-                    | DIGITO {$$ = $1}
+                    | DIGITO {$$ = itoa($1, buffer, 10)}
                     | ID COLCHETE_ESQUERDA expressoes COLCHETE_DIREITA {}
                     | PARENTESE_ESQUERDA expressoes PARENTESE_DIREITA {}
                     ;
@@ -272,23 +277,22 @@ int main (void) {
   return yyparse ( );
 }
 
-struct valor make_pointerID(char* tipo, char* nome){
-    struct valor temp;
-    temp.variavel->id = nome;
-    temp.variavel->tipo = tipo;
-    temp.variavel->escopo = itoa(escopo);
+Valor make_pointerID(char* tipo, char* nome){
+    Valor temp;
+    temp.variavel.id = nome;
+    temp.variavel.tipo = tipo;
+    temp.variavel.escopo = itoa(escopo, buffer, 10);
     return temp;
 }
 
-valor makeValorFunc(char *nome, char *retorno, char *tiposParams){
-    struct valor temp;
-    temp.funcao->id = nome;
-    temp.funcao->retorno = retorno;
-    temp.funcao->tiposParams = tiposParams;
-    int key = 10;
+Valor makeValorFunc(char *key, char *nome, char *retorno, char *tiposParams){
+    Valor temp;
+    temp.funcao.id = nome;
+    temp.funcao.retorno = retorno;
+    temp.funcao.tipoParams = tiposParams;
     insert(key, temp);
 
-    return NULL;
+    return temp;
 }
 
 
