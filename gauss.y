@@ -1,11 +1,4 @@
 %{
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include <string.h>
-#include <assert.h>
-//#include "tabelaHash.c"
-//#include "list.h"
 
   int yylex(void);
   int yyerror(char *s);
