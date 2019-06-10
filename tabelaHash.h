@@ -65,7 +65,7 @@ struct arrayitem
 
 int size = 0;         /* Determines the no. of elements present in Hash table */
 
-int max = 10;	      /* Determines the maximum capacity of Hash table array */
+int max = 999999;	      /* Determines the maximum capacity of Hash table array */
 
 
 struct node* get_element(struct node *list, int find_index);

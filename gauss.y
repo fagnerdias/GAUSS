@@ -2,6 +2,7 @@
 	#include <stdio.h>
     #include "tabelaHash.h"
     #include <string.h>
+    #include <conio.h>
 
   int yylex(void);
   int yyerror(char *s);
@@ -239,6 +240,8 @@ valor makeValorFunc(char *nome, char *retorno, char *tiposParams){
     temp.funcao->id = nome;
     temp.funcao->retorno = retorno;
     temp.funcao->tiposParams = tiposParams;
+    int key = 10;
+    insert(key, temp);
 
     return null;
 }
