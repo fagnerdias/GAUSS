@@ -91,6 +91,7 @@ stmt                : decl PONTO_E_VIRGULA                              {}
                     | switch_stmt                                       {}
                     | print PONTO_E_VIRGULA                             {}
                     | scan PONTO_E_VIRGULA                              {}
+                    | RETURN id PONTO_E_VIRGULA                         {}
                     ;
 
 print               : PRINTF PARENTESE_ESQUERDA ids types_args PARENTESE_DIREITA {} 
