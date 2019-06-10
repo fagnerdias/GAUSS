@@ -9,10 +9,12 @@
   extern int yylineno;
   extern char * yytext; 
 
+  int escopo = 0;
+
   //typedef enum {false, true} bool;
 
   valor makeValorFunc(char *nome, char *retorno, char *Params);
-
+  valor make_pointerID(char* tipo, char* nome, int tamanho);
 
 %}
 
@@ -41,7 +43,7 @@
 %token <sValue> ID
 %token LITERAL_QUALQUER
 
-%type <sValue> args type
+%type <sValue> args type id
 
 %start prog
 
@@ -60,7 +62,9 @@ stmts               : stmt              {}
                     | stmt stmts        {}
                     ;
 
-decl                : type id           {}
+decl                : type id {
+                                insert(strcat(escopo, $2),make_poiterID($2.variavel->id, $1));
+                            }
                     | type vars         {}
                     | type vars decl    {}
                     | type atribuicoes  {}
@@ -251,8 +255,8 @@ funcao              : FUNCAO ID  PARENTESE_ESQUERDA args
                       TBEGIN stmts END ID               {makeValorFunc($2, $7, $4)}
                     ;
 
-id                  : ID {}
-                    | DIGITO {}
+id                  : ID { $$ = $1}
+                    | DIGITO {$$ = $1}
                     | ID COLCHETE_ESQUERDA expressoes COLCHETE_DIREITA {}
                     | PARENTESE_ESQUERDA expressoes PARENTESE_DIREITA {}
                     ;
@@ -260,6 +264,14 @@ id                  : ID {}
 
 int main (void) {
   return yyparse ( );
+}
+
+valor make_pointerID(char* tipo, char* nome){
+    valor temp;
+    temp.variavel->id = nome;
+    temp.variavel->tipo = tipo;
+    temp.variavel->escopo = itoa(escopo);
+    return temp;
 }
 
 valor makeValorFunc(char *nome, char *retorno, char *tiposParams){

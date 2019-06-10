@@ -4,7 +4,6 @@
 /* Node for storing an item in a Doubly Linked List */
 typedef struct infoVariavel{
 	char *id;
-	char *valor;
 	char *escopo;
 	char *tipo;
 }InfoVariavel;
@@ -13,7 +12,7 @@ typedef struct valor
 {
 	InfoVariavel variavel;
 	Func_t funcao;
-}valor;
+}Valor;
 
 typedef struct func
 {	
@@ -31,7 +30,7 @@ struct node
 
 	int key;
 
-	valor value;
+	Valor value;
 
 	struct node *next;
 
@@ -78,7 +77,7 @@ void init_array();
 
 int find(struct node *list, int key);
 
-void insert(int key, struct valor value);
+void insert(int key, struct Valor value);
 
 void display();
 
