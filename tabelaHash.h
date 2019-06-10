@@ -2,62 +2,45 @@
 #define TABELAHASH_H
 
 /* Node for storing an item in a Doubly Linked List */
-typedef struct infoVariavel{
+struct infoVariavel{
 	char *id;
 	char *escopo;
 	char *tipo;
-}InfoVariavel;
+};
 
-typedef struct valor
-{
-	InfoVariavel variavel;
-	Func_t funcao;
-}Valor;
-
-typedef struct func
+struct func
 {	
 	char *id;
 	char *retorno;
 	int qntParams;
 	char *tipoParams;
-	Func_t *next;
-
-}Func_t;
-
-struct node 
-
-{
-
-	int key;
-
-	Valor value;
-
-	struct node *next;
-
-	struct node *prev;
+	struct func *next;
 
 };
 
-/* For storing a Linked List at each index of Hash table */
-
-struct arrayitem 
-
+struct valor
 {
+	struct infoVariavel variavel;
+	struct func funcao;
+};
 
- 
+struct node 
+{
+	int key;
 
+	struct valor value;
+
+	struct node *next;
+	struct node *prev;
+};
+
+/* For storing a Linked List at each index of Hash table */
+struct arrayitem 
+{
 	struct node *head;
-
 	/* head pointing the first element of Linked List at an index of Hash table */
-
- 
-
 	struct node *tail;
-
 	/* tail pointing the last element of Linked List at an index of Hash table */
-
- 
-
 };
 
  struct arrayitem *array;
@@ -77,7 +60,7 @@ void init_array();
 
 int find(struct node *list, int key);
 
-void insert(int key, struct Valor value);
+void insert(char * key, struct valor value);
 
 void display();
 

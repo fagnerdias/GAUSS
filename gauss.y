@@ -1,5 +1,6 @@
 %{
 	#include <stdio.h>
+    #include <stdlib.h>
     #include "tabelaHash.h"
     #include <string.h>
     #include <conio.h>
@@ -10,11 +11,12 @@
   extern char * yytext; 
 
   int escopo = 0;
+  char buffer [33];
 
   //typedef enum {false, true} bool;
 
-  valor makeValorFunc(char *nome, char *retorno, char *Params);
-  valor make_pointerID(char* tipo, char* nome, int tamanho);
+  struct valor makeValorFunc(char *nome, char *retorno, char *Params);
+  struct valor make_pointerID(char* tipo, char* nome, int tamanho);
 
 %}
 
@@ -25,6 +27,7 @@
   int   bValue;  /* boolean value */
   char   cValue;  /* char value */
   char * sValue;  /* string value */
+  struct valor sStruct;
 }
 
 %token CHAVE_ESQUERDA CHAVE_DIREITA PARENTESE_ESQUERDA PARENTESE_DIREITA COLCHETE_ESQUERDA COLCHETE_DIREITA 
@@ -43,7 +46,8 @@
 %token <sValue> ID
 %token LITERAL_QUALQUER
 
-%type <sValue> args type id
+%type <sValue> args type 
+%type <sStruct> id
 
 %start prog
 
@@ -63,7 +67,9 @@ stmts               : stmt              {}
                     ;
 
 decl                : type id {
-                                insert(strcat(escopo, $2),make_poiterID($2.variavel->id, $1));
+                                insert(
+                                    strcat(itoa(escopo, buffer,10), $2),
+                                    make_poiterID($2, $1));
                             }
                     | type vars         {}
                     | type vars decl    {}
@@ -244,7 +250,7 @@ vars                : ID VIRGULA ID     {}
                     | ID VIRGULA vars   {}
                     ;
 
-args                :  {$$ = ''}
+args                :  {$$ = ""}
                     | type ID {$$ = strcat($1, $2)}
                     | type ID COLCHETE_ESQUERDA COLCHETE_DIREITA VIRGULA args {$$ = ''}
                     | type ID VIRGULA args                    {$$ = ''}
@@ -266,8 +272,8 @@ int main (void) {
   return yyparse ( );
 }
 
-valor make_pointerID(char* tipo, char* nome){
-    valor temp;
+struct valor make_pointerID(char* tipo, char* nome){
+    struct valor temp;
     temp.variavel->id = nome;
     temp.variavel->tipo = tipo;
     temp.variavel->escopo = itoa(escopo);
@@ -275,14 +281,14 @@ valor make_pointerID(char* tipo, char* nome){
 }
 
 valor makeValorFunc(char *nome, char *retorno, char *tiposParams){
-    valor temp;
+    struct valor temp;
     temp.funcao->id = nome;
     temp.funcao->retorno = retorno;
     temp.funcao->tiposParams = tiposParams;
     int key = 10;
     insert(key, temp);
 
-    return null;
+    return NULL;
 }
 
 
