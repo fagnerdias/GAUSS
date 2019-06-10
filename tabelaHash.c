@@ -50,7 +50,7 @@ void insert(char *key, Valor value)
 	if (list == NULL) 
         {
 		/* Absence of Linked List at a given index of Hash table */
-		printf("\n  %d (key) and %d (value) has been inserted  \n", key, 1);
+		printf("\n  %s (key) and %d (value) has been inserted  \n", key, 1);
 		array[index].head = item;
 		array[index].tail = item;
 		size++;
@@ -72,7 +72,7 @@ void insert(char *key, Valor value)
 
 			size++;
 
-			printf("\n %d (key) and %d (value) has been inserted \n", key, 1);
+			printf("\n %s (key) and %d (value) has been inserted \n", key, 1);
 
 		}else {
 			/*
@@ -219,7 +219,7 @@ void display()
 
                         {
 
-				printf("key= %d  id= %s\t", temp->key, temp->value.variavel.id);
+				printf("key= %s  id= %s\t", temp->key, temp->value.variavel.id);
 
 				temp = temp->next;
 
