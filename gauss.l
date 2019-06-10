@@ -11,7 +11,7 @@
 /* Definições  C */
 %{
     #include <stdio.h>
-    #include "gauss.tab.h"
+    #include "y.tab.h"
   
   	extern int yyerror (char *msg); 
   	int yylineno; 

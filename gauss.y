@@ -3,7 +3,7 @@
     #include <stdlib.h>
     #include "tabelaHash.c"
     #include <string.h>
-    #include <conio.h>
+  
 
   int yylex(void);
   int yyerror(char *s);
