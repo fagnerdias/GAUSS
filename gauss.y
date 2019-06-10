@@ -250,27 +250,27 @@ vars                : ID VIRGULA ID     {}
                     | ID VIRGULA vars   {}
                     ;
 
-args                :  {$$ = ""}
-                    | type ID {$$ = strcat($1, $2)}
-                    | type ID COLCHETE_ESQUERDA COLCHETE_DIREITA VIRGULA args {$$ = ""}
-                    | type ID VIRGULA args                    {$$ = ""}
+args                :                                                           { $$ = ""; }
+                    | type ID                                                   { $$ = strcat($1, $2); }
+                    | type ID COLCHETE_ESQUERDA COLCHETE_DIREITA VIRGULA args   {$$ = ""; }
+                    | type ID VIRGULA args                                      {$$ = ""; }
                     ;
 
 funcao              : FUNCAO ID  PARENTESE_ESQUERDA args 
                       PARENTESE_DIREITA RETURN type IS
                       TBEGIN stmts END ID        {
-                                                  makeValorFunc(
-                                                      strcat(itoa(escopo, buffer,10), $2), 
-                                                      $2, 
-                                                      $7, 
-                                                      $4)
+                                                      makeValorFunc(
+                                                          strcat(itoa(escopo, buffer,10), $2), 
+                                                          $2, 
+                                                          $7, 
+                                                          $4);
                                                  }
                     ;
 
-id                  : ID { $$ = $1}
-                    | DIGITO {$$ = itoa($1, buffer, 10)}
-                    | ID COLCHETE_ESQUERDA expressoes COLCHETE_DIREITA {}
-                    | PARENTESE_ESQUERDA expressoes PARENTESE_DIREITA {}
+id                  : ID                                                { $$ = $1; }
+                    | DIGITO                                            { $$ = itoa($1, buffer, 10); }
+                    | ID COLCHETE_ESQUERDA expressoes COLCHETE_DIREITA  {}
+                    | PARENTESE_ESQUERDA expressoes PARENTESE_DIREITA   {}
                     ;
 %%
 
