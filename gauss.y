@@ -17,6 +17,7 @@
 
   Valor makeValorFunc(char *key, char *nome, char *retorno, char *Params);
   Valor make_pointerID(char* tipo, char* nome);
+  char* _itoa(int valor, char* resultado, int base);
 
 %}
 
@@ -67,8 +68,9 @@ stmts               : stmt              {}
 
 decl                : type id {
                                 insert(
-                                    strcat(itoa(escopo, buffer,10), $2),
+                                    strcat(_itoa(escopo, buffer,10), $2),
                                     make_pointerID( $1, $2 ));
+                                    printf ("1.decimal: %s\n","temp.variavel.escopo");
                             }
                     | type vars         {}
                     | type vars decl    {}
@@ -260,15 +262,17 @@ funcao              : FUNCAO ID  PARENTESE_ESQUERDA args
                       PARENTESE_DIREITA RETURN type IS
                       TBEGIN stmts END ID        {
                                                       makeValorFunc(
-                                                          strcat(itoa(escopo, buffer,10), $2), 
+                                                          strcat(_itoa(escopo, buffer,10), $2), 
                                                           $2, 
                                                           $7, 
                                                           $4);
+                                                          printf ("2.decimal: %s\n","temp.variavel.escopo");
                                                  }
                     ;
 
 id                  : ID                                                { $$ = $1; }
-                    | DIGITO                                            { $$ = itoa($1, buffer, 10); }
+                    | DIGITO                                            { $$ = _itoa($1, buffer, 10); 
+                        printf ("3.decimal: %s\n","temp.variavel.escopo");}
                     | ID COLCHETE_ESQUERDA expressoes COLCHETE_DIREITA  {}
                     | PARENTESE_ESQUERDA expressoes PARENTESE_DIREITA   {}
                     ;
@@ -282,7 +286,8 @@ Valor make_pointerID(char* tipo, char* nome){
     Valor temp;
     temp.variavel.id = nome;
     temp.variavel.tipo = tipo;
-    temp.variavel.escopo = itoa(escopo, buffer, 10);
+    temp.variavel.escopo = _itoa(escopo, buffer, 10);
+    printf ("4.decimal: %s\n","temp.variavel.escopo");
     return temp;
 }
 
@@ -300,5 +305,29 @@ Valor makeValorFunc(char *key, char *nome, char *retorno, char *tiposParams){
 int yyerror (char *msg) {
   fprintf (stderr, "%d: %s at '%s'\n", yylineno, msg, yytext);
   return 0;
+}
+
+char* _itoa(int valor, char* resultado, int base) {
+    if (base < 2 || base > 36) { 
+        *resultado = '\0'; return resultado; 
+    }
+    char* ponteiro = resultado, *ponteiro1 = resultado, tmp_char;
+    int tmp_valor;
+
+    do {
+        tmp_valor = valor;
+        valor /= base;
+        *ponteiro++ = "zyxwvutsrqponmlkjihgfedcba9876543210123456789abcdefghijklmnopqrstuvwxyz" [35 + (tmp_valor - valor * base)];
+    } while ( valor );
+
+    if (tmp_valor < 0) 
+        *ponteiro++ = '-';
+    *ponteiro-- = '\0';
+    while(ponteiro1 < ponteiro) {
+        tmp_char = *ponteiro;
+        *ponteiro--= *ponteiro1;
+        *ponteiro1++ = tmp_char;
+    }
+    return resultado;
 }
 
