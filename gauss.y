@@ -70,7 +70,7 @@ struct_list         : struct                                            {}
                     | struct struct_list                                {}
                     ;
 
-struct              : STRUCT ID IS decl_list ENDSTRUCT {}
+struct              : STRUCT ID IS decl_list ENDSTRUCT                  {}
                     ;
 
 stmt                : decl PONTO_E_VIRGULA                              {} 
@@ -80,6 +80,32 @@ stmt                : decl PONTO_E_VIRGULA                              {}
                     | atribuicoes PONTO_E_VIRGULA                       {}
                     | invoca_procedimento PONTO_E_VIRGULA               {}
                     | switch_stmt                                       {}
+                    | print PONTO_E_VIRGULA                             {}
+                    | scan PONTO_E_VIRGULA                              {}
+                    ;
+
+print               : PRINTF PARENTESE_ESQUERDA ids types_args PARENTESE_DIREITA {} 
+                    ;
+
+scan                : SCANF PARENTESE_ESQUERDA ids types_args PARENTESE_DIREITA {} 
+                    ;
+
+ids                 : expressoes {}
+                    | ids VIRGULA expressoes  {}
+                    ;
+
+types_args          :                                            {}
+                    | prints_list                                {}
+                    ;
+
+prints_list         : VIRGULA tipos_prints                                            {}
+                    | VIRGULA tipos_prints prints_list                                {}
+                    ;
+
+tipos_prints        : PRINT_INT {}
+                    | PRINT_FLOAT {}
+                    | PRINT_CHAR {}
+                    | PRINT_STRING {}
                     ;
 
 invoca_procedimento : ID PARENTESE_ESQUERDA parametros PARENTESE_DIREITA {}
@@ -189,6 +215,7 @@ type                : CARACTERE     {}
 
 
 valor               : expressoes E_LOGICO expressoes    {}  
+                    | expressoes OU_LOGICO expressoes   {}   
                     | expressoes                        {}                          
                     ;
 

@@ -9,7 +9,12 @@ begin
 	int pivo, i, j,  aux;
 	i, j = inicio, fim-1;
 	pivo = vetor[(inicio+fim)/2];
-	int x = 10;
+
+	string s = ola_mundo;
+
+	printf (i, j, k, s, %i, %c, %.4f, %s);
+	scanf (i, j, k, s, %i, %c, %.4f, %s);
+
 
 	while (i <= j)
 		while (vetor[i] < pivo && i < fim)
