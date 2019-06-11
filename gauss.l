@@ -11,6 +11,7 @@
 /* Definições  C */
 %{
     #include <stdio.h>
+    #include <string.h>
     #include "gauss.tab.h"
   
   	extern int yyerror (char *msg); 
@@ -110,10 +111,10 @@
 "void"			{ return (VOID); }
 "true"			{ return (TRUE); }
 "false"			{ return (FALSE); }
-[0-9]+ 			{ return (DIGITO);}
+[0-9]+ 			{ yylval.iValue = atoi(yytext);return (DIGITO);}
 [ \t\r]+        { /* Espaços em branco */; }
 \n              { yylineno++; }
-[a-zA-Z\_][a-zA-Z0-9\_]* { return (ID); }
+[a-zA-Z\_][a-zA-Z0-9\_]* { yylval.sValue = strdup(yytext);return (ID); }
 \"(\\.|[^"])*\"	{ return (LITERAL_QUALQUER); }
 
 "/*"((\*+[^/*])|([^*]))*\**"*/"		{ ; }	
