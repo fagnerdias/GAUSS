@@ -18,6 +18,7 @@
   Valor makeValorFunc(char *key, char *nome, char *retorno, char *Params);
   Valor make_pointerID(char* tipo, char* nome);
   char* _itoa(int valor, char* resultado, int base);
+  char* getID(char *nome);
 
 %}
 
@@ -67,6 +68,7 @@ stmts               : stmt              {}
                     ;
 
 decl                : type id {
+                                printf("%s - tipo",$1);
                                 insert(
                                     strcat(_itoa(escopo, buffer,10), $2),
                                     make_pointerID( $1, $2 ));
@@ -214,13 +216,13 @@ operador_composto   : MAIS_IGUAL                      {}
                     | EXPONENCIACAO_IGUAL             {}
                     ;
 
-type                : CARACTERE     {}
-                    | STRING        {}
-                    | INTEIRO       {}
-                    | FLOAT         {}
-                    | DOUBLE        {}
-                    | VOID          {}
-                    | BOOLEANO      {}
+type                : CARACTERE     {$$ = "caracter";}
+                    | STRING        {$$ = "string";}
+                    | INTEIRO       {$$ = "inteiro";}
+                    | FLOAT         {$$ = "float";}
+                    | DOUBLE        {$$ = "double";}
+                    | VOID          {$$ = "void";}
+                    | BOOLEANO      {$$ = "booleano";}
                     ;
  
 /*Colocar demais operadores*/
@@ -270,7 +272,7 @@ funcao              : FUNCAO ID  PARENTESE_ESQUERDA args
                                                  }
                     ;
 
-id                  : ID                                                { $$ = $1; }
+id                  : ID                                                { $$ = getID($1); printf("%s - terminal id\n",$1);}
                     | DIGITO                                            { $$ = _itoa($1, buffer, 10); 
                         printf ("3.decimal: %s\n","temp.variavel.escopo");}
                     | ID COLCHETE_ESQUERDA expressoes COLCHETE_DIREITA  {}
@@ -280,6 +282,12 @@ id                  : ID                                                { $$ = $
 
 int main (void) {
   return yyparse ( );
+  init_array();
+}
+
+char* getID(char *nome){
+    printf("%s -nomeIDget\n",nome);
+    return nome;
 }
 
 Valor make_pointerID(char* tipo, char* nome){
@@ -287,7 +295,8 @@ Valor make_pointerID(char* tipo, char* nome){
     temp.variavel.id = nome;
     temp.variavel.tipo = tipo;
     temp.variavel.escopo = _itoa(escopo, buffer, 10);
-    printf ("4.decimal: %s\n","temp.variavel.escopo");
+    printf("%s - nome\n",nome);
+    printf ("4.decimal: %s\n","temp.variavel.escopo ID");
     return temp;
 }
 
