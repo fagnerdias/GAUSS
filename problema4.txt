@@ -1,0 +1,80 @@
+struct rational_t is
+	int numerador;
+	int denominador;
+endstruct
+
+func fracao(int a, int b) return int is begin
+	string s = "/";
+	printf(a, s, b, %i, %i);
+end fracao
+
+func iguais(rational_t a, rational_t b) return bool is begin
+	if ( a.numerador == b.numerador && a.denominador == b.denominador && ) then
+		return true;
+	else then
+		return false;
+	endif
+end fracao
+
+func soma(rational_t a, rational_t b) return float is begin
+	float x = a.numerador/a.denominador;
+	float y = b.numerador/b.denominador;
+	return x + y;
+end fracao
+
+func subtracao(rational_t a, rational_t b) return float is begin
+	float x = a.numerador/a.denominador;
+	float y = b.numerador/b.denominador;
+	return x - y;
+end fracao
+
+func multiplicacao(rational_t a, rational_t b) return float is begin
+	float x = a.numerador/a.denominador;
+	float y = b.numerador/b.denominador;
+	return x * y;
+end fracao
+
+func divisao(rational_t a, rational_t b) return float is begin
+	float x = a.numerador/a.denominador;
+	float y = b.numerador/b.denominador;
+	return x/y;
+end fracao
+
+func negacao(rational_t a) return float is begin
+	float x = a.numerador/a.denominador;
+	return x*(-1);
+end fracao
+
+func inverso(rational_t a) return float is begin
+	float x = a.denominador/a.numerador;
+end fracao
+
+func main() return int is
+begin
+
+	rational_t x;
+	x.numerador = 7;
+	x.denominador = 5;
+
+	rational_t y;
+	y.numerador = 7;
+	y.denominador = 5;
+
+	x = iguais(x, y);
+	printf(x, %10.f);
+	x = soma(x, y);
+	printf(x, %10.f);
+	x = subtracao(x, y);
+	printf(x, %10.f);
+	x = multiplicacao(x, y);
+	printf(x, %10.f);
+	x = divisao(x, y);
+	printf(x, %10.f);
+	x = negacao(x);
+	printf(x, %10.f);
+	x = inverso(x);
+	printf(x, %10.f);
+
+	sum(x, y);
+
+end main

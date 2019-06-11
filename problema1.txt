@@ -1,0 +1,6 @@
+func main() return int is
+begin
+	float x, y;
+	int c;
+	return x^2 − y + c;
+end main
