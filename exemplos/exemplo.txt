@@ -1,6 +1,4 @@
 func main() return int is
 begin
 	int a;
-	int a;
-	int a;
 end main
