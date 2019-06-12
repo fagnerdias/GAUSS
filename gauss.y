@@ -69,7 +69,8 @@ stmts               : stmt              {}
 
 decl                : type id {     printf("declaracoes\n"); 
                                     insert(strcat(_itoa(escopo,buffer,33),$2),
-                                        make_pointerID($1,$2));}
+                                        make_pointerID($1,$2));
+                                        display();}
                     | type vars         {}
                     | type vars decl    {}
                     | type atribuicoes  {}
@@ -258,7 +259,7 @@ args                :                                                           
 
 funcao              : FUNCAO ID  PARENTESE_ESQUERDA args 
                       PARENTESE_DIREITA RETURN type IS
-                      TBEGIN stmts END ID  { }     
+                      TBEGIN {} stmts END ID  { printf("%d",escopo);}
                     ;
 
 id                  : ID                                                {printf("teste ID\n"); $$ = $1;}
@@ -278,6 +279,7 @@ int main (void) {
     
     
     printf("teste1\n");
+    liberaGeral();
     return 1;
 }
 

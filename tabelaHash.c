@@ -246,8 +246,6 @@ void display()
 /* For initializing the Hash table */
 void init_array()
 {
-	printf("teste ini hash\n");
-	array = (struct arrayitem*) malloc(max * sizeof(struct arrayitem*));
 	if(array != NULL){
 		printf("array nao nulo\n");
 	}
@@ -261,8 +259,32 @@ void init_array()
 	
 }
 
+void liberaGeral(){
+	int last;
+	struct node *tmp;
+	for(last = max; last > 0; last--){
+		tmp = array->tail;
+		array->tail = array->tail->prev;
+		free(tmp);
+	}
+	free(tmp);
+	free(array);
+}
+
 /* Returns size of Hash table */
 int size_of_array()
 {
 	return size;
 }
+
+
+/*int main(void){
+	array = (struct arrayitem*) malloc(max * sizeof(struct arrayitem*));
+	init_array();
+
+	Valor temp;
+	temp.variavel.id = "teste";
+
+	insert("teste",temp);
+	liberaGeral();
+}*/
