@@ -8,7 +8,7 @@
   extern int yylineno;
   extern char * yytext; 
 
-  int escopo = -1;
+  int escopo = 0;
   char buffer[33];
   
 
@@ -252,8 +252,8 @@ args                :                                                           
 
 funcao              : FUNCAO ID  PARENTESE_ESQUERDA args 
                       PARENTESE_DIREITA RETURN type IS
-                      TBEGIN { insertFunc($2, escopo, $7, $4); escopo++;} stmts END ID  
-                      { }
+                      TBEGIN { insertFunc($2, escopo, $7, $4); escopo++; } stmts END ID  
+                      { escopo--; }
                     ;
 
 id                  : ID                                                { $$ = $1; }
