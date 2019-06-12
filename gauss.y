@@ -8,7 +8,7 @@
   extern int yylineno;
   extern char * yytext; 
 
-  int escopo = 0;
+  int escopo = -1;
   char buffer[33];
   FILE *arquivo;
   
@@ -65,7 +65,7 @@ stmts               : stmt              {}
                     ;
 
 decl                : type id           { insertVar($2, escopo, $1); }
-                    | type vars         {}
+                    | type vars         { insertVar($2, escopo, $1); }
                     | type vars decl    {}
                     | type atribuicoes  {}
                     ;
@@ -113,7 +113,7 @@ tipos_prints        : PRINT_INT {}
                     | PRINT_STRING {}
                     ;
 
-invoca_procedimento : ID PARENTESE_ESQUERDA parametros PARENTESE_DIREITA { }
+invoca_procedimento : ID PARENTESE_ESQUERDA parametros PARENTESE_DIREITA { findFunc($1, escopo); }
                     ;
    
 parametros          : expressoes {}
@@ -241,19 +241,19 @@ lista_de_digitos    : DIGITO                            {}
 expressoes_list      : expressoes VIRGULA expressoes {}
                     ;                                        
 
-vars                : ID VIRGULA ID     {}
-                    | ID VIRGULA vars   {}
+vars                : ID VIRGULA ID     { $$ = strcat(strcat($1,","),$3); }
+                    | ID VIRGULA vars   { $$ = strcat(strcat($1,","),$3); }
                     ;
 
 args                :                                                           { $$ = ""; }
-                    | type ID                                                   { $$ = strcat($1, $2); }
+                    | type ID                                                   { $$ = strcat(strcat($1, "#"),$2); }
                     | type ID COLCHETE_ESQUERDA COLCHETE_DIREITA VIRGULA args   {$$ = ""; }
                     | type ID VIRGULA args                                      {$$ = ""; }
                     ;
 
 funcao              : FUNCAO ID  PARENTESE_ESQUERDA args 
                       PARENTESE_DIREITA RETURN type IS
-                      TBEGIN { insertFunc($2, escopo, $7, $4); } stmts END ID  
+                      TBEGIN { insertFunc($2, escopo, $7, $4); escopo++;} stmts END ID  
                       { }
                     ;
 
