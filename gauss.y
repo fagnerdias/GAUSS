@@ -10,6 +10,7 @@
 
   int escopo = 0;
   char buffer[33];
+  FILE *arquivo;
   
 
   //typedef enum {false, true} bool;
@@ -265,7 +266,13 @@ id                  : ID                                                { $$ = $
 
 int main (void) {
 
+    arquivo = fopen("compilado.c", "w+");
+
+    fprintf (arquivo, "#include <%s>","stdio.h");
+
     yyparse ( );
+
+    fclose(arquivo);
     
     return 1;
 }
