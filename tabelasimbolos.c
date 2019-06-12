@@ -28,25 +28,6 @@ int sizeVectorVar = 0;
 Func vetorFunc[100];
 int sizeVectorFunc = 0;
 
-int findVar(char *id, int escopo){
-	for(int i=0; i<sizeVectorVar; i++){
-		printf("%i\n", strcmp(id, vetorVar[i].id));
-		if(strcmp(id, vetorVar[i].id)==0){
-			return 1;
-		}
-	}
-	//printf("%s : variavel nao declarada\n", id);
-	return 0;
-}
-int findFunc(char *id, int params){
-	for(int i=0; i<sizeVectorFunc; i++){
-		if(strcmp(id, vetorFunc[i].id)){
-			return 1;
-		}
-	}
-	//printf("%s : procedimento nao declarada\n", id);
-	return 0;
-}
 int printVar(){
 	printf("[ ");
 	for(int i=0; i<sizeVectorVar; i++){
@@ -55,14 +36,53 @@ int printVar(){
 	printf(" ]\n");
 	return 0;
 }
+int printFunc(){
+	printf("[ ");
+	for(int i=0; i<sizeVectorFunc; i++){
+		printf("( %s - %i - %s )", vetorFunc[i].id, vetorFunc[i].escopo, vetorFunc[i].tipoRetorno);
+	}
+	printf(" ]\n");
+	return 0;
+}
+
+
+int findVarToInsert(char *id, int escopo){
+	for(int i=0; i<sizeVectorVar; i++){
+		if(strcmp(id, vetorVar[i].id)==0){
+			return 1;
+		}
+	}
+	return 0;
+}
+int findVar(char *id, int escopo){
+	if(findVarToInsert(id, escopo)==0){
+		printf("%s : variavel nao declarada\n", id);
+	}
+	return 0;
+}
+int findFuncToInsert(char *id, int escopo){
+	for(int i=0; i<sizeVectorFunc; i++){
+		if(strcmp(id, vetorFunc[i].id)==0){
+			return 1;
+		}
+	}
+	return 0;
+}
+
+int findFunc(char *id, int escopo){
+	if(findFuncToInsert(id, escopo)==0){
+		printf("%s : procedimento nao declarado\n", id);
+	}
+	return 0;
+}
 
 void insertVar(char *id, int escopo, char *tipo){
 
-	//printVar();
-	//printf("---\n");
-	if(findVar(id, escopo)==1){
+	if(findVarToInsert(id, escopo)==1){
 		printf("%s : variavel ja declarada antes\n", id);
 		return;
+	}else{
+		printf("%s : var salva na tabela \n", id);
 	}
 
 	Var temp;
@@ -72,13 +92,11 @@ void insertVar(char *id, int escopo, char *tipo){
 
 	vetorVar[sizeVectorVar] = temp;
 	sizeVectorVar++;
-	//printVar();
-	printf("%i\n", sizeVectorVar);
 }
 void insertFunc(char *id, int escopo, char *tipoRetorno, char *tipoParams){
 	
-	if(findFunc(id, escopo)==1){
-		printf("%s : procedimento ja declarada antes\n", id);
+	if(findFuncToInsert(id, escopo)==1){
+		printf("%s : procedimento ja declarado antes\n", id);
 		return;
 	}else{
 		printf("%s : procedimento salvo na tabela \n", id);

@@ -1,6 +1,12 @@
+func oric() return int is
+begin
+	int a;
+end main
+
+
 func main() return int is
 begin
 	int a;
-	int a;
-	int a;
+	oric();
+	a=10;
 end main

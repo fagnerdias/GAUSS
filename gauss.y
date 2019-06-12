@@ -112,7 +112,7 @@ tipos_prints        : PRINT_INT {}
                     | PRINT_STRING {}
                     ;
 
-invoca_procedimento : ID PARENTESE_ESQUERDA parametros PARENTESE_DIREITA { }
+invoca_procedimento : ID PARENTESE_ESQUERDA parametros PARENTESE_DIREITA { findFunc($1, escopo); }
                     ;
    
 parametros          : expressoes {}
