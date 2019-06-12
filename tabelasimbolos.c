@@ -31,7 +31,7 @@ int sizeVectorFunc = 0;
 int findVar(char *id, int escopo){
 	for(int i=0; i<sizeVectorVar; i++){
 		printf("%i\n", strcmp(id, vetorVar[i].id));
-		if(strcmp(id, vetorVar[i].id)==1){
+		if(strcmp(id, vetorVar[i].id)==0){
 			return 1;
 		}
 	}
@@ -48,9 +48,11 @@ int findFunc(char *id, int params){
 	return 0;
 }
 int printVar(){
+	printf("[ ");
 	for(int i=0; i<sizeVectorVar; i++){
-		printf("%s - %i - %s \n", vetorVar[i].id, vetorVar[i].escopo, vetorVar[i].tipo);
+		printf("%s - %i - %s ", vetorVar[i].id, vetorVar[i].escopo, vetorVar[i].tipo);
 	}
+	printf(" ]\n");
 	return 0;
 }
 
