@@ -102,15 +102,15 @@
 
 
 
-"char"			{ return (CARACTERE); }
-"string"		{ return (STRING); }
-"int"			{ return (INTEIRO); }
-"float"			{ return (FLOAT); }
-"double"		{ return (DOUBLE); }
-"bool"			{ return (BOOLEANO); }
-"void"			{ return (VOID); }
-"true"			{ return (TRUE); }
-"false"			{ return (FALSE); }
+"char"			{ yylval.sValue = strdup("caractere");return (CARACTERE); }
+"string"		{ yylval.sValue = strdup("string");return (STRING); }
+"int"			{ yylval.sValue = strdup("int");return (INTEIRO); }
+"float"			{ yylval.sValue = strdup("float");return (FLOAT); }
+"double"		{ yylval.sValue = strdup("double");return (DOUBLE); }
+"bool"			{ yylval.sValue = strdup("bool");return (BOOLEANO); }
+"void"			{ yylval.sValue = strdup("void");return (VOID); }
+"true"			{ yylval.sValue = strdup("true");return (TRUE); }
+"false"			{ yylval.sValue = strdup("false");return (FALSE); }
 [0-9]+ 			{ yylval.iValue = atoi(yytext);return (DIGITO);}
 [ \t\r]+        { /* Espaços em branco */; }
 \n              { yylineno++; }

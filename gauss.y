@@ -11,14 +11,14 @@
   extern char * yytext; 
 
   int escopo = 0;
-  char buffer [33];
+  char buffer[33];
+  
 
   //typedef enum {false, true} bool;
 
-  Valor makeValorFunc(char *key, char *nome, char *retorno, char *Params);
+  Valor makeValorFunc(char *nome, char *retorno, char *Params);
   Valor make_pointerID(char* tipo, char* nome);
   char* _itoa(int valor, char* resultado, int base);
-  char* getID(char *nome);
 
 %}
 
@@ -67,13 +67,9 @@ stmts               : stmt              {}
                     | stmt stmts        {}
                     ;
 
-decl                : type id {
-                                printf("%s - tipo",$1);
-                                insert(
-                                    strcat(_itoa(escopo, buffer,10), $2),
-                                    make_pointerID( $1, $2 ));
-                                    printf ("1.decimal: %s\n","temp.variavel.escopo");
-                            }
+decl                : type id {     printf("declaracoes\n"); 
+                                    insert(strcat(_itoa(escopo,buffer,33),$2),
+                                        make_pointerID($1,$2));}
                     | type vars         {}
                     | type vars decl    {}
                     | type atribuicoes  {}
@@ -216,13 +212,13 @@ operador_composto   : MAIS_IGUAL                      {}
                     | EXPONENCIACAO_IGUAL             {}
                     ;
 
-type                : CARACTERE     {$$ = "caracter";}
-                    | STRING        {$$ = "string";}
-                    | INTEIRO       {$$ = "inteiro";}
-                    | FLOAT         {$$ = "float";}
-                    | DOUBLE        {$$ = "double";}
-                    | VOID          {$$ = "void";}
-                    | BOOLEANO      {$$ = "booleano";}
+type                : CARACTERE     {$$ = $1;}
+                    | STRING        {$$ = $1;}
+                    | INTEIRO       {$$ = $1;}
+                    | FLOAT         {$$ = $1;}
+                    | DOUBLE        {$$ = $1;}
+                    | VOID          {$$ = $1;}
+                    | BOOLEANO      {$$ = $1;}
                     ;
  
 /*Colocar demais operadores*/
@@ -262,52 +258,48 @@ args                :                                                           
 
 funcao              : FUNCAO ID  PARENTESE_ESQUERDA args 
                       PARENTESE_DIREITA RETURN type IS
-                      TBEGIN stmts END ID        {
-                                                      makeValorFunc(
-                                                          strcat(_itoa(escopo, buffer,10), $2), 
-                                                          $2, 
-                                                          $7, 
-                                                          $4);
-                                                          printf ("2.decimal: %s\n","temp.variavel.escopo");
-                                                 }
+                      TBEGIN stmts END ID  { }     
                     ;
 
-id                  : ID                                                { $$ = getID($1); printf("%s - terminal id\n",$1);}
-                    | DIGITO                                            { $$ = _itoa($1, buffer, 10); 
-                        printf ("3.decimal: %s\n","temp.variavel.escopo");}
+id                  : ID                                                {printf("teste ID\n"); $$ = $1;}
+                    | DIGITO                                            { }
                     | ID COLCHETE_ESQUERDA expressoes COLCHETE_DIREITA  {}
                     | PARENTESE_ESQUERDA expressoes PARENTESE_DIREITA   {}
                     ;
 %%
 
 int main (void) {
-  return yyparse ( );
-  init_array();
-}
-
-char* getID(char *nome){
-    printf("%s -nomeIDget\n",nome);
-    return nome;
+    int result;
+    array = (struct arrayitem*) malloc(max * sizeof(struct arrayitem*));
+    init_array();
+    printf("teste0\n");
+    yyparse ( );
+    
+    
+    
+    printf("teste1\n");
+    return 1;
 }
 
 Valor make_pointerID(char* tipo, char* nome){
+    printf ("make node ID\n");
+    printf ("%s nome ID\n",nome);
+    printf ("%s tipo ID\n",tipo);
     Valor temp;
     temp.variavel.id = nome;
     temp.variavel.tipo = tipo;
     temp.variavel.escopo = _itoa(escopo, buffer, 10);
-    printf("%s - nome\n",nome);
-    printf ("4.decimal: %s\n","temp.variavel.escopo ID");
+    printf("%s - tipo\n %s - nome\n %s - escopo\n",temp.variavel.id, temp.variavel.tipo,temp.variavel.escopo);
     return temp;
 }
 
-Valor makeValorFunc(char *key, char *nome, char *retorno, char *tiposParams){
-    Valor temp;
-    temp.funcao.id = nome;
-    temp.funcao.retorno = retorno;
-    temp.funcao.tipoParams = tiposParams;
-    insert(key, temp);
-
-    return temp;
+Valor makeValorFunc(char *nome, char *retorno, char *tiposParams){
+    printf ("make node function\n");
+    Valor *temp = (Valor*) malloc(sizeof(Valor));
+    temp->funcao.id = nome;
+    temp->funcao.retorno = retorno;
+    temp->funcao.tipoParams = tiposParams;
+    return *temp;
 }
 
 

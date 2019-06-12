@@ -14,31 +14,43 @@ int hashcode(char *key){
 */
 int find(struct node *list, char *key)
 {
+	printf("iniciando find\n");
     int retval = 0;
     struct node *temp = list;
-
+	printf("iniciando find1\n");
+	if(list != NULL){
+		printf("diferente\n");
+		printf("temp -%s key \n",list->value.variavel.id);	
+	}
+	printf("temp -%s key \n",list->key);
     while (temp != NULL){
+    	printf("iniciando find112\n");
         if (strcmp(temp->key, key)==0){
+        	printf("iniciando find2\n");
             return retval;
         }
-
+        printf("iniciando find3\n");
         temp = temp->next;
         retval++;
     }
+    printf("iniciando find4\n");
     return -1;
 } 
 
 void insert(char *key, Valor value)
 {
+	printf("inciando a insercao\n");
 	float n = 0.0;
 	/*  n => Load Factor, keeps check on whether rehashing is required or not */
 
 	int index = hashcode(key);
+	printf("inciando a insercao1\n");
 	/* Extracting Linked List at a given index */
 	struct node *list = (struct node*) array[index].head;
+	printf("inciando a insercao2\n");
 	/* Creating an item to insert in the hash table */
 	struct node *item = (struct node*) malloc(sizeof(struct node));
-
+	printf("inciando a insercao3\n");
 	item->key = key;
 
 	item->value = value;
@@ -46,7 +58,7 @@ void insert(char *key, Valor value)
 	item->next = NULL;
 
 	item->prev = NULL;
-
+	printf("inciando a insercao4\n");
 	if (list == NULL) 
         {
 		/* Absence of Linked List at a given index of Hash table */
@@ -56,15 +68,16 @@ void insert(char *key, Valor value)
 		size++;
 	}else{
 		/* A Linked List is present at given index of Hash table */
+		printf("inciando a insercao5\n");
 		int find_index = find(list, key);
-
+		printf("inciando a insercao6\n");
 		if (find_index == -1) 
                 {
 		 	/*
 			 *Key not found in existing Linked List
 			 *Adding the key at the end of the Linked List
 			*/
-
+            printf("inciando a insercao7\n");
 			item->prev = array[index].tail;
 
 			array[index].tail->next = item;
@@ -79,6 +92,7 @@ void insert(char *key, Valor value)
 			 *Key already present in Linked List
 			 *Updating the value of already existing key
 			*/
+			printf("inciando a insercao8\n");
 			struct node *element = get_element(list, find_index);
 
 			element->value = value;
@@ -232,14 +246,19 @@ void display()
 /* For initializing the Hash table */
 void init_array()
 {
+	printf("teste ini hash\n");
+	array = (struct arrayitem*) malloc(max * sizeof(struct arrayitem*));
+	if(array != NULL){
+		printf("array nao nulo\n");
+	}
 	int i;
-
 	for (i = 0; i < max; i++)
-        {
-
+    {
 		array[i].head = NULL;
 		array[i].tail = NULL;
-	}
+	}	
+	printf("teste ini hash\n");
+	
 }
 
 /* Returns size of Hash table */
@@ -247,8 +266,3 @@ int size_of_array()
 {
 	return size;
 }
- 
-/*
-int main()
-{}
-*/
