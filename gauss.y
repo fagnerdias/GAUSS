@@ -1,10 +1,8 @@
 %{
 	#include <stdio.h>
     #include <stdlib.h>
-    #include "tabelaHash.c"
-    #include <string.h>
+    #include "tabelasimbolos.c"
   
-
   int yylex(void);
   int yyerror(char *s);
   extern int yylineno;
@@ -16,8 +14,6 @@
 
   //typedef enum {false, true} bool;
 
-  Valor makeValorFunc(char *nome, char *retorno, char *Params);
-  Valor make_pointerID(char* tipo, char* nome);
   char* _itoa(int valor, char* resultado, int base);
 
 %}
@@ -67,10 +63,7 @@ stmts               : stmt              {}
                     | stmt stmts        {}
                     ;
 
-decl                : type id {     printf("declaracoes\n"); 
-                                    insert(strcat(_itoa(escopo,buffer,33),$2),
-                                        make_pointerID($1,$2));
-                                        display();}
+decl                : type id           { insertVar($2, escopo, $1); }
                     | type vars         {}
                     | type vars decl    {}
                     | type atribuicoes  {}
@@ -119,7 +112,7 @@ tipos_prints        : PRINT_INT {}
                     | PRINT_STRING {}
                     ;
 
-invoca_procedimento : ID PARENTESE_ESQUERDA parametros PARENTESE_DIREITA {}
+invoca_procedimento : ID PARENTESE_ESQUERDA parametros PARENTESE_DIREITA { }
                     ;
    
 parametros          : expressoes {}
@@ -259,10 +252,11 @@ args                :                                                           
 
 funcao              : FUNCAO ID  PARENTESE_ESQUERDA args 
                       PARENTESE_DIREITA RETURN type IS
-                      TBEGIN {} stmts END ID  { printf("%d",escopo);}
+                      TBEGIN { insertFunc($2, escopo, $7, $4); } stmts END ID  
+                      { }
                     ;
 
-id                  : ID                                                {printf("teste ID\n"); $$ = $1;}
+id                  : ID                                                { $$ = $1; }
                     | DIGITO                                            { }
                     | ID COLCHETE_ESQUERDA expressoes COLCHETE_DIREITA  {}
                     | PARENTESE_ESQUERDA expressoes PARENTESE_DIREITA   {}
@@ -270,38 +264,10 @@ id                  : ID                                                {printf(
 %%
 
 int main (void) {
-    int result;
-    array = (struct arrayitem*) malloc(max * sizeof(struct arrayitem*));
-    init_array();
-    printf("teste0\n");
+
     yyparse ( );
     
-    
-    
-    printf("teste1\n");
-    liberaGeral();
     return 1;
-}
-
-Valor make_pointerID(char* tipo, char* nome){
-    printf ("make node ID\n");
-    printf ("%s nome ID\n",nome);
-    printf ("%s tipo ID\n",tipo);
-    Valor temp;
-    temp.variavel.id = nome;
-    temp.variavel.tipo = tipo;
-    temp.variavel.escopo = _itoa(escopo, buffer, 10);
-    printf("%s - tipo\n %s - nome\n %s - escopo\n",temp.variavel.id, temp.variavel.tipo,temp.variavel.escopo);
-    return temp;
-}
-
-Valor makeValorFunc(char *nome, char *retorno, char *tiposParams){
-    printf ("make node function\n");
-    Valor *temp = (Valor*) malloc(sizeof(Valor));
-    temp->funcao.id = nome;
-    temp->funcao.retorno = retorno;
-    temp->funcao.tipoParams = tiposParams;
-    return *temp;
 }
 
 
