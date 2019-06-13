@@ -9,7 +9,7 @@
   extern char * yytext; 
 
   int escopo = -1;
-  char buffer[33];
+  char *buffer;
   FILE *arquivo;
   
 
@@ -17,6 +17,7 @@
 
   char* _itoa(int valor, char* resultado, int base);
   void makeStmt(char* stmt);
+  void limparBuffer();
 
 %}
 
@@ -50,7 +51,7 @@
 %type <sValue> args type 
 %type <sValue> decl vars atribuicoes expressoes atribuicao_simples operador operador_composto operador_comp operador_unario atribuicao_unaria atribuicao_composta
 %type <sValue> id lista_de_digitos vetorial
-%type <sValue> stmt
+%type <sValue> stmt stmts if_stmt while_stmt for_stmt
 
 %start prog
 
@@ -66,19 +67,13 @@ subprog             : funcao                    {}
                     ;
 
 stmts               : stmt              {}
-                    | stmt stmts        {}
+                    | stmt stmts        {makeStmt(strcat($1,$2));}
                     ;
 
-decl                : type id           { if(insertVar($2, escopo, $1) == 1){
-                                            $$ = strcat(strcat($1," "),$2);          
-                                            } 
-                                        }
-                    | type vars         { if(insertVar($2, escopo, $1) == 1){
-                                            $$ = strcat(strcat($1," "),$2);          
-                                            } 
-                                        }
-                    | type vars decl    {sprintf(buffer,"%s %s, %s",$1,$2,$3); $$ = buffer;}
-                    | type atribuicoes  {sprintf(buffer,"%s %s",$1,$2); $$ = buffer;}
+decl                : type id           { $$ = strcat(strcat($1," "),$2); }
+                    | type vars         { $$ = strcat(strcat($1," "),$2); } 
+                    | type vars decl    { $$ = strcat(strcat(strcat(strcat($1, " "),$2),","),$3);}
+                    | type atribuicoes  { $$ = strcat(strcat($1, " "),$2);}
                     ;
 
 struct_list         : struct                                            {}
@@ -88,11 +83,11 @@ struct_list         : struct                                            {}
 struct              : STRUCT ID IS decl_list ENDSTRUCT                  {}
                     ;
 
-stmt                : decl PONTO_E_VIRGULA                              {makeStmt(strcat(strcat($1,";"),"\n"));} 
-                    | if_stmt                                           {}
-                    | while_stmt                                        {} 
-                    | for_stmt                                          {}
-                    | atribuicoes PONTO_E_VIRGULA                       {makeStmt(strcat(strcat($1,";"),"\n"));}
+stmt                : decl PONTO_E_VIRGULA                              {$$ = strcat(strcat($1,";"),"\n");} 
+                    | if_stmt                                           {$$ = $1}
+                    | while_stmt                                        {$$ = $1} 
+                    | for_stmt                                          {$$ = $1}
+                    | atribuicoes PONTO_E_VIRGULA                       {$$ = strcat(strcat($1,";"),"\n");}
                     | invoca_procedimento PONTO_E_VIRGULA               {}
                     | switch_stmt                                       {}
                     | print PONTO_E_VIRGULA                             {}
@@ -138,6 +133,7 @@ decl_list           : decl PONTO_E_VIRGULA {}
 while_stmt          : WHILE PARENTESE_ESQUERDA 
                     valor PARENTESE_DIREITA
                     {
+                        char* inicio = "condicao:\n\tif(";
                         sprintf(buffer, "condicao:\n\tif(%s)\n\t\tgoto inicio;\n\telse\n\t\tgoto fim;\ninicio:\n",$3);
                         
                         makeStmt(buffer);
@@ -149,8 +145,20 @@ while_stmt          : WHILE PARENTESE_ESQUERDA
 for_stmt            : FOR PARENTESE_ESQUERDA 
                             decl PONTO_E_VIRGULA 
                             valor PONTO_E_VIRGULA 
+                            {
+                                printf("declaração - %s\n",$3);
+                              fprintf(arquivo, "%s;\n", $3);
+                              fprintf(arquivo, "condicao:\n\tif(%s)\n\t\tgoto inicio;\n\telse\n\t\tgoto fim;\ninicio:\n",$5);
+                            }
                             atribuicoes PARENTESE_DIREITA 
-                        stmts END_FOR  {}
+                        stmts END_FOR  
+                        {
+                            printf("atribução - %s",$1);
+                            printf("atribução - %s",$3);
+                            fprintf(arquivo, "teste-\n%s\n", $1);
+                          fprintf(arquivo, "\n%s\n", $1);
+                          fprintf(arquivo, "fim:\n");
+                        }
                     ;                  
 
 
@@ -275,17 +283,15 @@ args                :                                                           
 funcao              : FUNCAO ID  PARENTESE_ESQUERDA args 
                       PARENTESE_DIREITA RETURN type IS
                       TBEGIN { insertFunc($2, escopo, $7, $4); escopo++; 
-                                sprintf(buffer,"\n%s %s (%s) {\n",$7,$2,$4);
-                                makeStmt(buffer);
-                                
+                                makeStmt(strcat(strcat(strcat(strcat(strcat($7," "),$2),"("),$4),"){\n"));
                                 } stmts END ID  
                       { makeStmt("}");}
                     ;
 
 id                  : ID                                                { $$ = $1; }
                     | DIGITO                                            { $$ = _itoa($1,buffer,10);}
-                    | ID COLCHETE_ESQUERDA expressoes COLCHETE_DIREITA  { sprintf(buffer,"%s[%s]",$1,$3);$$ = buffer;}
-                    | PARENTESE_ESQUERDA expressoes PARENTESE_DIREITA   {sprintf(buffer,"(%s)",$2);$$ = buffer;}
+                    | ID COLCHETE_ESQUERDA expressoes COLCHETE_DIREITA  { $$ = strcat(strcat(strcat($1,"["),$3),"]");}
+                    | PARENTESE_ESQUERDA expressoes PARENTESE_DIREITA   { $$ = strcat(strcat(strcat($1,"("),$3),")");;}
                     ;
 %%
 
@@ -293,7 +299,7 @@ int main (void) {
 
     arquivo = fopen("compilado.c", "w+");
 
-    fprintf (arquivo, "#include <%s>","stdio.h");
+    fprintf (arquivo, "#include <%s>\n","stdio.h");
 
     yyparse ( );
 
@@ -337,3 +343,6 @@ char* _itoa(int valor, char* resultado, int base) {
     return resultado;
 }
 
+void limparBuffer(){
+    free(buffer);
+}

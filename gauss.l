@@ -27,7 +27,7 @@
 ")" 			{ return (PARENTESE_DIREITA); }
 "[" 			{ return (COLCHETE_ESQUERDA); }
 "]" 			{ return (COLCHETE_DIREITA); }
-";" 			{ return (PONTO_E_VIRGULA); }
+";" 			{ yylval.sValue = strdup(";");return (PONTO_E_VIRGULA); }
 "," 			{ return (VIRGULA); }
 \.				{ return (PONTO); }
 ":"				{ return (DOIS_PONTOS); }
@@ -40,11 +40,11 @@
 "!" 			{ yylval.sValue = strdup("!");return (EXCLAMACAO); }
 
 
-"*"				{ return (ASTERISCO); }
-"%i"			{ return (PRINT_INT); }
-"%."[0-9]*"f"	{ return (PRINT_FLOAT); }
-"%c"			{ return (PRINT_CHAR); }
-"%s"			{ return (PRINT_STRING); }
+"*"				{ yylval.sValue = strdup("*");return (ASTERISCO); }
+"%i"			{ yylval.sValue = strdup("%i");return (PRINT_INT); }
+"%."[0-9]*"f"	{ yylval.sValue = strdup("%.4f");return (PRINT_FLOAT); }
+"%c"			{ yylval.sValue = strdup("%c");return (PRINT_CHAR); }
+"%s"			{ yylval.sValue = strdup("%s");return (PRINT_STRING); }
 "%"				{ yylval.sValue = strdup("%");return (MODULO); }
 "/" 			{ yylval.sValue = strdup("/");return (BARRA); }
 "++"			{ yylval.sValue = strdup("++");return (INCREMENTO); }
@@ -96,7 +96,7 @@
 "end"			{ return (END); }
 "func"			{ return (FUNCAO); }
 "proc"			{ return (PROC); }
-"return"		{ return (RETURN); }
+"return"		{ yylval.sValue = strdup("return");return (RETURN); }
 "begin"			{ return (TBEGIN); }
 "#const"		{ return (CONSTANTE); }
 "printf"		{ return (PRINTF); }
