@@ -66,8 +66,8 @@ subprog             : funcao                    {}
                     | subprog funcao            {}
                     ;
 
-stmts               : stmt              {makeStmt($1);}
-                    | stmt stmts        {makeStmt($1);}
+stmts               : stmt              {}
+                    | stmt stmts        { }
                     ;
 
 decl                : type id           { $$ = strcat(strcat($1," "),$2); }
@@ -83,11 +83,11 @@ struct_list         : struct                                            {}
 struct              : STRUCT ID IS decl_list ENDSTRUCT                  {}
                     ;
 
-stmt                : decl PONTO_E_VIRGULA                              {$$ = strcat(strcat($1,";"),"\n");} 
-                    | if_stmt                                           {$$ = $1}
-                    | while_stmt                                        {$$ = $1} 
-                    | for_stmt                                          {$$ = $1}
-                    | atribuicoes PONTO_E_VIRGULA                       {$$ = strcat(strcat($1,";"),"\n");}
+stmt                : decl PONTO_E_VIRGULA                              {makeStmt(strcat(strcat($1,";"),"\n"));} 
+                    | if_stmt                                           {makeStmt($1);}
+                    | while_stmt                                        {makeStmt($1);} 
+                    | for_stmt                                          {makeStmt($1);}
+                    | atribuicoes PONTO_E_VIRGULA                       {makeStmt(strcat(strcat($1,";"),"\n"));}
                     | invoca_procedimento PONTO_E_VIRGULA               {}
                     | switch_stmt                                       {}
                     | print PONTO_E_VIRGULA                             {}
