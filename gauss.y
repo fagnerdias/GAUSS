@@ -49,7 +49,7 @@
 
 %type <sValue> valor
 %type <sValue> args type 
-%type <sValue> decl vars atribuicoes expressoes atribuicao_simples operador operador_composto operador_comp operador_unario atribuicao_unaria atribuicao_composta
+%type <sValue> decl vars atribuicoes expressoes atribuicao_simples operador operador_composto operador_comp operador_unario atribuicao_unaria atribuicao_composta print ids types_args prints_list tipos_prints
 %type <sValue> id lista_de_digitos vetorial
 %type <sValue> stmt stmts if_stmt while_stmt for_stmt
 
@@ -95,28 +95,28 @@ stmt                : decl PONTO_E_VIRGULA                              {makeStm
                     | RETURN id PONTO_E_VIRGULA                         {}
                     ;
 
-print               : PRINTF PARENTESE_ESQUERDA ids types_args PARENTESE_DIREITA {} 
+print               : PRINTF PARENTESE_ESQUERDA ids types_args PARENTESE_DIREITA { printf("teste - %s\n",strcat(strcat(strcat("printf(",$4),$3),")"));$$ = strcat(strcat(strcat("printf(",$4),$3),")");} 
                     ;
 
 scan                : SCANF PARENTESE_ESQUERDA ids types_args PARENTESE_DIREITA {} 
                     ;
 
-ids                 : expressoes {}
-                    | ids VIRGULA expressoes  {}
+ids                 : expressoes {printf("teste = %s\n",$1);$$ = $1;}
+                    | ids VIRGULA expressoes  {$$ = strcat(strcat($1,","),$3);}
                     ;
 
 types_args          :                                            {}
-                    | prints_list                                {}
+                    | prints_list                                {printf("teste = %s\n",$1);$$ = $1;}
                     ;
 
-prints_list         : VIRGULA tipos_prints                                            {}
-                    | VIRGULA tipos_prints prints_list                                {}
+prints_list         : VIRGULA tipos_prints                                            {$$ = strcat(",",$2);}
+                    | VIRGULA tipos_prints prints_list                                {$$ = strcat(strcat(",",$2),$3);}
                     ;
 
-tipos_prints        : PRINT_INT {}
-                    | PRINT_FLOAT {}
-                    | PRINT_CHAR {}
-                    | PRINT_STRING {}
+tipos_prints        : PRINT_INT {$$ = $1;}
+                    | PRINT_FLOAT {$$ = $1;}
+                    | PRINT_CHAR {$$ = $1;}
+                    | PRINT_STRING {$$ = $1;}
                     ;
 
 invoca_procedimento : ID PARENTESE_ESQUERDA parametros PARENTESE_DIREITA { findFunc($1, escopo); }
