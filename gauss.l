@@ -32,12 +32,12 @@
 \.				{ return (PONTO); }
 ":"				{ return (DOIS_PONTOS); }
 
-"&&" 			{ return (E_LOGICO); }
-"&" 			{ return (E_LOGICO_CURTO_CIRCUITO); }
-"||"			{ return (OU_LOGICO); }
-"|"				{ return (OU_LOGICO_CURTO_CIRCUITO); }
-"!="			{ return (DIFERENTE_DE); }
-"!" 			{ return (EXCLAMACAO); }
+"&&" 			{ yylval.sValue = strdup("&&");return (E_LOGICO); }
+"&" 			{ yylval.sValue = strdup("&");return (E_LOGICO_CURTO_CIRCUITO); }
+"||"			{ yylval.sValue = strdup("||");return (OU_LOGICO); }
+"|"				{ yylval.sValue = strdup("|");return (OU_LOGICO_CURTO_CIRCUITO); }
+"!="			{ yylval.sValue = strdup("!=");return (DIFERENTE_DE); }
+"!" 			{ yylval.sValue = strdup("!");return (EXCLAMACAO); }
 
 
 "*"				{ return (ASTERISCO); }
@@ -49,12 +49,8 @@
 "/" 			{ yylval.sValue = strdup("/");return (BARRA); }
 "++"			{ yylval.sValue = strdup("++");return (INCREMENTO); }
 "--"			{ yylval.sValue = strdup("--");return (DECREMENTO); }
-"+" 			{ yylval.sValue = strdup("+");return (MAIS); }
-"-" 			{ yylval.sValue = strdup("-");return (MENOS_UNARIO); }
-"^" 			{ yylval.sValue = strdup("^");return (EXPONENCIACAO); }
 
-"<" 			{ yylval.sValue = strdup("<");return (MENOR_QUE); }
-">" 			{ yylval.sValue = strdup(">");return (MAIOR_QUE); }
+
 "<="			{ yylval.sValue = strdup("<=");return (MENOR_OU_IGUAL_A); }
 ">="			{ yylval.sValue = strdup(">=");return (MAIOR_OU_IGUAL_A); }
 "=="			{ yylval.sValue = strdup("==");return (IGUAL_A); }
@@ -69,6 +65,12 @@
 "="				{ yylval.sValue = strdup("=");return (ATRIBUICAO); }
 
 "?"				{ yylval.sValue = strdup("?");return (OPERADOR_TERNARIO); }
+
+"<" 			{ yylval.sValue = strdup("<");return (MENOR_QUE); }
+">" 			{ yylval.sValue = strdup(">");return (MAIOR_QUE); }
+"+" 			{ yylval.sValue = strdup("+");return (MAIS); }
+"-" 			{ yylval.sValue = strdup("-");return (MENOS_UNARIO); }
+"^" 			{ yylval.sValue = strdup("^");return (EXPONENCIACAO); }
 
 "JUMP" 			{ return (JUMP); }
 "BREAK" 		{ return (BREAK); }

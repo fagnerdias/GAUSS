@@ -31,7 +31,7 @@
 
 %token <sValue> CHAVE_ESQUERDA CHAVE_DIREITA PARENTESE_ESQUERDA PARENTESE_DIREITA COLCHETE_ESQUERDA COLCHETE_DIREITA 
 %token <sValue> PONTO_E_VIRGULA VIRGULA PONTO DOIS_PONTOS
-%token E_LOGICO E_LOGICO_CURTO_CIRCUITO OU_LOGICO OU_LOGICO_CURTO_CIRCUITO EXCLAMACAO
+%token <sValue> E_LOGICO E_LOGICO_CURTO_CIRCUITO OU_LOGICO OU_LOGICO_CURTO_CIRCUITO EXCLAMACAO
 %token <sValue> ASTERISCO PRINT_INT PRINT_FLOAT PRINT_CHAR PRINT_STRING MODULO
 %token <sValue> BARRA INCREMENTO DECREMENTO MAIS MENOS_UNARIO EXPONENCIACAO ATRIBUICAO OPERADOR_TERNARIO
 %token <sValue> MENOR_QUE MAIOR_QUE MENOR_OU_IGUAL_A MAIOR_OU_IGUAL_A IGUAL_A DIFERENTE_DE
@@ -88,11 +88,11 @@ struct_list         : struct                                            {}
 struct              : STRUCT ID IS decl_list ENDSTRUCT                  {}
                     ;
 
-stmt                : decl PONTO_E_VIRGULA                              {makeStmt(strcat($1,";"));} 
+stmt                : decl PONTO_E_VIRGULA                              {makeStmt(strcat(strcat($1,";"),"\n"));} 
                     | if_stmt                                           {}
                     | while_stmt                                        {} 
                     | for_stmt                                          {}
-                    | atribuicoes PONTO_E_VIRGULA                       {makeStmt(strcat($1,";"));}
+                    | atribuicoes PONTO_E_VIRGULA                       {makeStmt(strcat(strcat($1,";"),"\n"));}
                     | invoca_procedimento PONTO_E_VIRGULA               {}
                     | switch_stmt                                       {}
                     | print PONTO_E_VIRGULA                             {}
@@ -136,19 +136,13 @@ decl_list           : decl PONTO_E_VIRGULA {}
                     ;
 
 while_stmt          : WHILE PARENTESE_ESQUERDA 
-                    {
-                        makeStmt("condicao:\n\t if(");
-                    }
                     valor PARENTESE_DIREITA
                     {
-                        
-                        makeStmt(strcat($1,")"));
-
+                        sprintf(buffer, "while ( %s ) {\n",$3);
+                        makeStmt(buffer);
                     } stmts 
-                    {
-                        makeStmt("\n}");
-                    }
-                    END_WHILE
+                    
+                    END_WHILE {makeStmt(" }");}
                     ;
 
 for_stmt            : FOR PARENTESE_ESQUERDA 
@@ -243,9 +237,9 @@ type                : CARACTERE     {$$ = $1;}
 /*Colocar demais operadores*/
 
 
-valor               : expressoes E_LOGICO expressoes    {}  
-                    | expressoes OU_LOGICO expressoes   {}   
-                    | expressoes                        {}                          
+valor               : expressoes E_LOGICO expressoes    {$$ = strcat(strcat($1,$2),$3);}  
+                    | expressoes OU_LOGICO expressoes   {$$ = strcat(strcat($1,$2),$3);}   
+                    | expressoes                        {$$ = $1}                          
                     ;
 
 expressoes          : {$$ = " ";}
@@ -309,7 +303,7 @@ int main (void) {
 
 void makeStmt(char* stmt){
     printf("%s\n",stmt);
-    fprintf (arquivo, "%s\n",stmt);
+    fprintf (arquivo, "%s",stmt);
 }
 
 
