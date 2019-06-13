@@ -191,7 +191,7 @@ case                : CASE PARENTESE_ESQUERDA id PARENTESE_DIREITA DOIS_PONTOS s
 /************ ATRIBUICOES *****/
 atribuicoes         : atribuicao_simples                    { $$ = $1;}
                     | atribuicao_unaria                     { $$ = $1;}
-                    | atribuicao_composta                   { $$ = $1} 
+                    | atribuicao_composta                   { $$ = $1;} 
                     | atribuicao_paralela                   {}
                     ;
 
@@ -248,7 +248,7 @@ type                : CARACTERE     {$$ = $1;}
 
 valor               : expressoes E_LOGICO expressoes    {$$ = strcat(strcat($1,$2),$3);}  
                     | expressoes OU_LOGICO expressoes   {$$ = strcat(strcat($1,$2),$3);}   
-                    | expressoes                        {$$ = $1}                          
+                    | expressoes                        {$$ = $1;}                          
                     ;
 
 expressoes          : {}
@@ -291,7 +291,7 @@ funcao              : FUNCAO ID  PARENTESE_ESQUERDA args
 id                  : ID                                                { $$ = $1; }
                     | DIGITO                                            { $$ = _itoa($1,buffer,10);}
                     | ID COLCHETE_ESQUERDA expressoes COLCHETE_DIREITA  { $$ = strcat(strcat(strcat($1,"["),$3),"]");}
-                    | PARENTESE_ESQUERDA expressoes PARENTESE_DIREITA   { $$ = strcat(strcat(strcat($1,"("),$3),")");;}
+                    | PARENTESE_ESQUERDA expressoes PARENTESE_DIREITA   { $$ = strcat(strcat(strcat($1,"("),$3),")");}
                     ;
 %%
 
