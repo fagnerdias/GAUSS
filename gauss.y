@@ -45,6 +45,9 @@
 %token <sValue> ID
 %token LITERAL_QUALQUER
 
+
+%type <sValue> while_stmt
+%type <sValue> valor
 %type <sValue> args type 
 %type <sValue> decl vars atribuicoes expressoes atribuicao_simples
 %type <sValue> id
@@ -133,7 +136,20 @@ decl_list           : decl PONTO_E_VIRGULA {}
                     | decl PONTO_E_VIRGULA decl_list    {}
                     ;
 
-while_stmt          : WHILE PARENTESE_ESQUERDA valor PARENTESE_DIREITA stmts END_WHILE  {}
+while_stmt          : WHILE PARENTESE_ESQUERDA 
+                    {
+                        makeStmt("condicao:\n\tif(");
+                    }
+                    valor PARENTESE_DIREITA
+                    {
+                        
+                        makeStmt(strcat($1,")"));
+
+                    } stmts 
+                    {
+                        makeStmt("\n}")
+                    }
+                    END_WHILE  
                     ;
 
 for_stmt            : FOR PARENTESE_ESQUERDA 
@@ -263,9 +279,11 @@ args                :                                                           
 funcao              : FUNCAO ID  PARENTESE_ESQUERDA args 
                       PARENTESE_DIREITA RETURN type IS
                       TBEGIN { insertFunc($2, escopo, $7, $4); escopo++; 
-                                sprintf(buffer,"\n %s %s(%s) {\n",$7,$2,$4);
-                                makeStmt(buffer);} stmts END ID  
-                      { }
+                                sprintf(buffer,"\n%s %s (%s) {\n",$7,$2,$4);
+                                makeStmt(buffer);
+                                
+                                } stmts END ID  
+                      { makeStmt("}");}
                     ;
 
 id                  : ID                                                { $$ = $1; }
