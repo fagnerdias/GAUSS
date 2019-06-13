@@ -90,7 +90,7 @@ stmt                : decl PONTO_E_VIRGULA                              {makeStm
                     | if_stmt                                           {}
                     | while_stmt                                        {} 
                     | for_stmt                                          {}
-                    | atribuicoes PONTO_E_VIRGULA                       {printf("teste1\n");/*makeStmt(strcat($1,";"));*/}
+                    | atribuicoes PONTO_E_VIRGULA                       {makeStmt(strcat($1,";"));}
                     | invoca_procedimento PONTO_E_VIRGULA               {}
                     | switch_stmt                                       {}
                     | print PONTO_E_VIRGULA                             {}
@@ -171,13 +171,13 @@ case                : CASE PARENTESE_ESQUERDA id PARENTESE_DIREITA DOIS_PONTOS s
                     ;
 
 /************ ATRIBUICOES *****/
-atribuicoes         : atribuicao_simples                    {printf("teste_at2\n");/*$$ = $1;*/}
+atribuicoes         : atribuicao_simples                    {$$ = $1;}
                     | atribuicao_unaria                     {}
                     | atribuicao_composta                   {} 
                     | atribuicao_paralela                   {}
                     ;
 
-atribuicao_simples  : id ATRIBUICAO expressoes { /*$$ = strcat(strcat($1, "="),$3);*/}
+atribuicao_simples  : id ATRIBUICAO expressoes { $$ = strcat(strcat($1, "="),$3);}
                     ;
 
 atribuicao_unaria   : id operador_unario                   {}
@@ -194,26 +194,26 @@ operador_unario     : INCREMENTO        {}
                     | DECREMENTO        {}
                     ;
 
-operador            : MAIS              {}           
-                    | MENOS_UNARIO      {}
-                    | EXPONENCIACAO     {}
-                    | BARRA             {}
-                    | MODULO            {}
+operador            : MAIS              {$$ = $1;}           
+                    | MENOS_UNARIO      {$$ = $1;}
+                    | EXPONENCIACAO     {$$ = $1;}
+                    | BARRA             {$$ = $1;}
+                    | MODULO            {$$ = $1;}
                     ;
                     
-operador_comp       : MENOR_QUE         {}
-                    | MAIOR_QUE         {}
-                    | MENOR_OU_IGUAL_A  {}
-                    | MAIOR_OU_IGUAL_A  {}
-                    | IGUAL_A           {}
-                    | DIFERENTE_DE      {}
+operador_comp       : MENOR_QUE         {$$ = $1;}
+                    | MAIOR_QUE         {$$ = $1;}
+                    | MENOR_OU_IGUAL_A  {$$ = $1;}
+                    | MAIOR_OU_IGUAL_A  {$$ = $1;}
+                    | IGUAL_A           {$$ = $1;}
+                    | DIFERENTE_DE      {$$ = $1;}
                     ;
 
-operador_composto   : MAIS_IGUAL                      {}
-                    | MENOS_IGUAL                     {}
-                    | VEZES_IGUAL                     {}
-                    | DIV_IGUAL                       {}
-                    | EXPONENCIACAO_IGUAL             {}
+operador_composto   : MAIS_IGUAL                      {$$ = $1;}
+                    | MENOS_IGUAL                     {$$ = $1;}
+                    | VEZES_IGUAL                     {$$ = $1;}
+                    | DIV_IGUAL                       {$$ = $1;}
+                    | EXPONENCIACAO_IGUAL             {$$ = $1;}
                     ;
 
 type                : CARACTERE     {$$ = $1;}
@@ -234,10 +234,10 @@ valor               : expressoes E_LOGICO expressoes    {}
                     ;
 
 expressoes          : {$$ = " ";}
-                    | id                    {/*printf("teste3");$$ = $1;*/}
-                    | id operador id        {/*$$ = strcat(strcat($1,$2),$3);*/}
-                    | id operador_comp id   {}
-                    | vetorial              {} 
+                    | id                    {$$ = $1;}
+                    | id operador id        {$$ = strcat(strcat($1,$2),$3);}
+                    | id operador_comp id   {$$ = strcat(strcat($1,$2),$3);}
+                    | vetorial              {/*$$ = $1;*/} 
                     ;
 
 vetorial            : CHAVE_ESQUERDA lista_de_digitos CHAVE_DIREITA {}  
@@ -269,7 +269,7 @@ funcao              : FUNCAO ID  PARENTESE_ESQUERDA args
                     ;
 
 id                  : ID                                                { $$ = $1; }
-                    | DIGITO                                            { }
+                    | DIGITO                                            { $$ = _itoa($1,buffer,10);}
                     | ID COLCHETE_ESQUERDA expressoes COLCHETE_DIREITA  {}
                     | PARENTESE_ESQUERDA expressoes PARENTESE_DIREITA   {}
                     ;
