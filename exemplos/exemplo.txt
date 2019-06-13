@@ -1,6 +1,5 @@
 func main() return int is
 begin
 	int a;
-	oric();
 	a=10;
 end main

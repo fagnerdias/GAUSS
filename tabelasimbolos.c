@@ -45,14 +45,14 @@ int printFunc(){
 	return 0;
 }
 
-
+/*metodo para auxiliar a inserção de uma variavel na tabela de simbolos */
 int findVarToInsert(char *id, int escopo) {
 	for( int i=0; i<sizeVectorVar; i++ ) {
 		if( strcmp(id, vetorVar[i].id) == 0 ) { //encontrado equivalente no vetor
 			return 0; //encontrou id, var declarada
 		}
 	}
-	return 0;
+	return 1; //nao encontrou, funcao nao declarada
 }
 /* método para verificar se a chamada de uma variavel é valida */
 int findVar(char *id, int escopo){
@@ -60,7 +60,7 @@ int findVar(char *id, int escopo){
 		printf("erro: %s - variavel nao declarada\n", id);
 		return 1; // erro
 	}
-	return 0;
+	return 0; //encontrou var
 }
 
 /* insere a variavel no vetor caso nao a encontre ja declarada */
@@ -69,7 +69,6 @@ int insertVar(char *id, int escopo, char *tipo){
 	if( findVarToInsert(id, escopo) == 0 ){ //encontrada declarada
 		printf("erro: %s - variavel ja declarada previamente\n", id);
 		return 1; //erro
-	}else{
 	}
 
 	Var temp;
@@ -84,6 +83,7 @@ int insertVar(char *id, int escopo, char *tipo){
 	return 0; //inseriu a variavel com sucesso
 }
 
+/*metodo para auxiliar a inserção de uma funcao/procedimento na tabela de simbolos */
 int findFuncToInsert(char *id, int escopo) {
 	for( int i=0; i<sizeVectorFunc; i++ ) {
 		if( strcmp(id, vetorFunc[i].id) == 0 ) { //encontrado equivalente no vetor
@@ -99,7 +99,7 @@ int findFunc(char *id, int escopo) {
 		printf("erro: %s - procedimento nao declarado\n", id);
 		return 1; //erro
 	}
-	return 0; //é valida
+	return 0; //encontrou func, é valida
 }
 
 /* insere a funcao no vetor caso nao a encontre ja declarada */
@@ -119,6 +119,7 @@ int insertFunc(char *id, int escopo, char *tipoRetorno, char *tipoParams) {
 
 	vetorFunc[sizeVectorVar] = temp;
 	sizeVectorFunc++;
+	return 1;
 
 	printf("sucesso: %s - procedimento/funcao foi declarado(a) \n", id);
 	return 0; //inseriu o procedimento/funcao com sucesso
