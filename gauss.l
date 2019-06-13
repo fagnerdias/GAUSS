@@ -57,9 +57,9 @@
 
 "+="			{ yylval.sValue = strdup("+=");return (MAIS_IGUAL); }
 "-="			{ yylval.sValue = strdup("-=");return (MENOS_IGUAL); }
-"*="			{ return (VEZES_IGUAL); }
-"/="			{ return (DIV_IGUAL); }
-"^="			{ return (EXPONENCIACAO_IGUAL); }
+"*="			{ yylval.sValue = strdup("*=");return (VEZES_IGUAL); }
+"/="			{ yylval.sValue = strdup("/=");return (DIV_IGUAL); }
+"^="			{ yylval.sValue = strdup("^=");return (EXPONENCIACAO_IGUAL); }
 
 
 "="				{ yylval.sValue = strdup("=");return (ATRIBUICAO); }

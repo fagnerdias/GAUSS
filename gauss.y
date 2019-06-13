@@ -48,7 +48,7 @@
 
 %type <sValue> valor
 %type <sValue> args type 
-%type <sValue> decl vars atribuicoes expressoes atribuicao_simples operador operador_composto operador_comp operador_unario atribuicao_unaria
+%type <sValue> decl vars atribuicoes expressoes atribuicao_simples operador operador_composto operador_comp operador_unario atribuicao_unaria atribuicao_composta
 %type <sValue> id lista_de_digitos vetorial
 %type <sValue> stmt
 
@@ -182,7 +182,7 @@ case                : CASE PARENTESE_ESQUERDA id PARENTESE_DIREITA DOIS_PONTOS s
 /************ ATRIBUICOES *****/
 atribuicoes         : atribuicao_simples                    {$$ = $1;}
                     | atribuicao_unaria                     { $$ = $1;}
-                    | atribuicao_composta                   {} 
+                    | atribuicao_composta                   { $$ = $1} 
                     | atribuicao_paralela                   {}
                     ;
 
@@ -193,7 +193,7 @@ atribuicao_unaria   : id operador_unario                   {$$ = strcat($1,$2);}
                     | operador_unario ID                   {$$ = strcat($1,$2);}
                     ;
 
-atribuicao_composta : id operador_composto valor     {}
+atribuicao_composta : id operador_composto valor     {$$ = strcat(strcat($1,$2),$3);}
                     ;
 
 atribuicao_paralela : vars ATRIBUICAO expressoes_list {}
@@ -266,9 +266,9 @@ vars                : ID VIRGULA ID     { $$ = strcat(strcat($1,","),$3); }
                     ;
 
 args                :                                                           { $$ = ""; }
-                    | type ID                                                   { $$ = strcat(strcat($1, "#"),$2); }
-                    | type ID COLCHETE_ESQUERDA COLCHETE_DIREITA VIRGULA args   {$$ = ""; }
-                    | type ID VIRGULA args                                      {$$ = ""; }
+                    | type ID                                                   { $$ = strcat(strcat($1, " "),$2); }
+                    | type ID COLCHETE_ESQUERDA COLCHETE_DIREITA VIRGULA args   {sprintf(buffer, "%s %s[], %s",$1,$2,$6); $$ = buffer; }
+                    | type ID VIRGULA args                                      {sprintf(buffer,"%s %s,%s",$1,$2,$4); $$ = buffer; }
                     ;
 
 funcao              : FUNCAO ID  PARENTESE_ESQUERDA args 
@@ -283,8 +283,8 @@ funcao              : FUNCAO ID  PARENTESE_ESQUERDA args
 
 id                  : ID                                                { $$ = $1; }
                     | DIGITO                                            { $$ = _itoa($1,buffer,10);}
-                    | ID COLCHETE_ESQUERDA expressoes COLCHETE_DIREITA  {}
-                    | PARENTESE_ESQUERDA expressoes PARENTESE_DIREITA   {}
+                    | ID COLCHETE_ESQUERDA expressoes COLCHETE_DIREITA  { sprintf(buffer,"%s[%s]",$1,$3);$$ = buffer;}
+                    | PARENTESE_ESQUERDA expressoes PARENTESE_DIREITA   {sprintf(buffer,"(%s)",$2);$$ = buffer;}
                     ;
 %%
 
