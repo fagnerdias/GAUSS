@@ -76,11 +76,11 @@ int findFunc(char *id, int escopo){
 	return 0;
 }
 
-void insertVar(char *id, int escopo, char *tipo){
+int insertVar(char *id, int escopo, char *tipo){
 
 	if(findVarToInsert(id, escopo)==1){
 		printf("%s : variavel ja declarada antes\n", id);
-		return;
+		return 0;
 	}else{
 		printf("%s : var salva na tabela \n", id);
 	}
@@ -92,12 +92,13 @@ void insertVar(char *id, int escopo, char *tipo){
 
 	vetorVar[sizeVectorVar] = temp;
 	sizeVectorVar++;
+	return 1;
 }
-void insertFunc(char *id, int escopo, char *tipoRetorno, char *tipoParams){
+int insertFunc(char *id, int escopo, char *tipoRetorno, char *tipoParams){
 	
 	if(findFuncToInsert(id, escopo)==1){
 		printf("%s : procedimento ja declarado antes\n", id);
-		return;
+		return 0;
 	}else{
 		printf("%s : procedimento salvo na tabela \n", id);
 	}
@@ -111,6 +112,7 @@ void insertFunc(char *id, int escopo, char *tipoRetorno, char *tipoParams){
 
 	vetorFunc[sizeVectorVar] = temp;
 	sizeVectorFunc++;
+	return 1;
 
 }
 

@@ -16,6 +16,7 @@
   //typedef enum {false, true} bool;
 
   char* _itoa(int valor, char* resultado, int base);
+  void makeStmt(char* stmt);
 
 %}
 
@@ -28,11 +29,11 @@
   char * sValue;  /* string value */
 }
 
-%token CHAVE_ESQUERDA CHAVE_DIREITA PARENTESE_ESQUERDA PARENTESE_DIREITA COLCHETE_ESQUERDA COLCHETE_DIREITA 
-%token PONTO_E_VIRGULA VIRGULA PONTO DOIS_PONTOS
+%token <sValue> CHAVE_ESQUERDA CHAVE_DIREITA PARENTESE_ESQUERDA PARENTESE_DIREITA COLCHETE_ESQUERDA COLCHETE_DIREITA 
+%token <sValue> PONTO_E_VIRGULA VIRGULA PONTO DOIS_PONTOS
 %token E_LOGICO E_LOGICO_CURTO_CIRCUITO OU_LOGICO OU_LOGICO_CURTO_CIRCUITO EXCLAMACAO
 %token ASTERISCO PRINT_INT PRINT_FLOAT PRINT_CHAR PRINT_STRING MODULO
-%token BARRA INCREMENTO DECREMENTO MAIS MENOS_UNARIO EXPONENCIACAO ATRIBUICAO OPERADOR_TERNARIO
+%token <sValue> BARRA INCREMENTO DECREMENTO MAIS MENOS_UNARIO EXPONENCIACAO ATRIBUICAO OPERADOR_TERNARIO
 %token MENOR_QUE MAIOR_QUE MENOR_OU_IGUAL_A MAIOR_OU_IGUAL_A IGUAL_A DIFERENTE_DE
 %token MAIS_IGUAL MENOS_IGUAL VEZES_IGUAL DIV_IGUAL EXPONENCIACAO_IGUAL
 %token FOR END_FOR DO WHILE END_WHILE SWITCH END_SWITCH CASE END_CASE DEFAULT 
@@ -45,7 +46,9 @@
 %token LITERAL_QUALQUER
 
 %type <sValue> args type 
+%type <sValue> decl vars atribuicoes expressoes atribuicao_simples
 %type <sValue> id
+%type <sValue> stmt
 
 %start prog
 
@@ -64,8 +67,14 @@ stmts               : stmt              {}
                     | stmt stmts        {}
                     ;
 
-decl                : type id           { insertVar($2, escopo, $1); }
-                    | type vars         { insertVar($2, escopo, $1); }
+decl                : type id           { if(insertVar($2, escopo, $1) == 1){
+                                            $$ = strcat(strcat($1," "),$2);          
+                                            } 
+                                        }
+                    | type vars         { if(insertVar($2, escopo, $1) == 1){
+                                            $$ = strcat(strcat($1," "),$2);          
+                                            } 
+                                        }
                     | type vars decl    {}
                     | type atribuicoes  {}
                     ;
@@ -77,11 +86,11 @@ struct_list         : struct                                            {}
 struct              : STRUCT ID IS decl_list ENDSTRUCT                  {}
                     ;
 
-stmt                : decl PONTO_E_VIRGULA                              {} 
+stmt                : decl PONTO_E_VIRGULA                              {makeStmt(strcat($1,";"));} 
                     | if_stmt                                           {}
                     | while_stmt                                        {} 
                     | for_stmt                                          {}
-                    | atribuicoes PONTO_E_VIRGULA                       {}
+                    | atribuicoes PONTO_E_VIRGULA                       {printf("teste1\n");/*makeStmt(strcat($1,";"));*/}
                     | invoca_procedimento PONTO_E_VIRGULA               {}
                     | switch_stmt                                       {}
                     | print PONTO_E_VIRGULA                             {}
@@ -162,13 +171,13 @@ case                : CASE PARENTESE_ESQUERDA id PARENTESE_DIREITA DOIS_PONTOS s
                     ;
 
 /************ ATRIBUICOES *****/
-atribuicoes         : atribuicao_simples                    {}
+atribuicoes         : atribuicao_simples                    {printf("teste_at2\n");/*$$ = $1;*/}
                     | atribuicao_unaria                     {}
                     | atribuicao_composta                   {} 
                     | atribuicao_paralela                   {}
                     ;
 
-atribuicao_simples  : id ATRIBUICAO expressoes {}
+atribuicao_simples  : id ATRIBUICAO expressoes { /*$$ = strcat(strcat($1, "="),$3);*/}
                     ;
 
 atribuicao_unaria   : id operador_unario                   {}
@@ -224,9 +233,9 @@ valor               : expressoes E_LOGICO expressoes    {}
                     | expressoes                        {}                          
                     ;
 
-expressoes          : {}
-                    | id                    {}
-                    | id operador id        {}
+expressoes          : {$$ = " ";}
+                    | id                    {/*printf("teste3");$$ = $1;*/}
+                    | id operador id        {/*$$ = strcat(strcat($1,$2),$3);*/}
                     | id operador_comp id   {}
                     | vetorial              {} 
                     ;
@@ -253,7 +262,9 @@ args                :                                                           
 
 funcao              : FUNCAO ID  PARENTESE_ESQUERDA args 
                       PARENTESE_DIREITA RETURN type IS
-                      TBEGIN { insertFunc($2, escopo, $7, $4); escopo++;} stmts END ID  
+                      TBEGIN { insertFunc($2, escopo, $7, $4); escopo++; 
+                                sprintf(buffer,"\n %s %s(%s) {\n",$7,$2,$4);
+                                makeStmt(buffer);} stmts END ID  
                       { }
                     ;
 
@@ -275,6 +286,11 @@ int main (void) {
     fclose(arquivo);
     
     return 1;
+}
+
+void makeStmt(char* stmt){
+    printf("%s\n",stmt);
+    fprintf (arquivo, "%s\n",stmt);
 }
 
 
