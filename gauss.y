@@ -48,8 +48,8 @@
 
 %type <sValue> valor
 %type <sValue> args type 
-%type <sValue> decl vars atribuicoes expressoes atribuicao_simples operador operador_composto operador_comp
-%type <sValue> id
+%type <sValue> decl vars atribuicoes expressoes atribuicao_simples operador operador_composto operador_comp operador_unario atribuicao_unaria
+%type <sValue> id lista_de_digitos vetorial
 %type <sValue> stmt
 
 %start prog
@@ -148,7 +148,7 @@ while_stmt          : WHILE PARENTESE_ESQUERDA
                     {
                         makeStmt("\n}");
                     }
-                    END_WHILE {makeStmt("}\n");} 
+                    END_WHILE
                     ;
 
 for_stmt            : FOR PARENTESE_ESQUERDA 
@@ -187,16 +187,16 @@ case                : CASE PARENTESE_ESQUERDA id PARENTESE_DIREITA DOIS_PONTOS s
 
 /************ ATRIBUICOES *****/
 atribuicoes         : atribuicao_simples                    {$$ = $1;}
-                    | atribuicao_unaria                     {}
+                    | atribuicao_unaria                     { $$ = $1;}
                     | atribuicao_composta                   {} 
                     | atribuicao_paralela                   {}
                     ;
 
-atribuicao_simples  : id ATRIBUICAO expressoes { $$ = strcat(strcat($1, "="),$3);}
+atribuicao_simples  : id ATRIBUICAO expressoes { $$ = strcat(strcat($1, $2),$3);}
                     ;
 
-atribuicao_unaria   : id operador_unario                   {}
-                    | operador_unario ID                   {}
+atribuicao_unaria   : id operador_unario                   {$$ = strcat($1,$2);}
+                    | operador_unario ID                   {$$ = strcat($1,$2);}
                     ;
 
 atribuicao_composta : id operador_composto valor     {}
@@ -205,8 +205,8 @@ atribuicao_composta : id operador_composto valor     {}
 atribuicao_paralela : vars ATRIBUICAO expressoes_list {}
                     ;
 
-operador_unario     : INCREMENTO        {}
-                    | DECREMENTO        {}
+operador_unario     : INCREMENTO        {$$ = $1;}
+                    | DECREMENTO        {$$ = $1;}
                     ;
 
 operador            : MAIS              {$$ = $1;}           
@@ -255,11 +255,13 @@ expressoes          : {$$ = " ";}
                     | vetorial              {/*$$ = $1;*/} 
                     ;
 
-vetorial            : CHAVE_ESQUERDA lista_de_digitos CHAVE_DIREITA {}  
+vetorial            : CHAVE_ESQUERDA lista_de_digitos CHAVE_DIREITA { 
+                                                                    /*$$ = "2";*/
+                                                                    }  
                         
                     ;   
-lista_de_digitos    : DIGITO                            {}
-                    | DIGITO VIRGULA lista_de_digitos   {}
+lista_de_digitos    : DIGITO                            {$$ = _itoa($1,buffer,10);}
+                    | DIGITO VIRGULA lista_de_digitos   {$$ = strcat(strcat(_itoa($1,buffer,10),";"),$2);}
                     ;               
 
 expressoes_list      : expressoes VIRGULA expressoes {}
