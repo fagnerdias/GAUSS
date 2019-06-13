@@ -9,7 +9,7 @@
   extern char * yytext; 
 
   int escopo = -1;
-  char *buffer;
+  char buffer[33];
   FILE *arquivo;
   
 
@@ -66,8 +66,8 @@ subprog             : funcao                    {}
                     | subprog funcao            {}
                     ;
 
-stmts               : stmt              {}
-                    | stmt stmts        {makeStmt(strcat($1,$2));}
+stmts               : stmt              {makeStmt($1);}
+                    | stmt stmts        {makeStmt($1);}
                     ;
 
 decl                : type id           { $$ = strcat(strcat($1," "),$2); }
@@ -189,7 +189,7 @@ case                : CASE PARENTESE_ESQUERDA id PARENTESE_DIREITA DOIS_PONTOS s
                     ;
 
 /************ ATRIBUICOES *****/
-atribuicoes         : atribuicao_simples                    {$$ = $1;}
+atribuicoes         : atribuicao_simples                    { $$ = $1;}
                     | atribuicao_unaria                     { $$ = $1;}
                     | atribuicao_composta                   { $$ = $1} 
                     | atribuicao_paralela                   {}
@@ -251,7 +251,7 @@ valor               : expressoes E_LOGICO expressoes    {$$ = strcat(strcat($1,$
                     | expressoes                        {$$ = $1}                          
                     ;
 
-expressoes          : {$$ = " ";}
+expressoes          : {}
                     | id                    {$$ = $1;}
                     | id operador id        {$$ = strcat(strcat($1,$2),$3);}
                     | id operador_comp id   {$$ = strcat(strcat($1,$2),$3);}
@@ -341,8 +341,4 @@ char* _itoa(int valor, char* resultado, int base) {
         *ponteiro1++ = tmp_char;
     }
     return resultado;
-}
-
-void limparBuffer(){
-    free(buffer);
 }
