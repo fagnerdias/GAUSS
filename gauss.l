@@ -27,48 +27,50 @@
 ")" 			{ return (PARENTESE_DIREITA); }
 "[" 			{ return (COLCHETE_ESQUERDA); }
 "]" 			{ return (COLCHETE_DIREITA); }
-";" 			{ return (PONTO_E_VIRGULA); }
+";" 			{ yylval.sValue = strdup(";");return (PONTO_E_VIRGULA); }
 "," 			{ return (VIRGULA); }
 \.				{ return (PONTO); }
 ":"				{ return (DOIS_PONTOS); }
 
-"&&" 			{ return (E_LOGICO); }
-"&" 			{ return (E_LOGICO_CURTO_CIRCUITO); }
-"||"			{ return (OU_LOGICO); }
-"|"				{ return (OU_LOGICO_CURTO_CIRCUITO); }
-"!="			{ return (DIFERENTE_DE); }
-"!" 			{ return (EXCLAMACAO); }
+"&&" 			{ yylval.sValue = strdup("&&");return (E_LOGICO); }
+"&" 			{ yylval.sValue = strdup("&");return (E_LOGICO_CURTO_CIRCUITO); }
+"||"			{ yylval.sValue = strdup("||");return (OU_LOGICO); }
+"|"				{ yylval.sValue = strdup("|");return (OU_LOGICO_CURTO_CIRCUITO); }
+"!="			{ yylval.sValue = strdup("!=");return (DIFERENTE_DE); }
+"!" 			{ yylval.sValue = strdup("!");return (EXCLAMACAO); }
 
 
-"*"				{ return (ASTERISCO); }
-"%i"			{ return (PRINT_INT); }
-"%."[0-9]*"f"	{ return (PRINT_FLOAT); }
-"%c"			{ return (PRINT_CHAR); }
-"%s"			{ return (PRINT_STRING); }
-"%"				{ return (MODULO); }
-"/" 			{ return (BARRA); }
-"++"			{ return (INCREMENTO); }
-"--"			{ return (DECREMENTO); }
-"+" 			{ return (MAIS); }
-"-" 			{ return (MENOS_UNARIO); }
-"^" 			{ return (EXPONENCIACAO); }
-
-"<" 			{ return (MENOR_QUE); }
-">" 			{ return (MAIOR_QUE); }
-"<="			{ return (MENOR_OU_IGUAL_A); }
-">="			{ return (MAIOR_OU_IGUAL_A); }
-"=="			{ return (IGUAL_A); }
-
-"+="			{ return (MAIS_IGUAL); }
-"-="			{ return (MENOS_IGUAL); }
-"*="			{ return (VEZES_IGUAL); }
-"/="			{ return (DIV_IGUAL); }
-"^="			{ return (EXPONENCIACAO_IGUAL); }
+"*"				{ yylval.sValue = strdup("*");return (ASTERISCO); }
+"%i"			{ yylval.sValue = strdup("%i");return (PRINT_INT); }
+"%."[0-9]*"f"	{ yylval.sValue = strdup("%.4f");return (PRINT_FLOAT); }
+"%c"			{ yylval.sValue = strdup("%c");return (PRINT_CHAR); }
+"%s"			{ yylval.sValue = strdup("%s");return (PRINT_STRING); }
+"%"				{ yylval.sValue = strdup("%");return (MODULO); }
+"/" 			{ yylval.sValue = strdup("/");return (BARRA); }
+"++"			{ yylval.sValue = strdup("++");return (INCREMENTO); }
+"--"			{ yylval.sValue = strdup("--");return (DECREMENTO); }
 
 
-"="				{ return (ATRIBUICAO); }
+"<="			{ yylval.sValue = strdup("<=");return (MENOR_OU_IGUAL_A); }
+">="			{ yylval.sValue = strdup(">=");return (MAIOR_OU_IGUAL_A); }
+"=="			{ yylval.sValue = strdup("==");return (IGUAL_A); }
 
-"?"				{ return (OPERADOR_TERNARIO); }
+"+="			{ yylval.sValue = strdup("+=");return (MAIS_IGUAL); }
+"-="			{ yylval.sValue = strdup("-=");return (MENOS_IGUAL); }
+"*="			{ yylval.sValue = strdup("*=");return (VEZES_IGUAL); }
+"/="			{ yylval.sValue = strdup("/=");return (DIV_IGUAL); }
+"^="			{ yylval.sValue = strdup("^=");return (EXPONENCIACAO_IGUAL); }
+
+
+"="				{ yylval.sValue = strdup("=");return (ATRIBUICAO); }
+
+"?"				{ yylval.sValue = strdup("?");return (OPERADOR_TERNARIO); }
+
+"<" 			{ yylval.sValue = strdup("<");return (MENOR_QUE); }
+">" 			{ yylval.sValue = strdup(">");return (MAIOR_QUE); }
+"+" 			{ yylval.sValue = strdup("+");return (MAIS); }
+"-" 			{ yylval.sValue = strdup("-");return (MENOS_UNARIO); }
+"^" 			{ yylval.sValue = strdup("^");return (EXPONENCIACAO); }
 
 "JUMP" 			{ return (JUMP); }
 "BREAK" 		{ return (BREAK); }
@@ -94,7 +96,7 @@
 "end"			{ return (END); }
 "func"			{ return (FUNCAO); }
 "proc"			{ return (PROC); }
-"return"		{ return (RETURN); }
+"return"		{ yylval.sValue = strdup("return");return (RETURN); }
 "begin"			{ return (TBEGIN); }
 "#const"		{ return (CONSTANTE); }
 "printf"		{ return (PRINTF); }
