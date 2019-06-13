@@ -32,11 +32,11 @@
 %token <sValue> CHAVE_ESQUERDA CHAVE_DIREITA PARENTESE_ESQUERDA PARENTESE_DIREITA COLCHETE_ESQUERDA COLCHETE_DIREITA 
 %token <sValue> PONTO_E_VIRGULA VIRGULA PONTO DOIS_PONTOS
 %token E_LOGICO E_LOGICO_CURTO_CIRCUITO OU_LOGICO OU_LOGICO_CURTO_CIRCUITO EXCLAMACAO
-%token ASTERISCO PRINT_INT PRINT_FLOAT PRINT_CHAR PRINT_STRING MODULO
+%token <sValue> ASTERISCO PRINT_INT PRINT_FLOAT PRINT_CHAR PRINT_STRING MODULO
 %token <sValue> BARRA INCREMENTO DECREMENTO MAIS MENOS_UNARIO EXPONENCIACAO ATRIBUICAO OPERADOR_TERNARIO
-%token MENOR_QUE MAIOR_QUE MENOR_OU_IGUAL_A MAIOR_OU_IGUAL_A IGUAL_A DIFERENTE_DE
-%token MAIS_IGUAL MENOS_IGUAL VEZES_IGUAL DIV_IGUAL EXPONENCIACAO_IGUAL
-%token FOR END_FOR DO WHILE END_WHILE SWITCH END_SWITCH CASE END_CASE DEFAULT 
+%token <sValue> MENOR_QUE MAIOR_QUE MENOR_OU_IGUAL_A MAIOR_OU_IGUAL_A IGUAL_A DIFERENTE_DE
+%token <sValue> MAIS_IGUAL MENOS_IGUAL VEZES_IGUAL DIV_IGUAL EXPONENCIACAO_IGUAL
+%token <sValue> FOR END_FOR DO WHILE END_WHILE SWITCH END_SWITCH CASE END_CASE DEFAULT 
 %token IF END_IF ELSE ELSEIF THEN STRUCT ENDSTRUCT IS END 
 %token <sValue> FUNCAO PROC RETURN TBEGIN CONSTANTE PRINTF SCANF 
 %token <sValue> CARACTERE STRING INTEIRO FLOAT DOUBLE VOID
@@ -46,10 +46,9 @@
 %token LITERAL_QUALQUER
 
 
-%type <sValue> while_stmt
 %type <sValue> valor
 %type <sValue> args type 
-%type <sValue> decl vars atribuicoes expressoes atribuicao_simples
+%type <sValue> decl vars atribuicoes expressoes atribuicao_simples operador operador_composto operador_comp
 %type <sValue> id
 %type <sValue> stmt
 
@@ -138,7 +137,7 @@ decl_list           : decl PONTO_E_VIRGULA {}
 
 while_stmt          : WHILE PARENTESE_ESQUERDA 
                     {
-                        makeStmt("condicao:\n\tif(");
+                        makeStmt("condicao:\n\t if(");
                     }
                     valor PARENTESE_DIREITA
                     {
@@ -147,9 +146,9 @@ while_stmt          : WHILE PARENTESE_ESQUERDA
 
                     } stmts 
                     {
-                        makeStmt("\n}")
+                        makeStmt("\n}");
                     }
-                    END_WHILE  
+                    END_WHILE {makeStmt("}\n");} 
                     ;
 
 for_stmt            : FOR PARENTESE_ESQUERDA 

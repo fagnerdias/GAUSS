@@ -12,7 +12,7 @@
 %{
     #include <stdio.h>
     #include <string.h>
-    #include "y.tab.h"
+    #include "gauss.tab.h"
   
   	extern int yyerror (char *msg); 
   	int yylineno; 
@@ -45,30 +45,30 @@
 "%."[0-9]*"f"	{ return (PRINT_FLOAT); }
 "%c"			{ return (PRINT_CHAR); }
 "%s"			{ return (PRINT_STRING); }
-"%"				{ return (MODULO); }
-"/" 			{ return (BARRA); }
-"++"			{ return (INCREMENTO); }
-"--"			{ return (DECREMENTO); }
-"+" 			{ return (MAIS); }
-"-" 			{ return (MENOS_UNARIO); }
-"^" 			{ return (EXPONENCIACAO); }
+"%"				{ yylval.sValue = strdup("%");return (MODULO); }
+"/" 			{ yylval.sValue = strdup("/");return (BARRA); }
+"++"			{ yylval.sValue = strdup("++");return (INCREMENTO); }
+"--"			{ yylval.sValue = strdup("--");return (DECREMENTO); }
+"+" 			{ yylval.sValue = strdup("+");return (MAIS); }
+"-" 			{ yylval.sValue = strdup("-");return (MENOS_UNARIO); }
+"^" 			{ yylval.sValue = strdup("^");return (EXPONENCIACAO); }
 
-"<" 			{ return (MENOR_QUE); }
-">" 			{ return (MAIOR_QUE); }
-"<="			{ return (MENOR_OU_IGUAL_A); }
-">="			{ return (MAIOR_OU_IGUAL_A); }
-"=="			{ return (IGUAL_A); }
+"<" 			{ yylval.sValue = strdup("<");return (MENOR_QUE); }
+">" 			{ yylval.sValue = strdup(">");return (MAIOR_QUE); }
+"<="			{ yylval.sValue = strdup("<=");return (MENOR_OU_IGUAL_A); }
+">="			{ yylval.sValue = strdup(">=");return (MAIOR_OU_IGUAL_A); }
+"=="			{ yylval.sValue = strdup("==");return (IGUAL_A); }
 
-"+="			{ return (MAIS_IGUAL); }
-"-="			{ return (MENOS_IGUAL); }
+"+="			{ yylval.sValue = strdup("+=");return (MAIS_IGUAL); }
+"-="			{ yylval.sValue = strdup("-=");return (MENOS_IGUAL); }
 "*="			{ return (VEZES_IGUAL); }
 "/="			{ return (DIV_IGUAL); }
 "^="			{ return (EXPONENCIACAO_IGUAL); }
 
 
-"="				{ return (ATRIBUICAO); }
+"="				{ yylval.sValue = strdup("=");return (ATRIBUICAO); }
 
-"?"				{ return (OPERADOR_TERNARIO); }
+"?"				{ yylval.sValue = strdup("?");return (OPERADOR_TERNARIO); }
 
 "JUMP" 			{ return (JUMP); }
 "BREAK" 		{ return (BREAK); }
