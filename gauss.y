@@ -138,11 +138,12 @@ decl_list           : decl PONTO_E_VIRGULA {}
 while_stmt          : WHILE PARENTESE_ESQUERDA 
                     valor PARENTESE_DIREITA
                     {
-                        sprintf(buffer, "while ( %s ) {\n",$3);
+                        sprintf(buffer, "condicao:\n\tif(%s)\n\t\tgoto inicio;\n\telse\n\t\tgoto fim;\ninicio:\n",$3);
+                        
                         makeStmt(buffer);
                     } stmts 
                     
-                    END_WHILE {makeStmt(" }");}
+                    END_WHILE {makeStmt("\tgoto condicao;\nfim:\n");}
                     ;
 
 for_stmt            : FOR PARENTESE_ESQUERDA 
