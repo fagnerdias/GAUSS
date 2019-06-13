@@ -77,8 +77,8 @@ decl                : type id           { if(insertVar($2, escopo, $1) == 1){
                                             $$ = strcat(strcat($1," "),$2);          
                                             } 
                                         }
-                    | type vars decl    {}
-                    | type atribuicoes  {}
+                    | type vars decl    {sprintf(buffer,"%s %s, %s",$1,$2,$3); $$ = buffer;}
+                    | type atribuicoes  {sprintf(buffer,"%s %s",$1,$2); $$ = buffer;}
                     ;
 
 struct_list         : struct                                            {}
