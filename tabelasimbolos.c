@@ -5,11 +5,15 @@
 #ifndef TABELASIMBOLOS
 #define TABELASIMBOLOS
 
+typedef enum {
+    Tint, Tfloat,Tdouble, Tbool, caractere, string, Tvoid
+} tipo_t;
+
 typedef struct Var
 {
 	char *id;
 	int escopo;
-	char *tipo;
+	tipo_t tipo;
 }Var;
 
 typedef struct Func
@@ -57,6 +61,7 @@ int findVarToInsert(char *id, int escopo){
 int findVar(char *id, int escopo){
 	if(findVarToInsert(id, escopo)==0){
 		printf("%s : variavel nao declarada\n", id);
+		return 1;
 	}
 	return 0;
 }
@@ -76,6 +81,56 @@ int findFunc(char *id, int escopo){
 	return 0;
 }
 
+Var getVarInfo(char *id, int escopo){
+	Var tmp;
+	if(findVar(id,escopo) == 0){
+		for(int i=0; i<sizeVectorVar; i++){
+			if(strcmp(id, vetorVar[i].id)==0){
+				return vetorVar[i];
+			}
+		}	
+	}
+	else
+		return tmp;
+}
+
+char* getTipo(tipo_t tipo){
+	switch(tipo){
+        case Tint:
+            return "int";
+        case Tfloat:
+            return "float";
+        case Tdouble:
+            return "double";
+        case caractere:
+            return "caractere";
+        case string:
+            return "string";
+        case Tvoid:
+            break;
+	}
+}
+
+char* makePrint(char *id, int escopo){
+	Var tmp = getVarInfo(id,escopo);
+	char* str = "printf(\"";
+	if (strcmp(getTipo(tmp.tipo),"Tint")==0)
+		str = strcat(str, "%i");
+	if (strcmp(getTipo(tmp.tipo),"Tfloat")==0)
+		str = strcat(str, "%f");
+	if (strcmp(getTipo(tmp.tipo),"Tdouble")==0)
+		str = strcat(str, "%d");
+	if (strcmp(getTipo(tmp.tipo),"caractere")==0)
+		str = strcat(str, "%c");
+	if (strcmp(getTipo(tmp.tipo),"string")==0)
+		str = strcat(str, "%s");
+	str = strcat(str,"\", ");
+	str = strcat(str,id);
+
+	return str;
+
+}
+
 int insertVar(char *id, int escopo, char *tipo){
 
 	if(findVarToInsert(id, escopo)==1){
@@ -88,7 +143,16 @@ int insertVar(char *id, int escopo, char *tipo){
 	Var temp;
 	temp.id = id;
 	temp.escopo = escopo;
-	temp.tipo = tipo;
+	if (strcmp(tipo,"Tint")==0)
+		temp.tipo = 0;
+	if (strcmp(tipo,"Tfloat")==0)
+		temp.tipo = 1;
+	if (strcmp(tipo,"Tdouble")==0)
+		temp.tipo = 2;
+	if (strcmp(tipo,"caractere")==0)
+		temp.tipo = 3;
+	if (strcmp(tipo,"string")==0)
+		temp.tipo = 4;
 
 	vetorVar[sizeVectorVar] = temp;
 	sizeVectorVar++;

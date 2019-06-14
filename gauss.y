@@ -48,9 +48,10 @@
 
 
 %type <sValue> valor
-%type <sValue> args type 
+%type <sValue> args 
+%type <sValue> type 
 %type <sValue> decl vars atribuicoes expressoes atribuicao_simples operador operador_composto operador_comp operador_unario atribuicao_unaria atribuicao_composta print ids types_args prints_list tipos_prints
-%type <sValue> id lista_de_digitos vetorial
+%type <sValue> id lista_de_digitos vetorial expressoes_list
 %type <sValue> stmt stmts if_stmt while_stmt for_stmt
 
 %start prog
@@ -96,8 +97,9 @@ stmt                : decl PONTO_E_VIRGULA                              {makeStm
                     ;
 
 print               : PRINTF PARENTESE_ESQUERDA expressoes PARENTESE_DIREITA {
-                                                                             $$ = gerar_imprima($3);
+                                                                                    fprintf(arquivo,makePrint($3,escopo));
                                                                              } 
+                    | PRINTF PARENTESE_ESQUERDA expressoes_list PARENTESE_DIREITA {}
                     ;
 
 scan                : SCANF PARENTESE_ESQUERDA args_print PARENTESE_DIREITA {} 
@@ -223,10 +225,9 @@ operador_unario     : INCREMENTO        {$$ = $1;}
 
 operador            : MAIS              {$$ = $1;}           
                     | MENOS_UNARIO      {$$ = $1;}
-                    | EXPONENCIACAO     {$$ = $1;}
                     | BARRA             {$$ = $1;}
                     | MODULO            {$$ = $1;}
-                    ;
+                    ;                  
                     
 operador_comp       : MENOR_QUE         {$$ = $1;}
                     | MAIOR_QUE         {$$ = $1;}
@@ -264,6 +265,8 @@ expressoes          : {}
                     | id                    {$$ = $1;}
                     | id operador id        {$$ = strcat(strcat($1,$2),$3);}
                     | id operador_comp id   {$$ = strcat(strcat($1,$2),$3);}
+                    | id EXPONENCIACAO id   {printf("%s",strcat(strcat(strcat("pow(",$1),","),$3));
+                                            $$ = strcat(strcat(strcat("pow(",$1),","),$3);}
                     | vetorial              {/*$$ = $1;*/} 
                     ;
 
@@ -276,7 +279,7 @@ lista_de_digitos    : DIGITO                            {$$ = _itoa($1,buffer,10
                     | DIGITO VIRGULA lista_de_digitos   {$$ = strcat(strcat(_itoa($1,buffer,10),";"),$2);}
                     ;               
 
-expressoes_list      : expressoes VIRGULA expressoes {}
+expressoes_list      : expressoes VIRGULA expressoes { $$ = strcat(strcat($1,","),$3);}
                     ;                                        
 
 vars                : ID VIRGULA ID     { $$ = strcat(strcat($1,","),$3); }
