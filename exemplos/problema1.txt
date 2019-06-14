@@ -2,5 +2,8 @@ func main() return int is
 begin
 	float x, y;
 	int c;
-	return x^2 − y + c;
+	int w = x^2;
+	int z = y + c;
+	int r = w − z;
+	return r ;
 end main
