@@ -92,7 +92,7 @@ stmt                : decl PONTO_E_VIRGULA                              {makeStm
                     | switch_stmt                                       {}
                     | print PONTO_E_VIRGULA                             {/*makeStmt(strcat(strcat($1,";"),"\n"));*/}
                     | scan PONTO_E_VIRGULA                              {}
-                    | RETURN id PONTO_E_VIRGULA                         {}
+                    | RETURN id PONTO_E_VIRGULA                         {makeStmt(strcat(strcat(strcat($1," "),$2),";\n"));}
                     ;
 
 print               : PRINTF PARENTESE_ESQUERDA expressoes PARENTESE_DIREITA {
@@ -140,36 +140,35 @@ decl_list           : decl PONTO_E_VIRGULA {}
                     | decl PONTO_E_VIRGULA decl_list    {}
                     ;
 
+
 while_stmt          : WHILE PARENTESE_ESQUERDA 
                     valor PARENTESE_DIREITA
                     {
-                        char* inicio = "condicao:\n\tif(";
-                        sprintf(buffer, "condicao:\n\tif(%s)\n\t\tgoto inicio;\n\telse\n\t\tgoto fim;\ninicio:\n",$3);
                         
-                        makeStmt(buffer);
+                        fprintf(arquivo, "{\ncondicao:\n\tif(%s)\n\t\tgoto inicio;\n\telse\n\t\tgoto fim;\ninicio:\n",$3);
+                        
+                        
                     } stmts 
                     
-                    END_WHILE {makeStmt("\tgoto condicao;\nfim:\n");}
+                    END_WHILE {makeStmt("\tgoto condicao;\nfim:\n}\n");}
                     ;
+
+
+
 
 for_stmt            : FOR PARENTESE_ESQUERDA 
                             decl PONTO_E_VIRGULA 
                             valor PONTO_E_VIRGULA 
-                            {
-                                printf("declaração - %s\n",$3);
-                              fprintf(arquivo, "%s;\n", $3);
-                              fprintf(arquivo, "condicao:\n\tif(%s)\n\t\tgoto inicio;\n\telse\n\t\tgoto fim;\ninicio:\n",$5);
-                            }
                             atribuicoes PARENTESE_DIREITA 
                         stmts END_FOR  
                         {
-                            printf("atribução - %s",$1);
-                            printf("atribução - %s",$3);
-                            fprintf(arquivo, "teste-\n%s\n", $1);
-                          fprintf(arquivo, "\n%s\n", $1);
-                          fprintf(arquivo, "fim:\n");
+                              fprintf(arquivo, "{\n%s;\n", $3);
+                              fprintf(arquivo, "condicao:\n\tif(%s)\n\t\tgoto inicio;\n\telse\n\t\tgoto fim;\ninicio:\n",$5); 
+                              fprintf(arquivo, "\n%s\n", $7);
+                              fprintf(arquivo, "fim:\n}\n");
                         }
                     ;                  
+              
 
 
 if_stmt             : IF PARENTESE_ESQUERDA valor PARENTESE_DIREITA THEN stmts elses_opcoes END_IF {}
