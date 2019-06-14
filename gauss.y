@@ -50,8 +50,8 @@
 %type <sValue> valor
 %type <sValue> args 
 %type <sValue> type 
-%type <sValue> decl vars atribuicoes expressoes atribuicao_simples operador operador_composto operador_comp operador_unario atribuicao_unaria atribuicao_composta print ids types_args prints_list tipos_prints
-%type <sValue> id lista_de_digitos vetorial expressoes_list
+%type <sValue> decl vars atribuicoes expressoes atribuicao_simples operador operador_composto operador_comp operador_unario atribuicao_unaria atribuicao_composta print prints_list tipos_prints
+%type <sValue> id lista_de_digitos vetorial expressoes_list id_list
 %type <sValue> stmt stmts if_stmt while_stmt for_stmt
 
 %start prog
@@ -71,7 +71,8 @@ stmts               : stmt              {}
                     | stmt stmts        { }
                     ;
 
-decl                : type id           { $$ = strcat(strcat($1," "),$2); }
+decl                : type id           { printf("tipo %s",$1);
+                                            $$ = strcat(strcat($1," "),$2); }
                     | type vars         { $$ = strcat(strcat($1," "),$2); } 
                     | type vars decl    { $$ = strcat(strcat(strcat(strcat($1, " "),$2),","),$3);}
                     | type atribuicoes  { $$ = strcat(strcat($1, " "),$2);}
@@ -96,33 +97,20 @@ stmt                : decl PONTO_E_VIRGULA                              {makeStm
                     | RETURN id PONTO_E_VIRGULA                         {makeStmt(strcat(strcat(strcat($1," "),$2),";\n"));}
                     ;
 
-print               : PRINTF PARENTESE_ESQUERDA expressoes PARENTESE_DIREITA {
-                                                                                    fprintf(arquivo,makePrint($3,escopo));
-                                                                             } 
-                    | PRINTF PARENTESE_ESQUERDA expressoes_list PARENTESE_DIREITA {}
+print               : PRINTF PARENTESE_ESQUERDA prints_list VIRGULA id_list PARENTESE_DIREITA {      
+                                                                                    fprintf(arquivo,"printf(\"%s\" , %s)\n",$3,$4);
+                                                                             }
                     ;
 
-scan                : SCANF PARENTESE_ESQUERDA args_print PARENTESE_DIREITA {} 
+scan                : SCANF PARENTESE_ESQUERDA prints_list VIRGULA id_list PARENTESE_DIREITA {} 
                     ;
 
-args_print          : ids types_args{ printf("teste ids - %s, types - %s",$1,$2);}
-                    ;
+id_list             : id {$$ = $1;}
+                    | id VIRGULA id_list {$$ = strcat(strcat($1,","),$3);}
+                    ;                    
 
-ids                 : expressoes {
-                                    printf("teste = %s\n",$1);
-                                    $$ = $1;
-                                }
-                    | ids VIRGULA expressoes  {
-                                                $$ = strcat(strcat($1,","),$3);
-                                                }
-                    ;
-
-types_args          :                                            {$$ = "";}
-                    | prints_list                                {printf("teste = %s\n",$1);$$ = $1;}
-                    ;
-
-prints_list         : VIRGULA tipos_prints                                            {$$ = strcat(",",$2);}
-                    | VIRGULA tipos_prints prints_list                                {$$ = strcat(strcat(",",$2),$3);}
+prints_list         : tipos_prints VIRGULA                                            {$$ = strcat(",",$2);}
+                    | tipos_prints VIRGULA prints_list                                {$$ = strcat(strcat(",",$2),$3);}
                     ;
 
 tipos_prints        : PRINT_INT {$$ = $1;}
@@ -227,6 +215,7 @@ operador            : MAIS              {$$ = $1;}
                     | MENOS_UNARIO      {$$ = $1;}
                     | BARRA             {$$ = $1;}
                     | MODULO            {$$ = $1;}
+                    | EXPONENCIACAO     {$$ = $1;}
                     ;                  
                     
 operador_comp       : MENOR_QUE         {$$ = $1;}
@@ -263,10 +252,16 @@ valor               : expressoes E_LOGICO expressoes    {$$ = strcat(strcat($1,$
 
 expressoes          : {}
                     | id                    {$$ = $1;}
-                    | id operador id        {$$ = strcat(strcat($1,$2),$3);}
+                    | id operador id        {
+                                            if (strcmp($2,"^") == 0){
+                                                printf("teste\n");
+                                                char teste[10];
+                                                sprintf(teste,"pow(%s,%s)",$1,$3);
+                                                $$ = teste;
+                                            }
+                                            else
+                                                $$ = strcat(strcat($1,$2),"t");}
                     | id operador_comp id   {$$ = strcat(strcat($1,$2),$3);}
-                    | id EXPONENCIACAO id   {printf("%s",strcat(strcat(strcat("pow(",$1),","),$3));
-                                            $$ = strcat(strcat(strcat("pow(",$1),","),$3);}
                     | vetorial              {/*$$ = $1;*/} 
                     ;
 
@@ -275,8 +270,8 @@ vetorial            : CHAVE_ESQUERDA lista_de_digitos CHAVE_DIREITA {
                                                                     }  
                         
                     ;   
-lista_de_digitos    : DIGITO                            {$$ = _itoa($1,buffer,10);}
-                    | DIGITO VIRGULA lista_de_digitos   {$$ = strcat(strcat(_itoa($1,buffer,10),";"),$2);}
+lista_de_digitos    : DIGITO                            {char teste[10];$$ = _itoa($1,teste,10);}
+                    | DIGITO VIRGULA lista_de_digitos   {char teste[10];$$ = strcat(strcat(_itoa($1,teste,10),";"),$2);}
                     ;               
 
 expressoes_list      : expressoes VIRGULA expressoes { $$ = strcat(strcat($1,","),$3);}
@@ -288,20 +283,20 @@ vars                : ID VIRGULA ID     { $$ = strcat(strcat($1,","),$3); }
 
 args                :                                                           { $$ = ""; }
                     | type ID                                                   { $$ = strcat(strcat($1, " "),$2); }
-                    | type ID COLCHETE_ESQUERDA COLCHETE_DIREITA VIRGULA args   {sprintf(buffer, "%s %s[], %s",$1,$2,$6); $$ = buffer; }
-                    | type ID VIRGULA args                                      {sprintf(buffer,"%s %s,%s",$1,$2,$4); $$ = buffer; }
+                    | type ID COLCHETE_ESQUERDA COLCHETE_DIREITA VIRGULA args   {char teste[15];sprintf(teste, "%s %s[], %s",$1,$2,$6); $$ = teste; }
+                    | type ID VIRGULA args                                      {char teste[15]; sprintf(teste,"%s %s,%s",$1,$2,$4); $$ = teste; }
                     ;
 
 funcao              : FUNCAO ID  PARENTESE_ESQUERDA args 
                       PARENTESE_DIREITA RETURN type IS
-                      TBEGIN { insertFunc($2, escopo, $7, $4); escopo++; 
+                      TBEGIN { escopo++; 
                                 makeStmt(strcat(strcat(strcat(strcat(strcat($7," "),$2),"("),$4),"){\n"));
                                 } stmts END ID  
                       { makeStmt("}");}
                     ;
 
 id                  : ID                                                { $$ = $1; }
-                    | DIGITO                                            { $$ = _itoa($1,buffer,10);}
+                    | DIGITO                                            { char teste[10]; $$ = _itoa($1,teste,10);}
                     | ID COLCHETE_ESQUERDA expressoes COLCHETE_DIREITA  { $$ = strcat(strcat(strcat($1,"["),$3),"]");}
                     | PARENTESE_ESQUERDA expressoes PARENTESE_DIREITA   { $$ = strcat(strcat(strcat($1,"("),$3),")");}
                     ;
