@@ -90,22 +90,32 @@ stmt                : decl PONTO_E_VIRGULA                              {makeStm
                     | atribuicoes PONTO_E_VIRGULA                       {makeStmt(strcat(strcat($1,";"),"\n"));}
                     | invoca_procedimento PONTO_E_VIRGULA               {}
                     | switch_stmt                                       {}
-                    | print PONTO_E_VIRGULA                             {}
+                    | print PONTO_E_VIRGULA                             {/*makeStmt(strcat(strcat($1,";"),"\n"));*/}
                     | scan PONTO_E_VIRGULA                              {}
                     | RETURN id PONTO_E_VIRGULA                         {}
                     ;
 
-print               : PRINTF PARENTESE_ESQUERDA ids types_args PARENTESE_DIREITA { printf("teste - %s\n",strcat(strcat(strcat("printf(",$4),$3),")"));$$ = strcat(strcat(strcat("printf(",$4),$3),")");} 
+print               : PRINTF PARENTESE_ESQUERDA expressoes PARENTESE_DIREITA {
+                                                                             $$ = gerar_imprima($3);
+                                                                             } 
                     ;
 
-scan                : SCANF PARENTESE_ESQUERDA ids types_args PARENTESE_DIREITA {} 
+scan                : SCANF PARENTESE_ESQUERDA args_print PARENTESE_DIREITA {} 
                     ;
 
-ids                 : expressoes {printf("teste = %s\n",$1);$$ = $1;}
-                    | ids VIRGULA expressoes  {$$ = strcat(strcat($1,","),$3);}
+args_print          : ids types_args{ printf("teste ids - %s, types - %s",$1,$2);}
                     ;
 
-types_args          :                                            {}
+ids                 : expressoes {
+                                    printf("teste = %s\n",$1);
+                                    $$ = $1;
+                                }
+                    | ids VIRGULA expressoes  {
+                                                $$ = strcat(strcat($1,","),$3);
+                                                }
+                    ;
+
+types_args          :                                            {$$ = "";}
                     | prints_list                                {printf("teste = %s\n",$1);$$ = $1;}
                     ;
 
@@ -191,7 +201,7 @@ case                : CASE PARENTESE_ESQUERDA id PARENTESE_DIREITA DOIS_PONTOS s
 /************ ATRIBUICOES *****/
 atribuicoes         : atribuicao_simples                    { $$ = $1;}
                     | atribuicao_unaria                     { $$ = $1;}
-                    | atribuicao_composta                   { $$ = $1} 
+                    | atribuicao_composta                   { $$ = $1;} 
                     | atribuicao_paralela                   {}
                     ;
 
@@ -248,7 +258,7 @@ type                : CARACTERE     {$$ = $1;}
 
 valor               : expressoes E_LOGICO expressoes    {$$ = strcat(strcat($1,$2),$3);}  
                     | expressoes OU_LOGICO expressoes   {$$ = strcat(strcat($1,$2),$3);}   
-                    | expressoes                        {$$ = $1}                          
+                    | expressoes                        {$$ = $1;}                          
                     ;
 
 expressoes          : {}
@@ -291,7 +301,7 @@ funcao              : FUNCAO ID  PARENTESE_ESQUERDA args
 id                  : ID                                                { $$ = $1; }
                     | DIGITO                                            { $$ = _itoa($1,buffer,10);}
                     | ID COLCHETE_ESQUERDA expressoes COLCHETE_DIREITA  { $$ = strcat(strcat(strcat($1,"["),$3),"]");}
-                    | PARENTESE_ESQUERDA expressoes PARENTESE_DIREITA   { $$ = strcat(strcat(strcat($1,"("),$3),")");;}
+                    | PARENTESE_ESQUERDA expressoes PARENTESE_DIREITA   { $$ = strcat(strcat(strcat($1,"("),$3),")");}
                     ;
 %%
 
