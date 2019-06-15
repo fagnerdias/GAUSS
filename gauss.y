@@ -152,8 +152,7 @@ for_stmt            : FOR PARENTESE_ESQUERDA
                             } 
                         stmts END_FOR  
                         {
-                              
-                              
+                                  
                               fprintf(arquivo, "\n%s;\ngoto condicao;\n}\n}\n", $7);
                               
                         }
@@ -259,8 +258,9 @@ expressoes          : {}
                                                 sprintf(teste,"pow(%s,%s)",$1,$3);
                                                 $$ = teste;
                                             }
-                                            else
-                                                $$ = strcat(strcat($1,$2),"t");}
+                                            else {
+                                                $$ = strcat(strcat($1,$2),$3);}
+                                            }
                     | id operador_comp id   {$$ = strcat(strcat($1,$2),$3);}
                     | vetorial              {/*$$ = $1;*/} 
                     ;
