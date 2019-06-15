@@ -32,6 +32,7 @@
   char * sValue;  /* string value */
 }
 
+%token <sValue> NUMERO_REAL
 %token <sValue> CHAVE_ESQUERDA CHAVE_DIREITA PARENTESE_ESQUERDA PARENTESE_DIREITA COLCHETE_ESQUERDA COLCHETE_DIREITA 
 %token <sValue> PONTO_E_VIRGULA VIRGULA PONTO DOIS_PONTOS
 %token <sValue> E_LOGICO E_LOGICO_CURTO_CIRCUITO OU_LOGICO OU_LOGICO_CURTO_CIRCUITO EXCLAMACAO
@@ -45,6 +46,7 @@
 %token <sValue> CARACTERE STRING INTEIRO FLOAT DOUBLE VOID
 %token <sValue> BOOLEANO TRUE FALSE JUMP BREAK TNULL
 %token <iValue> DIGITO
+
 %token <sValue> ID
 %token <sValue> LITERAL_QUALQUER
 
@@ -156,8 +158,9 @@ stmt                : decl PONTO_E_VIRGULA                              {printf(
                     | RETURN id PONTO_E_VIRGULA                         {makeStmt(strcat(strcat(strcat($1," "),$2),";\n"));}
                     ;
 
-print               : PRINTF PARENTESE_ESQUERDA prints_list id_list PARENTESE_DIREITA {      
-                                                                                    fprintf(arquivo,"printf(\"%s\" , %s);\n",$3,$4);
+print               : PRINTF PARENTESE_ESQUERDA prints_list id_list PARENTESE_DIREITA {  
+    printf("printf(\"%s\", %s);\n",$3,$4);    
+                                                                                    fprintf(arquivo,"printf(\"%s\", %s);\n",$3,$4);
                                                                              }
                     ;
 
@@ -418,6 +421,12 @@ funcao              : FUNCAO ID  PARENTESE_ESQUERDA args
 
 id                  : ID                                                { $$ = $1; }
                     | DIGITO                                            { char teste[10]; $$ = _itoa($1,teste,10);}
+                    | NUMERO_REAL                                     { 
+                        //printf( "%f", $1);
+                                                                            char teste[10];
+                                                                            //sprintf(teste, "%f", $1);
+                                                                            $$ = $1;
+                                                                        }
                     | ID COLCHETE_ESQUERDA expressoes COLCHETE_DIREITA COLCHETE_ESQUERDA expressoes COLCHETE_DIREITA  
                     { 
                         printf("matriz\n");
@@ -434,7 +443,7 @@ int main (void) {
 
     arquivo = fopen("compilado.c", "w+");
 
-    fprintf (arquivo, "#include <%s>\n","stdio.h");
+    fprintf (arquivo, "#include <%s>\n#include <%s>\n","stdio.h","math.h");
 
     yyparse ( );
 
