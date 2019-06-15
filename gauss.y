@@ -284,34 +284,28 @@ atribuicao_simples  : id ATRIBUICAO expressoes { $$ = strcat(strcat($1, $2),$3);
 atribuicao_struct_valor  : id PONTO id ATRIBUICAO expressoes 
                     { 
 
+                        char *um = $1;
+                        char *dois = $2;
+                        char *tres = $3;
+                        char *quatro = $4;
+                        char *cinco = $5;
+                        char *aux1=( char *)malloc( strlen(um) + 1 );
+                        char *aux2=( char *)malloc( strlen(dois) + 1 );
+                        char *aux3=( char *)malloc( strlen(tres) + 1 );
+                        char *aux4=( char *)malloc( strlen(quatro) + 1 );
+                        char *aux5=( char *)malloc( strlen(cinco) + 1 );
+                        strcpy(aux1,um);
+                        strcpy(aux2,dois);
+                        strcpy(aux3,tres);
+                        strcpy(aux4,quatro);
+                        strcpy(aux5,cinco);
+                        char *aux6 = strcat(aux1,".");
+                        char *aux9 = strcat(aux6,$3);
+                        char *aux7 = strcat(aux9,$2);
+                        char *aux8 = strcat(aux7, $4);
+                        strcat(aux8,aux5);
+                        $$ = aux8;
 
-                                                char *um = $1;
-                                                char *dois = $2;
-                                                char *tres = $3;
-                                                char *quatro = $4;
-                                                char *cinco = $5;
-
-                                                char *aux1=( char *)malloc( strlen(um) + 1 );
-                                                char *aux2=( char *)malloc( strlen(dois) + 1 );
-                                                char *aux3=( char *)malloc( strlen(tres) + 1 );
-                                                char *aux4=( char *)malloc( strlen(quatro) + 1 );
-                                                char *aux5=( char *)malloc( strlen(cinco) + 1 );
-                                                
-                                                strcpy(aux1,um);
-                                                strcpy(aux2,dois);
-                                                strcpy(aux3,tres);
-                                                strcpy(aux4,quatro);
-                                                strcpy(aux5,cinco);
-
-
-                                                char *aux6 = strcat(aux1,".");
-                                                char *aux9 = strcat(aux6,$3);
-                                                char *aux7 = strcat(aux9,$2);
-                                                char *aux8 = strcat(aux7, $4);
-                        
-                        $$ = strcat(aux8,aux5);
-
-                        printf("PONTO %s\n",strcat(aux8,aux5));
                     }
                     ;                    
 
