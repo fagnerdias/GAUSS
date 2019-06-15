@@ -19,6 +19,7 @@
   void makeStmt(char* stmt);
   void limparBuffer();
 
+
 %}
 
 %union {
@@ -71,9 +72,18 @@ stmts               : stmt              { $$ = $1; }
                     | stmt stmts        { $$ = strcat(strcat($1," "),$2); }
                     ;
 
-decl                : type id           { printf("tipo %s",$1);
-                                            $$ = strcat(strcat($1," "),$2); }
-                    | type vars         { $$ = strcat(strcat($1," "),$2); } 
+decl                : type id           { if(insertVar($2, escopo, $1)==0){
+                                            $$ = strcat(strcat($1," "),$2); 
+                                           }else{
+                                            yyerror( strcat($2,": Variavel redeclarada") );
+                                           }
+                                        }
+                    | type vars         { if(insertVars($2, escopo, $1)==0){
+                                            strcat(strcat($1," "),$2);
+                                           }else{
+                                            yyerror( strcat($2,": Variavel redeclarada") );
+                                           }
+                                        } 
                     | type vars decl    { $$ = strcat(strcat(strcat(strcat($1, " "),$2),","),$3);}
                     | type atribuicoes  { $$ = strcat(strcat($1, " "),$2);}
                     ;
@@ -342,6 +352,7 @@ void makeStmt(char* stmt){
 
 int yyerror (char *msg) {
   fprintf (stderr, "%d: %s at '%s'\n", yylineno, msg, yytext);
+  exit(1);
   return 0;
 }
 
