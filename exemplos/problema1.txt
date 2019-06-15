@@ -3,7 +3,7 @@ begin
 	float x, y;
 	int c;
 	int w = x^2;
-	int z = y + c;
-	int r = w − z;
-	return r ;
+	int z = y+c;
+	int r = w-z;
+	printf(%i,r);
 end main

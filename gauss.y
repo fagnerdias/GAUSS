@@ -53,7 +53,7 @@
 %type <sValue> type 
 %type <sValue> decl vars atribuicoes expressoes atribuicao_simples operador operador_composto operador_comp operador_unario atribuicao_unaria atribuicao_composta print prints_list tipos_prints
 %type <sValue> id lista_de_digitos vetorial expressoes_list id_list
-%type <sValue> stmt stmts if_stmt while_stmt for_stmt
+%type <sValue> stmt stmts if_stmt while_stmt for_stmt decl_list
 
 %start prog
 
@@ -92,7 +92,10 @@ struct_list         : struct                                            {}
                     | struct struct_list                                {}
                     ;
 
-struct              : STRUCT ID IS decl_list ENDSTRUCT                  {}
+struct              : STRUCT ID IS decl_list ENDSTRUCT     {char teste[10];
+                                            sprintf(teste,"typedef struct %s {\n %s \n }%s;",$2, $4,$2);
+                                            fprintf(arquivo,teste);
+                                            } 
                     ;
 
 stmt                : decl PONTO_E_VIRGULA                              {makeStmt(strcat($1,";\n")); } 
@@ -138,8 +141,8 @@ parametros          : expressoes {}
                     | expressoes VIRGULA parametros {}
                     ;  
 
-decl_list           : decl PONTO_E_VIRGULA {}
-                    | decl PONTO_E_VIRGULA decl_list    {}
+decl_list           : decl PONTO_E_VIRGULA { $$ = strcat($1,";");}
+                    | decl PONTO_E_VIRGULA decl_list    {$$ = strcat(strcat($1,";"),$3);}
                     ;
 
 
