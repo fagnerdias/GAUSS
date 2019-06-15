@@ -67,8 +67,8 @@ subprog             : funcao                    {}
                     | subprog funcao            {}
                     ;
 
-stmts               : stmt              {}
-                    | stmt stmts        { }
+stmts               : stmt              { $$ = $1; }
+                    | stmt stmts        { $$ = strcat(strcat($1," "),$2); }
                     ;
 
 decl                : type id           { printf("tipo %s",$1);
@@ -85,7 +85,7 @@ struct_list         : struct                                            {}
 struct              : STRUCT ID IS decl_list ENDSTRUCT                  {}
                     ;
 
-stmt                : decl PONTO_E_VIRGULA                              {makeStmt(strcat(strcat($1,";"),"\n"));} 
+stmt                : decl PONTO_E_VIRGULA                              {makeStmt(strcat($1,";\n")); } 
                     | if_stmt                                           {makeStmt($1);}
                     | while_stmt                                        {makeStmt($1);} 
                     | for_stmt                                          {makeStmt($1);}
@@ -311,7 +311,7 @@ int main (void) {
     yyparse ( );
 
     fclose(arquivo);
-    
+
     return 1;
 }
 
