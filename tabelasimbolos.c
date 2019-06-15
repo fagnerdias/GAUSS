@@ -14,6 +14,7 @@ typedef struct Var
 	char *id;
 	int escopo;
 	tipo_t tipo;
+	char *tipoExtenso;
 }Var;
 
 typedef struct Func
@@ -34,21 +35,28 @@ int sizeVectorFunc = 0;
 
 
 /************************************/
-/***         Variavel             ***/
+/***         Auxiliares           ***/
+/************************************/
+//char** split(char *vars);
+int split (char *str, char c, char ***arr);
+int printVar();
+
+/************************************/
+/***        Decl Variaveis        ***/
 /************************************/
 
 /*metodo para auxiliar a inserção de uma variavel na tabela de simbolos */
-int findVarToInsert(char *id, int escopo) {
+int findVarToInsert(char *id, int escopo, char *tipo) {
 	for( int i=0; i<sizeVectorVar; i++ ) {
-		if( strcmp(id, vetorVar[i].id) == 0 ) { //encontrado equivalente no vetor
+		if( strcmp(id, vetorVar[i].id) == 0 && strcmp(tipo, vetorVar[i].tipoExtenso) == 0 ) { //encontrado equivalente no vetor
 			return 0; //encontrou id, var declarada
 		}
 	}
 	return 1; //nao encontrou, funcao nao declarada
 }
 /* método para verificar se a chamada de uma variavel é valida */
-int findVar(char *id, int escopo){
-	if( findVarToInsert(id, escopo) == 1 ) {
+int findVar(char *id, int escopo, char *tipo){
+	if( findVarToInsert(id, escopo, tipo) == 1 ) {
 		printf("erro: %s - variavel nao declarada\n", id);
 		return 1; // variavel nao encontrada
 	}
@@ -56,15 +64,18 @@ int findVar(char *id, int escopo){
 }
 /* insere a variavel no vetor caso nao a encontre ja declarada */
 int insertVar(char *id, int escopo, char *tipo){
-
-	if(findVarToInsert(id, escopo)==0){
-		printf("%s : variavel ja declarada antes\n", id);
+	if(findVarToInsert(id, escopo, tipo)==0){
+		printf("%s %s : variavel ja declarada antes\n", tipo, id);
 		return 1;
 	}
 
 	Var temp;
 	temp.id = id;
 	temp.escopo = escopo;
+	char *aux = (char *)malloc( strlen(tipo)+1);
+	strcpy(aux, tipo);
+	temp.tipoExtenso = aux;
+
 	if (strcmp(tipo,"Tint")==0)
 		temp.tipo = 0;
 	if (strcmp(tipo,"Tfloat")==0)
@@ -79,8 +90,23 @@ int insertVar(char *id, int escopo, char *tipo){
 	vetorVar[sizeVectorVar] = temp;
 	sizeVectorVar++;
 
-	printf("sucesso: %s - variavel foi declarada \n", id);
+	printf("sucesso: tipo '%s' e id '%s' - variavel foi declarada \n", temp.tipoExtenso, temp.id);
+
 	return 0; //inseriu a variavel com sucesso
+}
+/* insere a variavel no vetor caso nao a encontre ja declarada */
+int insertVars(char *ids, int escopo, char *tipo){
+	int i;
+    int c = 0;
+    char **arr = NULL;
+
+    c = split(ids, ',', &arr);
+
+    for (i = 0; i < c; i++){
+    	insertVar(arr[i], escopo, tipo);
+    }
+
+	return 0;
 }
 
 /************************************/
@@ -106,7 +132,7 @@ int findFunc(char *id, int escopo){
 }
 /* insere a funcao no vetor caso nao a encontre ja declarada */
 int insertFunc(char *id, int escopo, char *tipoRetorno, char *tipoParams){
-	
+
 	if( findFuncToInsert(id, escopo) == 0){
 		printf("erro: %s - procedimento/funcao ja declarado previamente\n", id);
 		return 1; //erro na declaracao
@@ -133,9 +159,9 @@ int insertFunc(char *id, int escopo, char *tipoRetorno, char *tipoParams){
 /************************************/
 
 int printVar(){
-	printf("[ ");
+	printf("[ \n");
 	for(int i=0; i<sizeVectorVar; i++){
-		printf("%s - %i - %s ", vetorVar[i].id, vetorVar[i].escopo, vetorVar[i].tipo);
+		printf("( %s - %i - %s )\n", vetorVar[i].id, vetorVar[i].escopo, vetorVar[i].tipoExtenso);
 	}
 	printf(" ]\n");
 	return 0;
@@ -149,17 +175,18 @@ int printFunc(){
 	return 0;
 }
 
-Var getVarInfo(char *id, int escopo){
+Var getVarInfo(char *id, int escopo, char *tipo){
 	Var tmp;
-	if(findVar(id,escopo) == 0){
+	if(findVar(id,escopo, tipo) == 0){
 		for(int i=0; i<sizeVectorVar; i++){
 			if(strcmp(id, vetorVar[i].id)==0){
 				return vetorVar[i];
 			}
 		}	
 	}
-	else
+	else{
 		return tmp;
+	}
 }
 
 char* getTipo(tipo_t tipo){
@@ -179,8 +206,8 @@ char* getTipo(tipo_t tipo){
 	}
 }
 
-char* makePrint(char *id, int escopo){
-	Var tmp = getVarInfo(id,escopo);
+char* makePrint(char *id, int escopo, char *tipo){
+	Var tmp = getVarInfo(id,escopo, tipo);
 	char* str = "printf(\"";
 	if (strcmp(getTipo(tmp.tipo),"Tint")==0)
 		str = strcat(str, "%i");
@@ -197,6 +224,67 @@ char* makePrint(char *id, int escopo){
 
 	return str;
 
+}
+
+int split (char *str, char c, char ***arr)
+{
+    int count = 1;
+    int token_len = 1;
+    int i = 0;
+    char *p;
+    char *t;
+
+    p = str;
+    while (*p != '\0')
+    {
+        if (*p == c)
+            count++;
+        p++;
+    }
+
+    *arr = (char**) malloc(sizeof(char*) * count);
+    if (*arr == NULL)
+        exit(1);
+
+    p = str;
+    while (*p != '\0')
+    {
+        if (*p == c)
+        {
+            (*arr)[i] = (char*) malloc( sizeof(char) * token_len );
+            if ((*arr)[i] == NULL)
+                exit(1);
+
+            token_len = 0;
+            i++;
+        }
+        p++;
+        token_len++;
+    }
+    (*arr)[i] = (char*) malloc( sizeof(char) * token_len );
+    if ((*arr)[i] == NULL)
+        exit(1);
+
+    i = 0;
+    p = str;
+    t = ((*arr)[i]);
+    while (*p != '\0')
+    {
+        if (*p != c && *p != '\0')
+        {
+            *t = *p;
+            t++;
+        }
+        else
+        {
+            *t = '\0';
+            i++;
+            t = ((*arr)[i]);
+        }
+        p++;
+    }
+
+    return count;
 }
 
 //int main(){return 0;}

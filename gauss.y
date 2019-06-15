@@ -79,7 +79,7 @@ decl                : type id           { if(insertVar($2, escopo, $1)==0){
                                             yyerror( strcat($2,": Variavel redeclarada") );
                                            }
                                         }
-                    | type vars         { if(insertVar($2, escopo, $1)==0){
+                    | type vars         { if(insertVars($2, escopo, $1)==0){
                                             $$ = strcat(strcat($1," "),$2);
                                            }else{
                                             yyerror( strcat($2,": Variavel redeclarada") );
