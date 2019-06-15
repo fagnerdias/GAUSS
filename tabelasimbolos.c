@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 
 #ifndef TABELASIMBOLOS
 #define TABELASIMBOLOS
@@ -13,8 +14,7 @@ typedef struct Var
 {
 	char *id;
 	int escopo;
-	tipo_t tipo;
-	char *tipoExtenso;
+	char *tipo;
 }Var;
 
 typedef struct Func
@@ -37,8 +37,7 @@ int sizeVectorFunc = 0;
 /************************************/
 /***         Auxiliares           ***/
 /************************************/
-//char** split(char *vars);
-int split (char *str, char c, char ***arr);
+char** str_split(char* a_str, const char a_delim);
 int printVar();
 
 /************************************/
@@ -48,7 +47,7 @@ int printVar();
 /*metodo para auxiliar a inserção de uma variavel na tabela de simbolos */
 int findVarToInsert(char *id, int escopo, char *tipo) {
 	for( int i=0; i<sizeVectorVar; i++ ) {
-		if( strcmp(id, vetorVar[i].id) == 0 && strcmp(tipo, vetorVar[i].tipoExtenso) == 0 ) { //encontrado equivalente no vetor
+		if( strcmp(id, vetorVar[i].id) == 0 && strcmp(tipo, vetorVar[i].tipo) == 0 ) { //encontrado equivalente no vetor
 			return 0; //encontrou id, var declarada
 		}
 	}
@@ -65,48 +64,47 @@ int findVar(char *id, int escopo, char *tipo){
 /* insere a variavel no vetor caso nao a encontre ja declarada */
 int insertVar(char *id, int escopo, char *tipo){
 	if(findVarToInsert(id, escopo, tipo)==0){
-		printf("%s %s : variavel ja declarada antes\n", tipo, id);
+		printf("%s %s : variavel ja declarada anteriormente\n", tipo, id);
 		return 1;
 	}
 
 	Var temp;
-	temp.id = id;
+	
 	temp.escopo = escopo;
-	char *aux = (char *)malloc( strlen(tipo)+1);
-	strcpy(aux, tipo);
-	temp.tipoExtenso = aux;
-
-	if (strcmp(tipo,"Tint")==0)
-		temp.tipo = 0;
-	if (strcmp(tipo,"Tfloat")==0)
-		temp.tipo = 1;
-	if (strcmp(tipo,"Tdouble")==0)
-		temp.tipo = 2;
-	if (strcmp(tipo,"caractere")==0)
-		temp.tipo = 3;
-	if (strcmp(tipo,"string")==0)
-		temp.tipo = 4;
+	
+	char *auxId = (char *)malloc( strlen(id)+1);
+	strcpy(auxId, id);
+	temp.id = auxId;
+	
+	char *auxTipo = (char *)malloc( strlen(tipo)+1);
+	strcpy(auxTipo, tipo);
+	temp.tipo = auxTipo;
 
 	vetorVar[sizeVectorVar] = temp;
 	sizeVectorVar++;
 
-	printf("sucesso: tipo '%s' e id '%s' - variavel foi declarada \n", temp.tipoExtenso, temp.id);
-
+	//printf("sucesso: tipo '%s' e id '%s' - variavel foi declarada \n", temp.tipo, temp.id);
 	return 0; //inseriu a variavel com sucesso
 }
 /* insere a variavel no vetor caso nao a encontre ja declarada */
 int insertVars(char *ids, int escopo, char *tipo){
-	int i;
-    int c = 0;
-    char **arr = NULL;
 
-    c = split(ids, ',', &arr);
-
-    for (i = 0; i < c; i++){
-    	insertVar(arr[i], escopo, tipo);
+    char** tokens;
+    tokens = str_split(ids, ',');
+    if (tokens)
+    {
+        for (int i = 0; *(tokens + i); i++){
+        	if (insertVar( *(tokens + i), escopo, tipo) == 1){ //erro em alguma declaracao
+	        	free(*(tokens + i));
+        		free(tokens);
+        		return 1;
+        	}else{
+	        	free(*(tokens + i));
+        	}
+        }
+        free(tokens);
     }
-
-	return 0;
+	return 0; //Completou as declarações com sucesso
 }
 
 /************************************/
@@ -139,16 +137,26 @@ int insertFunc(char *id, int escopo, char *tipoRetorno, char *tipoParams){
 	}
 
 	Func temp;
-	temp.id = id;
+
 	temp.escopo = escopo;
-	temp.tipoRetorno = tipoRetorno;
-	temp.tipoParams = tipoParams;
+
+	char *auxId = (char *)malloc( strlen(id)+1);
+	strcpy(auxId, id);
+	temp.id = auxId;
+	
+	char *auxTipo = (char *)malloc( strlen(tipoRetorno)+1);
+	strcpy(auxTipo, tipoRetorno);
+	temp.tipoRetorno = auxTipo;
+
+	char *auxParans = (char *)malloc( strlen(tipoParams)+1);
+	strcpy(auxParans, tipoParams);
+	temp.tipoParams = auxParans;
 	//temp.qntParams = qntParams; //lembrar de implementar, sepa
 
 	vetorFunc[sizeVectorVar] = temp;
 	sizeVectorFunc++;
 
-	printf("sucesso: %s - variavel foi declarada \n", id);
+	printf("sucesso: %s - funcao foi declarada \n", id);
 	return 0; //inseriu a variavel com sucesso
 
 }
@@ -161,7 +169,7 @@ int insertFunc(char *id, int escopo, char *tipoRetorno, char *tipoParams){
 int printVar(){
 	printf("[ \n");
 	for(int i=0; i<sizeVectorVar; i++){
-		printf("( %s - %i - %s )\n", vetorVar[i].id, vetorVar[i].escopo, vetorVar[i].tipoExtenso);
+		printf("( %s - %i - %s )\n", vetorVar[i].id, vetorVar[i].escopo, vetorVar[i].tipo);
 	}
 	printf(" ]\n");
 	return 0;
@@ -189,102 +197,52 @@ Var getVarInfo(char *id, int escopo, char *tipo){
 	}
 }
 
-char* getTipo(tipo_t tipo){
-	switch(tipo){
-        case Tint:
-            return "int";
-        case Tfloat:
-            return "float";
-        case Tdouble:
-            return "double";
-        case caractere:
-            return "caractere";
-        case string:
-            return "string";
-        case Tvoid:
-            break;
-	}
-}
-
-char* makePrint(char *id, int escopo, char *tipo){
-	Var tmp = getVarInfo(id,escopo, tipo);
-	char* str = "printf(\"";
-	if (strcmp(getTipo(tmp.tipo),"Tint")==0)
-		str = strcat(str, "%i");
-	if (strcmp(getTipo(tmp.tipo),"Tfloat")==0)
-		str = strcat(str, "%f");
-	if (strcmp(getTipo(tmp.tipo),"Tdouble")==0)
-		str = strcat(str, "%d");
-	if (strcmp(getTipo(tmp.tipo),"caractere")==0)
-		str = strcat(str, "%c");
-	if (strcmp(getTipo(tmp.tipo),"string")==0)
-		str = strcat(str, "%s");
-	str = strcat(str,"\", ");
-	str = strcat(str,id);
-
-	return str;
-
-}
-
-int split (char *str, char c, char ***arr)
+char** str_split(char* a_str, const char a_delim)
 {
-    int count = 1;
-    int token_len = 1;
-    int i = 0;
-    char *p;
-    char *t;
+    char** result    = 0;
+    size_t count     = 0;
+    char* tmp        = a_str;
+    char* last_comma = 0;
+    char delim[2];
+    delim[0] = a_delim;
+    delim[1] = 0;
 
-    p = str;
-    while (*p != '\0')
+    /* Count how many elements will be extracted. */
+    while (*tmp)
     {
-        if (*p == c)
+        if (a_delim == *tmp)
+        {
             count++;
-        p++;
+            last_comma = tmp;
+        }
+        tmp++;
     }
 
-    *arr = (char**) malloc(sizeof(char*) * count);
-    if (*arr == NULL)
-        exit(1);
+    /* Add space for trailing token. */
+    count += last_comma < (a_str + strlen(a_str) - 1);
 
-    p = str;
-    while (*p != '\0')
+    /* Add space for terminating null string so caller
+       knows where the list of returned strings ends. */
+    count++;
+
+    result = malloc(sizeof(char*) * count);
+
+    if (result)
     {
-        if (*p == c)
-        {
-            (*arr)[i] = (char*) malloc( sizeof(char) * token_len );
-            if ((*arr)[i] == NULL)
-                exit(1);
+        size_t idx  = 0;
+        char* token = strtok(a_str, delim);
 
-            token_len = 0;
-            i++;
-        }
-        p++;
-        token_len++;
-    }
-    (*arr)[i] = (char*) malloc( sizeof(char) * token_len );
-    if ((*arr)[i] == NULL)
-        exit(1);
-
-    i = 0;
-    p = str;
-    t = ((*arr)[i]);
-    while (*p != '\0')
-    {
-        if (*p != c && *p != '\0')
+        while (token)
         {
-            *t = *p;
-            t++;
+            assert(idx < count);
+            *(result + idx++) = strdup(token);
+            token = strtok(0, delim);
         }
-        else
-        {
-            *t = '\0';
-            i++;
-            t = ((*arr)[i]);
-        }
-        p++;
+        assert(idx == count - 1);
+        *(result + idx) = 0;
     }
 
-    return count;
+    return result;
 }
 
 //int main(){return 0;}
