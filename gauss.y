@@ -86,7 +86,7 @@ struct              : STRUCT ID IS decl_list ENDSTRUCT                  {}
                     ;
 
 stmt                : decl PONTO_E_VIRGULA                              {makeStmt(strcat($1,";\n")); } 
-                    | if_stmt                                           {makeStmt($1);}
+                    | if_stmt                                           {}
                     | while_stmt                                        {}
                     | for_stmt                                          {}
                     | atribuicoes PONTO_E_VIRGULA                       {makeStmt(strcat(strcat($1,";"),"\n"));}
