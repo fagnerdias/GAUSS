@@ -87,9 +87,9 @@ struct              : STRUCT ID IS decl_list ENDSTRUCT                  {}
 
 stmt                : decl PONTO_E_VIRGULA                              {makeStmt(strcat(strcat($1,";"),"\n"));} 
                     | if_stmt                                           {makeStmt($1);}
-                    | while_stmt                                        {makeStmt($1);} 
-                    | for_stmt                                          {makeStmt($1);}
-                    | atribuicoes PONTO_E_VIRGULA                       {makeStmt(strcat(strcat($1,";"),"\n"));}
+                    | while_stmt                                        {}
+                    | for_stmt                                          {}
+                    | atribuicoes PONTO_E_VIRGULA                       {makeStmt(strcat(strcat($1,";"),"\n"));printf("ENTREI AQUIII 4 %s\n",$1);}
                     | invoca_procedimento PONTO_E_VIRGULA               {}
                     | switch_stmt                                       {}
                     | print PONTO_E_VIRGULA                             {/*makeStmt(strcat(strcat($1,";"),"\n"));*/}
@@ -187,9 +187,9 @@ case                : CASE PARENTESE_ESQUERDA id PARENTESE_DIREITA DOIS_PONTOS s
                     ;
 
 /************ ATRIBUICOES *****/
-atribuicoes         : atribuicao_simples                    { $$ = $1;}
-                    | atribuicao_unaria                     { $$ = $1;}
-                    | atribuicao_composta                   { $$ = $1;} 
+atribuicoes         : atribuicao_simples                    {printf("atribuicao simples%s\n",$1); $$ = $1;}
+                    | atribuicao_unaria                     {printf("atribuicao unaria%s\n",$1); $$ = $1;}
+                    | atribuicao_composta                   {printf("atribuicao composta%s\n",$1); $$ = $1;} 
                     | atribuicao_paralela                   {}
                     ;
 
@@ -290,9 +290,10 @@ args                :                                                           
 funcao              : FUNCAO ID  PARENTESE_ESQUERDA args 
                       PARENTESE_DIREITA RETURN type IS
                       TBEGIN { escopo++; 
+                                printf("ENTREI AQUIII 1");
                                 makeStmt(strcat(strcat(strcat(strcat(strcat($7," "),$2),"("),$4),"){\n"));
                                 } stmts END ID  
-                      { makeStmt("}");}
+                      {printf("ENTREI AQUIII 2"); makeStmt("}");}
                     ;
 
 id                  : ID                                                { $$ = $1; }
@@ -316,7 +317,7 @@ int main (void) {
 }
 
 void makeStmt(char* stmt){
-    printf("%s\n",stmt);
+    printf("stmt -->>  %s\n",stmt);
     fprintf (arquivo, "%s",stmt);
 }
 
