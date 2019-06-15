@@ -134,13 +134,9 @@ decl_list           : decl PONTO_E_VIRGULA {}
 while_stmt          : WHILE PARENTESE_ESQUERDA 
                     valor PARENTESE_DIREITA
                     {
-                        
-                        fprintf(arquivo, "{\ncondicao:\n\tif(%s)\n\t\tgoto inicio;\n\telse\n\t\tgoto fim;\ninicio:\n",$3);
-                        
-                        
+                        fprintf(arquivo, "condicao:\nif(%s){\n",$3); 
                     } stmts 
-                    
-                    END_WHILE {makeStmt("\tgoto condicao;\nfim:\n}\n");}
+                    END_WHILE {fprintf(arquivo,"\ngoto condicao;\n}\n");}
                     ;
 
 
@@ -150,12 +146,16 @@ for_stmt            : FOR PARENTESE_ESQUERDA
                             decl PONTO_E_VIRGULA 
                             valor PONTO_E_VIRGULA 
                             atribuicoes PARENTESE_DIREITA 
+                            {
+                                fprintf(arquivo, "{\n%s;\n", $3);
+                                fprintf(arquivo, "condicao:\nif(%s){\n",$5); 
+                            } 
                         stmts END_FOR  
                         {
-                              fprintf(arquivo, "{\n%s;\n", $3);
-                              fprintf(arquivo, "condicao:\n\tif(%s)\n\t\tgoto inicio;\n\telse\n\t\tgoto fim;\ninicio:\n",$5); 
-                              fprintf(arquivo, "\n%s\n", $7);
-                              fprintf(arquivo, "fim:\n}\n");
+                              
+                              
+                              fprintf(arquivo, "\n%s;\ngoto condicao;\n}\n}\n", $7);
+                              
                         }
                     ;                  
               
