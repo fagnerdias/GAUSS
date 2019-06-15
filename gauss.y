@@ -89,7 +89,7 @@ stmt                : decl PONTO_E_VIRGULA                              {makeStm
                     | if_stmt                                           {makeStmt($1);}
                     | while_stmt                                        {}
                     | for_stmt                                          {}
-                    | atribuicoes PONTO_E_VIRGULA                       {makeStmt(strcat(strcat($1,";"),"\n"));printf("ENTREI AQUIII 4 %s\n",$1);}
+                    | atribuicoes PONTO_E_VIRGULA                       {makeStmt(strcat(strcat($1,";"),"\n"));}
                     | invoca_procedimento PONTO_E_VIRGULA               {}
                     | switch_stmt                                       {}
                     | print PONTO_E_VIRGULA                             {/*makeStmt(strcat(strcat($1,";"),"\n"));*/}
@@ -160,15 +160,33 @@ for_stmt            : FOR PARENTESE_ESQUERDA
               
 
 
-if_stmt             : IF PARENTESE_ESQUERDA valor PARENTESE_DIREITA THEN stmts elses_opcoes END_IF {}
+if_stmt             : IF PARENTESE_ESQUERDA valor PARENTESE_DIREITA THEN
+                    {
+                        fprintf(arquivo,"if(%s) {\n", $3);
+                    } stmts {fprintf(arquivo,"\n}");} elses_opcoes END_IF 
+                    {
+
+                        
+                    }
                     ;
 
-if_stmt_in_else     : IF PARENTESE_ESQUERDA valor PARENTESE_DIREITA THEN stmts elses_opcoes {}
+if_stmt_in_else     : IF PARENTESE_ESQUERDA valor PARENTESE_DIREITA THEN
+                    {
+                        fprintf(arquivo,"if(%s) {\n", $3);
+                    } stmts {fprintf(arquivo,"\n}");} elses_opcoes {
+                        
+                    }
+
                     ;
 
 elses_opcoes        : {}
-                    | ELSE THEN stmts {}
-                    | ELSE if_stmt_in_else {}
+                    | ELSE THEN 
+                      {
+                        fprintf(arquivo,"else {\n");
+                      } stmts {
+                        fprintf(arquivo,"\n}");
+                      }
+                    | ELSE {fprintf(arquivo," else ");} if_stmt_in_else {}
                     ;
 
 switch_stmt         : SWITCH PARENTESE_ESQUERDA valor PARENTESE_DIREITA 
@@ -290,10 +308,10 @@ args                :                                                           
 funcao              : FUNCAO ID  PARENTESE_ESQUERDA args 
                       PARENTESE_DIREITA RETURN type IS
                       TBEGIN { escopo++; 
-                                printf("ENTREI AQUIII 1");
+                               
                                 makeStmt(strcat(strcat(strcat(strcat(strcat($7," "),$2),"("),$4),"){\n"));
                                 } stmts END ID  
-                      {printf("ENTREI AQUIII 2"); makeStmt("}");}
+                      {makeStmt("}");}
                     ;
 
 id                  : ID                                                { $$ = $1; }
