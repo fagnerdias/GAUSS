@@ -53,7 +53,7 @@
 %type <sValue> args 
 %type <sValue> type 
 %type <sValue> decl vars atribuicoes expressoes atribuicao_simples atribuicao_struct_valor operador operador_composto operador_comp operador_unario atribuicao_unaria atribuicao_composta print prints_list tipos_prints
-%type <sValue> id expressoes_list id_list
+%type <sValue> id expressoes_list id_list registro
 %type <sValue> stmt stmts if_stmt while_stmt for_stmt decl_list
 
 %start prog
@@ -300,12 +300,13 @@ atribuicao_struct_valor  : id PONTO id ATRIBUICAO expressoes
 
 
                                                 char *aux6 = strcat(aux1,".");
-                                                char *aux7 = strcat(aux6,$2);
+                                                char *aux9 = strcat(aux6,$3);
+                                                char *aux7 = strcat(aux9,$2);
                                                 char *aux8 = strcat(aux7, $4);
                         
                         $$ = strcat(aux8,aux5);
 
-                        printf("qqqqllllq\n");
+                        printf("PONTO %s\n",strcat(aux8,aux5));
                     }
                     ;                    
 
@@ -355,9 +356,13 @@ type                : CARACTERE     {$$ = $1;}
                     | DOUBLE        {$$ = $1;}
                     | VOID          {$$ = $1;}
                     | BOOLEANO      {$$ = $1;}
-                    
-                    
+                    | registro      {$$ = $1;}  
                     ;
+
+registro            : PONTO ID            {
+                        $$ = $2;
+                    }
+                    ;                    
  
 /*Colocar demais operadores*/
 
