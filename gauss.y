@@ -85,7 +85,12 @@ decl                : type id           { if(insertVar($2, escopo, $1)==0){
                                            }
                                         } 
                     | type vars decl    { $$ = strcat(strcat(strcat(strcat($1, " "),$2),","),$3);}
-                    | type atribuicoes  { $$ = strcat(strcat($1, " "),$2);}
+                    | type atribuicoes  
+                        { 
+                            printf("llll\n");
+                            fprintf(arquivo, "%s\n", strcat(strcat($1, " "),$2));
+
+                             }
                     ;
 
 struct_list         : struct                                            {}
@@ -98,16 +103,16 @@ struct              : STRUCT ID IS decl_list ENDSTRUCT     {char teste[10];
                                             } 
                     ;
 
-stmt                : decl PONTO_E_VIRGULA                              {makeStmt(strcat($1,";\n")); } 
+stmt                : decl PONTO_E_VIRGULA                              {/*makeStmt(strcat($1,";\n"));*/ printf("ooooo\n");} 
                     | if_stmt                                           {}
                     | while_stmt                                        {}
                     | for_stmt                                          {}
-                    | atribuicoes PONTO_E_VIRGULA                       {makeStmt(strcat(strcat($1,";"),"\n"));}
+                    | atribuicoes PONTO_E_VIRGULA                       {printf("TESTEE\n");makeStmt(strcat(strcat($1,";"),"\n"));}
                     | invoca_procedimento PONTO_E_VIRGULA               {}
                     | switch_stmt                                       {}
                     | print PONTO_E_VIRGULA                             {/*makeStmt(strcat(strcat($1,";"),"\n"));*/}
                     | scan PONTO_E_VIRGULA                              {}
-                    | RETURN id PONTO_E_VIRGULA                         {makeStmt(strcat(strcat(strcat($1," "),$2),";\n"));}
+                    | RETURN id PONTO_E_VIRGULA                         {printf("MMMM ");makeStmt(strcat(strcat(strcat($1," "),$2),";\n"));printf("MMMM ");}
                     ;
 
 print               : PRINTF PARENTESE_ESQUERDA prints_list id_list PARENTESE_DIREITA {      
@@ -142,7 +147,7 @@ parametros          : expressoes {}
                     ;  
 
 decl_list           : decl PONTO_E_VIRGULA { $$ = strcat($1,";");}
-                    | decl PONTO_E_VIRGULA decl_list    {$$ = strcat(strcat($1,";"),$3);}
+                    | decl PONTO_E_VIRGULA decl_list   {$$ = strcat(strcat($1,";"),$3);}
                     ;
 
 
