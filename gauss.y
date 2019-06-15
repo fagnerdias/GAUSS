@@ -104,26 +104,31 @@ decl                : type id           {
                                          
                                                 $$ = aux;
 
-                                            //$$ = strcat(strcat($1," "),$2);
+                                                //$$ = strcat(strcat($1," "),$2);
                                            }else{
-                                            yyerror( strcat($2,": Variavel redeclarada") );
+                                                yyerror( strcat($2,": Variavel redeclarada") );
                                            }
                                         } 
                     | type vars decl    { $$ = strcat(strcat(strcat(strcat($1, " "),$2),","),$3);}
-                    | type atribuicoes  { 
-                                        
-                                            char *um = $1;
-                                            char *dois = $2;
-                                            strcat(um," ");
-                                            char *aux=( char *)malloc( strlen(um) + 1 );
-                                            
-                                            strcpy(aux,um);
-                                            
-                                            strcat(aux,dois);
-                                     
-                                            $$ = aux;
-                                        
-                                        
+
+                    | type id ATRIBUICAO expressoes
+                                        { 
+                                            if(insertVar($2, escopo, $1)==0){
+
+                                                //$$ = strcat(strcat(strcat(strcat($1," "), $2), $3), $4);
+
+                                                char *aux = (char *)malloc( strlen($1) + strlen($2) + strlen($4) + strlen($4) + 4 );
+                                                strcpy(aux, "");
+                                                strcat(aux, $1);
+                                                strcat(aux, " ");
+                                                strcat(aux, $2);
+                                                strcat(aux, $3);
+                                                strcat(aux, $4);
+                                                $$ = aux;
+
+                                            }else{
+                                                yyerror( strcat($2,": Variavel redeclarada") );
+                                            }
                                         }
                     ;
 
