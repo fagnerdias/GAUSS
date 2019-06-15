@@ -105,7 +105,7 @@
 
 
 "char"			{ yylval.sValue = strdup("caractere");return (CARACTERE); }
-"string"		{ yylval.sValue = strdup("char*");return (STRING); }
+"string"		{ yylval.sValue = strdup("string");return (STRING); }
 "int"			{ yylval.sValue = strdup("int");return (INTEIRO); }
 "float"			{ yylval.sValue = strdup("float");return (FLOAT); }
 "double"		{ yylval.sValue = strdup("double");return (DOUBLE); }
