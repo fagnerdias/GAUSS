@@ -68,27 +68,27 @@ subprog             : funcao                    {}
                     | subprog funcao            {}
                     ;
 
-stmts               : stmt              { $$ = $1; }
-                    | stmt stmts        { $$ = strcat(strcat($1," "),$2); }
+stmts               : stmt              {}
+                    | stmt stmts        {}
                     ;
 
 decl                : type id           { if(insertVar($2, escopo, $1)==0){
-                                            $$ = strcat(strcat($1," "),$2); 
+                                             fprintf(arquivo, "%s", strcat(strcat(strcat($1," "),$2),";\n")); 
                                            }else{
                                             yyerror( strcat($2,": Variavel redeclarada") );
                                            }
                                         }
                     | type vars         { if(insertVar($2, escopo, $1)==0){
-                                            strcat(strcat($1," "),$2);
+                                            fprintf(arquivo, "%s",strcat(strcat(strcat($1," "),$2),";\n"));
                                            }else{
                                             yyerror( strcat($2,": Variavel redeclarada") );
                                            }
                                         } 
-                    | type vars decl    { $$ = strcat(strcat(strcat(strcat($1, " "),$2),","),$3);}
+                    | type vars decl    {  fprintf(arquivo, "%s",strcat(strcat(strcat(strcat(strcat($1, " "),$2),","),$3),";\n"));}
                     | type atribuicoes  
                         { 
                             printf("llll\n");
-                            fprintf(arquivo, "%s\n", strcat(strcat($1, " "),$2));
+                            fprintf(arquivo, "%s\n", strcat(strcat(strcat($1, " "),$2),";\n"));
 
                              }
                     ;
@@ -103,7 +103,7 @@ struct              : STRUCT ID IS decl_list ENDSTRUCT     {char teste[10];
                                             } 
                     ;
 
-stmt                : decl PONTO_E_VIRGULA                              {/*makeStmt(strcat($1,";\n"));*/ printf("ooooo\n");} 
+stmt                : decl PONTO_E_VIRGULA                              {/*makeStmt(strcat($1,";\n")); */printf("ooooo\n");} 
                     | if_stmt                                           {}
                     | while_stmt                                        {}
                     | for_stmt                                          {}
@@ -112,7 +112,7 @@ stmt                : decl PONTO_E_VIRGULA                              {/*makeS
                     | switch_stmt                                       {}
                     | print PONTO_E_VIRGULA                             {/*makeStmt(strcat(strcat($1,";"),"\n"));*/}
                     | scan PONTO_E_VIRGULA                              {}
-                    | RETURN id PONTO_E_VIRGULA                         {printf("MMMM ");makeStmt(strcat(strcat(strcat($1," "),$2),";\n"));printf("MMMM ");}
+                    | RETURN id PONTO_E_VIRGULA                         {makeStmt(strcat(strcat(strcat($1," "),$2),";\n"));}
                     ;
 
 print               : PRINTF PARENTESE_ESQUERDA prints_list id_list PARENTESE_DIREITA {      
@@ -338,11 +338,11 @@ funcao              : FUNCAO ID  PARENTESE_ESQUERDA args
                       {makeStmt("}");}
                     ;
 
-id                  : ID                                                { $$ = $1; }
-                    | DIGITO                                            { char teste[10]; $$ = _itoa($1,teste,10);}
-                    | ID COLCHETE_ESQUERDA expressoes COLCHETE_DIREITA  { $$ = strcat(strcat(strcat($1,"["),$3),"]");}
-                    | PARENTESE_ESQUERDA expressoes PARENTESE_DIREITA   { $$ = strcat(strcat(strcat($1,"("),$3),")");}
-                    | LITERAL_QUALQUER                                  { $$ = $1; }
+id                  : ID                                                {printf("um\n"); $$ = $1; }
+                    | DIGITO                                            {printf("dois\n"); char teste[10]; $$ = _itoa($1,teste,10);}
+                    | ID COLCHETE_ESQUERDA expressoes COLCHETE_DIREITA  {printf("tres\n"); $$ = strcat(strcat(strcat($1,"["),$3),"]");}
+                    | PARENTESE_ESQUERDA expressoes PARENTESE_DIREITA   {printf("quarto\n"); $$ = strcat(strcat(strcat($1,"("),$3),")");}
+                    | LITERAL_QUALQUER                                  {printf("cinco\n"); $$ = $1; }
                     ;
 %%
 
