@@ -1,12 +1,48 @@
 func main() return int is
 begin
+  int vetor[100];
 
+  int parar = 0;
+  int a;
+  int b;
+  int c;
+  int d;
+  
+  for(int i=0; i<4 || parar < 0; i++)
 
-	for (int i = 0; i < 10; i=i+1)
+    scanf(%i,vetor[i]);
+    parar = vetor[i];
 
-		i = 1;
-	endfor
+  endfor
+  
+  a = 0;
+  b = 0;
+  c = 0;
+  d = 0;
+  for(int i=0; i<4; i++)
+    if(vetor[i]<=25) then
+      a++;
+    else if(vetor[i]<=50) then
+      b = 10;
+    else if(vetor[i]<=75) then
+      c += 10;
+    else if(vetor[i]<=100) then
+      d = 10;
+    endif
+  endfor
 
+  string x = "[0 e 25]=";
+  printf(%s,x);
+  printf(%i,a);
+  string y = " [26 e 50]=";
+  printf(%s,y);
+  printf(%i,b);
+  string k = " [51 e 75]=";
+  printf(%s,k);
+  printf(%i,c);
+  string w = " [76 e 100]=";
+  printf(%s,w);
+  printf(%i,d);
 
-	return 0;
-end main
+  return 0;
+ end main 
