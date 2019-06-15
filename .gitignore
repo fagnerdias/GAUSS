@@ -2,3 +2,4 @@ lex.yy.c
 y.tab.c
 gauss.tab.h
 gauss.tab.c
+exe.sh
