@@ -45,7 +45,7 @@
 %token <sValue> BOOLEANO TRUE FALSE JUMP BREAK TNULL
 %token <iValue> DIGITO
 %token <sValue> ID
-%token LITERAL_QUALQUER
+%token <sValue> LITERAL_QUALQUER
 
 
 %type <sValue> valor
@@ -78,7 +78,7 @@ decl                : type id           { if(insertVar($2, escopo, $1)==0){
                                             yyerror( strcat($2,": Variavel redeclarada") );
                                            }
                                         }
-                    | type vars         { if(insertVars($2, escopo, $1)==0){
+                    | type vars         { if(insertVar($2, escopo, $1)==0){
                                             strcat(strcat($1," "),$2);
                                            }else{
                                             yyerror( strcat($2,": Variavel redeclarada") );
@@ -107,20 +107,22 @@ stmt                : decl PONTO_E_VIRGULA                              {makeStm
                     | RETURN id PONTO_E_VIRGULA                         {makeStmt(strcat(strcat(strcat($1," "),$2),";\n"));}
                     ;
 
-print               : PRINTF PARENTESE_ESQUERDA prints_list VIRGULA id_list PARENTESE_DIREITA {      
-                                                                                    fprintf(arquivo,"printf(\"%s\" , %s)\n",$3,$4);
+print               : PRINTF PARENTESE_ESQUERDA prints_list id_list PARENTESE_DIREITA {      
+                                                                                    fprintf(arquivo,"printf(\"%s\" , %s);\n",$3,$4);
                                                                              }
                     ;
 
-scan                : SCANF PARENTESE_ESQUERDA prints_list VIRGULA id_list PARENTESE_DIREITA {} 
+scan                : SCANF PARENTESE_ESQUERDA prints_list id_list PARENTESE_DIREITA {
+                                                                                fprintf(arquivo,"scanf(\"%s\" , &%s);\n",$3,$4);
+                                                                                                } 
                     ;
 
 id_list             : id {$$ = $1;}
                     | id VIRGULA id_list {$$ = strcat(strcat($1,","),$3);}
                     ;                    
 
-prints_list         : tipos_prints VIRGULA                                            {$$ = strcat(",",$2);}
-                    | tipos_prints VIRGULA prints_list                                {$$ = strcat(strcat(",",$2),$3);}
+prints_list         : tipos_prints VIRGULA                                            {$$ = strcat($2,",");}
+                    | tipos_prints VIRGULA prints_list                                {$$ = strcat(strcat($2,","),$3);}
                     ;
 
 tipos_prints        : PRINT_INT {$$ = $1;}
@@ -281,16 +283,20 @@ expressoes          : {}
                     | id                    {$$ = $1;}
                     | id operador id        {
                                             if (strcmp($2,"^") == 0){
-                                                printf("teste\n");
                                                 char teste[10];
                                                 sprintf(teste,"pow(%s,%s)",$1,$3);
+                                                $$ = teste;
+                                            }
+                                            else if (strcmp($2,"-") == 0){
+                                                char teste[10];
+                                                sprintf(teste,"%s-%s",$1,$3);
                                                 $$ = teste;
                                             }
                                             else {
                                                 $$ = strcat(strcat($1,$2),$3);}
                                             }
                     | id operador_comp id   {$$ = strcat(strcat($1,$2),$3);}
-                    | vetorial              {/*$$ = $1;*/} 
+                    | vetorial              {/*$$ = $1;*/}
                     ;
 
 vetorial            : CHAVE_ESQUERDA lista_de_digitos CHAVE_DIREITA { 
@@ -328,6 +334,7 @@ id                  : ID                                                { $$ = $
                     | DIGITO                                            { char teste[10]; $$ = _itoa($1,teste,10);}
                     | ID COLCHETE_ESQUERDA expressoes COLCHETE_DIREITA  { $$ = strcat(strcat(strcat($1,"["),$3),"]");}
                     | PARENTESE_ESQUERDA expressoes PARENTESE_DIREITA   { $$ = strcat(strcat(strcat($1,"("),$3),")");}
+                    | LITERAL_QUALQUER                                  { $$ = $1; }
                     ;
 %%
 

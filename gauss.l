@@ -117,7 +117,7 @@
 [ \t\r]+        { /* Espaços em branco */; }
 \n              { yylineno++; }
 [a-zA-Z\_][a-zA-Z0-9\_]* { yylval.sValue = strdup(yytext);return (ID); }
-\"(\\.|[^"])*\"	{ return (LITERAL_QUALQUER); }
+\"(\\.|[^"])*\"	{ yylval.sValue = strdup(yytext); return (LITERAL_QUALQUER); }
 
 "/*"((\*+[^/*])|([^*]))*\**"*/"		{ ; }	
  
