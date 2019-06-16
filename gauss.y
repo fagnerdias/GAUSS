@@ -9,6 +9,7 @@
   extern char * yytext; 
 
   int escopo = -1;
+  int contador_de_gotos_base = 0;
   int contador_de_gotos = 0;
   char buffer[33];
   FILE *arquivo;
@@ -199,10 +200,14 @@ while_stmt          : WHILE PARENTESE_ESQUERDA
                     valor PARENTESE_DIREITA
                     {   
                         contador_de_gotos++;
-                        char buffer [33];
-                        fprintf(arquivo, "condicao%s:\nif(%s){\n",$3,_itoa(contador_de_gotos,buffer, 16)); 
+                        
+                        fprintf(arquivo, "condicao%i:\nif(%s){\n",contador_de_gotos,$3); 
                     } stmts 
-                    END_WHILE {fprintf(arquivo,"\ngoto condicao%s;\n}\n",_itoa(contador_de_gotos,buffer, 16));}
+                    END_WHILE {fprintf(arquivo,"\ngoto condicao%i;\n}\n",contador_de_gotos);
+                        contador_de_gotos--;
+                            if(contador_de_gotos%10 == 0)
+                                contador_de_gotos+=10;
+                        }
                     ;
 
 
@@ -213,16 +218,22 @@ for_stmt            : FOR PARENTESE_ESQUERDA
                             valor PONTO_E_VIRGULA 
                             atribuicoes PARENTESE_DIREITA 
                             {
+                                
                                 contador_de_gotos++;
-                                char buffer [33];
+
+                                
                                 fprintf(arquivo, "{\n%s;\n", $3);
-                                fprintf(arquivo, "condicao%s:\nif(%s){\n",_itoa(contador_de_gotos,buffer, 16),$5); 
+                                fprintf(arquivo, "condicao%i:\nif(%s){\n",contador_de_gotos,$5); 
+
                             } 
                         stmts END_FOR  
                         {
-                              char buffer [33];
-                              fprintf(arquivo, "\n%s;\ngoto condicao%s;\n}\n}\n", $7, _itoa(contador_de_gotos,buffer, 16));
-                              
+
+                              fprintf(arquivo, "\n%s;\ngoto condicao%i;\n}\n}\n", $7, contador_de_gotos);
+                               contador_de_gotos--;
+                                    if(contador_de_gotos%10 == 0)
+                                        contador_de_gotos+=10;
+                                                            
                         }
                     ;                  
               
