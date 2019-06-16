@@ -146,7 +146,7 @@ struct              : STRUCT ID IS decl_list ENDSTRUCT
                     } 
                     ;
 
-stmt                : decl PONTO_E_VIRGULA                              {printf("\nstmltt%s\n",$1);makeStmt(strcat($1,";\n")); } 
+stmt                : decl PONTO_E_VIRGULA                              {makeStmt(strcat($1,";\n")); } 
                     | if_stmt                                           {}
                     | while_stmt                                        {}
                     | for_stmt                                          {}
@@ -377,6 +377,7 @@ valor               : expressoes E_LOGICO expressoes    {$$ = strcat(strcat($1,$
 expressoes          : {}
                     
                     | id                    {$$ = $1;}
+                    | MENOS_UNARIO id       {$$ = strcat($1,$2);}
                     | id operador id        {
                                             if (strcmp($2,"^") == 0){
                                                 char teste[10];
