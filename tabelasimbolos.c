@@ -39,6 +39,7 @@ int sizeVectorFunc = 0;
 /************************************/
 char** str_split(char* a_str, const char a_delim);
 int printVar();
+int parametros_passados_validos(char *parametrosFuncao, char *parametrosPassados);
 
 /************************************/
 /***        Decl Variaveis        ***/
@@ -112,9 +113,14 @@ int insertVars(char *ids, int escopo, char *tipo){
 /***********************************/
 
 /*metodo para auxiliar a inserção de uma funcao/procedimento na tabela de simbolos */
-int findFuncToInsert(char *id, int escopo) {
+int findFuncToInsert(char *id, int escopo, char *parametros) {
 	for( int i=0; i<sizeVectorFunc; i++ ) {
 		if( strcmp(id, vetorFunc[i].id) == 0 ) { //encontrado equivalente no vetor
+/*
+			if( parametros != NULL && parametros_passados_validos(vetorFunc[i].tipoParams, parametros) == 1){ //chamada de funcao com parametros invalidos
+				return 2;
+			}*/
+
 			return 0; //encontrou id, funcao declarada
 		}
 	}
@@ -122,16 +128,16 @@ int findFuncToInsert(char *id, int escopo) {
 }
 
 /* método para verificar se a chamada de um procedimento/funcao é valida */
-int findFunc(char *id, int escopo){
-	if( findFuncToInsert(id, escopo) == 1){ //se procedimento/funcao não foi encontrado, não é válida
-		printf("erro: %s - procedimento nao declarado\n", id);
+int findFunc(char *id, int escopo, char *parametros){
+	if( findFuncToInsert(id, escopo, parametros) == 1){ //se procedimento/funcao não foi encontrado, não é válida
+		printf("erro: %s - funcao/procedimento nao declarado\n", id);
 	}
 	return 0; //encontrou func, é valida
 }
 /* insere a funcao no vetor caso nao a encontre ja declarada */
 int insertFunc(char *id, int escopo, char *tipoRetorno, char *tipoParams){
 
-	if( findFuncToInsert(id, escopo) == 0){
+	if( findFuncToInsert(id, escopo, NULL) == 0){
 		printf("erro: %s - procedimento/funcao ja declarado previamente\n", id);
 		return 1; //erro na declaracao
 	}
@@ -243,6 +249,70 @@ char** str_split(char* a_str, const char a_delim)
     }
 
     return result;
+}
+
+int parametros_passados_validos(char *parametrosFuncao, char *parametrosPassados){
+
+	Var paramsPassados[20];
+    char** tokensPassados = str_split(parametrosPassados, ',');
+    int tamTkPassados = 0;
+    if (tokensPassados) {
+        for (int i = 0; *(tokensPassados + i); i++){
+			for( int j = 0; j<sizeVectorVar; j++ ) {
+				if( strcmp(*(tokensPassados + i), vetorVar[j].id) == 0 ) {
+		        	paramsPassados[i] = vetorVar[j];
+				}
+			}
+
+        	tamTkPassados = i; //atualizando o tamanho a cada iteracao
+        	printf("tk ---- %s\n", *(tokensPassados + i));
+        }
+    }
+
+	Var paramsFuncao[20];
+    char** tokensFuncao = str_split(parametrosFuncao, ',');
+    int tamTkFuncao = 0;
+    if (tokensFuncao) {
+        for (int i = 0; *(tokensFuncao + i); i++){
+        	Var temp;
+        	temp.id = *(tokensFuncao + i);
+        	paramsFuncao[i] = temp;
+
+        	tamTkFuncao = i; //atualizando o tamanho a cada iteracao
+        	printf("tk ---- %s\n", *(tokensFuncao + i));
+        }
+    }
+
+    int retorno = 0;
+    if(tamTkPassados == tamTkFuncao){
+		for (int i = 0; i<tamTkFuncao; i++){
+			printf("tss ---- %s\n");
+			//se os tipos nao baterem, passagem de parametro invalida
+			if ( strcmp( paramsFuncao[i].tipo, paramsPassados[i].tipo) == 1 ){ 
+				retorno = 1;
+				printf("Passagem de parametro invalida. Esperado: %s. Passado: %s\n", paramsFuncao[i].tipo, paramsPassados[i].tipo);
+			}
+		}
+    }else{
+    	retorno = 1; //nao sao validos
+    	printf("Quantidade de parametros passados invalida. Esperado: %i. Passado: %i\n", tamTkFuncao, tamTkPassados);
+    }
+
+    /*limpar tokens*/
+    if (tokensFuncao) {
+        for (int i = 0; *(tokensFuncao + i); i++){
+	        free(*(tokensFuncao + i));
+        }
+        free(tokensFuncao);
+    }
+    if (tokensPassados) {
+        for (int i = 0; *(tokensPassados + i); i++){
+	        free(*(tokensPassados + i));
+        }
+        free(tokensPassados);
+    }
+
+	return retorno;
 }
 
 //int main(){return 0;}
