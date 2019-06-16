@@ -96,9 +96,37 @@ begin
 
   else then
       printf(%s, "\nErro! Impossivel multiplicar as matrizes informadas.\n");
-
   endif
    
+	printf(%s,"\n==========SOMA DE MATRIZES==========\n");
+
+	if(i1 == i2 && j1 == j2) then
+	    for (i=0;i<i1; i++) 
+	      	for (j=0; j<j1; j++) 
+	 
+	        	
+	          	m3[i][j] = m1[i][j] + m2[i][j]; 
+
+			endfor
+		endfor
+	    
+
+
+
+
+
+	    printf(%s, "\nMatriz 3\n=====================\n\n");
+
+	    for (i=0; i<i1; i++) 
+	      for (j=0; j<j2; j++) 
+	        printf(%i, m3[i][j]);
+	      endfor
+	      printf(%s,"\n");
+	    endfor
+	    printf(%s,"\n");
+	else then
+    	printf(%s, "\nErro! Impossivel somar as matrizes informadas.\n");
+    endif
 
 
 
