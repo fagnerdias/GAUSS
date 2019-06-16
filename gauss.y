@@ -9,6 +9,7 @@
   extern char * yytext; 
 
   int escopo = -1;
+  int contador_de_gotos_base = 0;
   int contador_de_gotos = 0;
   char buffer[33];
   FILE *arquivo;
@@ -77,7 +78,8 @@ stmts               : stmt              {}
                     | stmt stmts        {}
                     ;
 
-decl                : type id           { 
+decl                : atribuicoes {$$ = $1}
+                    |type id           { 
                                             if(insertVar($2, escopo, $1)==0){
                                             
                                                 char *um = $1;
@@ -160,7 +162,6 @@ stmt                : decl PONTO_E_VIRGULA                              {makeStm
                     ;
 
 print               : PRINTF PARENTESE_ESQUERDA prints_list id_list PARENTESE_DIREITA {  
-    printf("printf(\"%s\", %s);\n",$3,$4);    
                                                                                     fprintf(arquivo,"printf(\"%s\", %s);\n",$3,$4);
                                                                              }
                     ;
@@ -209,13 +210,17 @@ while_stmt          : WHILE PARENTESE_ESQUERDA
                     {   
                         escopo++;
                         contador_de_gotos++;
-                        char buffer [33];
-                        fprintf(arquivo, "condicao%s:\nif(%s){\n",$3,_itoa(contador_de_gotos,buffer, 16)); 
+                        
+                        fprintf(arquivo, "condicao%i:\nif(%s){\n",contador_de_gotos,$3); 
                     } stmts 
                     END_WHILE {
                             limpar_variaveis_do_escopo(escopo);
                             escopo--;
-                            fprintf(arquivo,"\ngoto condicao%s;\n}\n",_itoa(contador_de_gotos,buffer, 16));}
+                            fprintf(arquivo,"\ngoto condicao%i;\n}\n",contador_de_gotos);
+                            contador_de_gotos--;
+                            if(contador_de_gotos%10 == 0)
+                                contador_de_gotos+=10;
+                        }
                     ;
 
 
@@ -228,17 +233,19 @@ for_stmt            : FOR PARENTESE_ESQUERDA
                             {
                                 escopo++;
                                 contador_de_gotos++;
-                                char buffer [33];
+                                
                                 fprintf(arquivo, "{\n%s;\n", $3);
-                                fprintf(arquivo, "condicao%s:\nif(%s){\n",_itoa(contador_de_gotos,buffer, 16),$5); 
+                                fprintf(arquivo, "condicao%i:\nif(%s){\n",contador_de_gotos,$5); 
+
                             } 
                         stmts END_FOR  
                         {
                             limpar_variaveis_do_escopo(escopo);
                             escopo--;
-                              char buffer [33];
-                              fprintf(arquivo, "\n%s;\ngoto condicao%s;\n}\n}\n", $7, _itoa(contador_de_gotos,buffer, 16));
-                              
+                            fprintf(arquivo, "\n%s;\ngoto condicao%i;\n}\n}\n", $7, contador_de_gotos);
+                            contador_de_gotos--;
+                                if(contador_de_gotos%10 == 0)
+                                    contador_de_gotos+=10;
                         }
                     ;                  
               
@@ -351,6 +358,7 @@ operador_unario     : INCREMENTO        {$$ = $1;}
 operador            : MAIS              {$$ = $1;}           
                     | MENOS_UNARIO      {$$ = $1;}
                     | BARRA             {$$ = $1;}
+                    | ASTERISCO         {$$ = $1;}
                     | MODULO            {$$ = $1;}
                     | EXPONENCIACAO     {$$ = $1;}
                     ;                  
