@@ -58,6 +58,7 @@
 %type <sValue> decl vars atribuicoes expressoes atribuicao_simples atribuicao_struct_valor operador operador_composto operador_comp operador_unario atribuicao_unaria atribuicao_composta print prints_list tipos_prints
 %type <sValue> id expressoes_list id_list registro
 %type <sValue> stmt stmts if_stmt while_stmt for_stmt decl_list
+%type <sValue> invoca_procedimento parametros
 
 %start prog
 
@@ -79,7 +80,6 @@ stmts               : stmt              {}
 decl                : type id           { 
                                             if(insertVar($2, escopo, $1)==0){
                                             
-
                                                 char *um = $1;
                                                 char *dois = $2;
                                                 strcat(um," ");
@@ -96,6 +96,7 @@ decl                : type id           {
                                             }
                                         }
                     | type vars         { if(insertVars($2, escopo, $1)==0){
+
                                                 char *um = $1;
                                                 char *dois = $2;
                                                 strcat(um," ");
@@ -107,7 +108,6 @@ decl                : type id           {
                                          
                                                 $$ = aux;
 
-                                                //$$ = strcat(strcat($1," "),$2);
                                            }else{
                                                 yyerror( strcat($2,": Variavel redeclarada") );
                                            }
@@ -151,8 +151,8 @@ stmt                : decl PONTO_E_VIRGULA                              {makeStm
                     | if_stmt                                           {}
                     | while_stmt                                        {}
                     | for_stmt                                          {}
-                    | atribuicoes PONTO_E_VIRGULA                       {makeStmt(strcat(strcat($1,";"),"\n"));}
-                    | invoca_procedimento PONTO_E_VIRGULA               {}
+                    | atribuicoes PONTO_E_VIRGULA                       { makeStmt( strcat( $1, ";\n" ) ); }
+                    | invoca_procedimento PONTO_E_VIRGULA               { makeStmt( strcat( $1, ";\n" ) ); }
                     | switch_stmt                                       {}
                     | print PONTO_E_VIRGULA                             {/*makeStmt(strcat(strcat($1,";"),"\n"));*/}
                     | scan PONTO_E_VIRGULA                              {}
@@ -184,10 +184,18 @@ tipos_prints        : PRINT_INT {$$ = $1;}
                     | PRINT_STRING {$$ = $1;}
                     ;
 
-invoca_procedimento : ID PARENTESE_ESQUERDA parametros PARENTESE_DIREITA { findFunc($1, escopo); }
+invoca_procedimento : ID PARENTESE_ESQUERDA parametros PARENTESE_DIREITA { 
+                            int retornoBusca = findFunc($1, escopo, $3);
+                            if ( retornoBusca == 1 ){
+                                yyerror( strcat($2,": Funcao nao declarada") );
+                            }else if ( retornoBusca == 2 ) {
+                                yyerror( strcat($2,": Parametros incorretos") );
+                            }
+                        }
                     ;
    
-parametros          : expressoes {}
+parametros          : {}
+                    | expressoes {}
                     | expressoes VIRGULA parametros {}
                     ;  
 
@@ -385,9 +393,7 @@ valor               : expressoes E_LOGICO expressoes    {$$ = strcat(strcat($1,$
                     | expressoes                        {printf("ffffff\n");$$ = $1;}                          
                     ;
 
-expressoes          : {}
-                    
-                    | id                    {$$ = $1;}
+expressoes          : id                    {$$ = $1;}
                     | MENOS_UNARIO id       {$$ = strcat($1,$2);}
                     | id operador id        {
                                             if (strcmp($2,"^") == 0){
