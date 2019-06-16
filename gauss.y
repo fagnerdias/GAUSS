@@ -77,7 +77,8 @@ stmts               : stmt              {}
                     | stmt stmts        {}
                     ;
 
-decl                : type id           { 
+decl                : atribuicoes {$$ = $1}
+                    |type id           { 
                                             if(insertVar($2, escopo, $1)==0){
                                             
                                                 char *um = $1;
@@ -160,7 +161,6 @@ stmt                : decl PONTO_E_VIRGULA                              {makeStm
                     ;
 
 print               : PRINTF PARENTESE_ESQUERDA prints_list id_list PARENTESE_DIREITA {  
-    printf("printf(\"%s\", %s);\n",$3,$4);    
                                                                                     fprintf(arquivo,"printf(\"%s\", %s);\n",$3,$4);
                                                                              }
                     ;
@@ -350,6 +350,7 @@ operador_unario     : INCREMENTO        {$$ = $1;}
 operador            : MAIS              {$$ = $1;}           
                     | MENOS_UNARIO      {$$ = $1;}
                     | BARRA             {$$ = $1;}
+                    | ASTERISCO         {$$ = $1;}
                     | MODULO            {$$ = $1;}
                     | EXPONENCIACAO     {$$ = $1;}
                     ;                  
