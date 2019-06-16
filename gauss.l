@@ -72,6 +72,7 @@
 "-" 			{ yylval.sValue = strdup("-");return (MENOS_UNARIO); }
 "^" 			{ yylval.sValue = strdup("^");return (EXPONENCIACAO); }
 
+"main"			{ yylval.sValue = strdup("main");return (FUNC_MAIN); }
 "JUMP" 			{ return (JUMP); }
 "BREAK" 		{ return (BREAK); }
 "NULL"			{ return (TNULL); }

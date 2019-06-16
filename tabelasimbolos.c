@@ -15,6 +15,7 @@ typedef struct Var
 	char *id;
 	int escopo;
 	char *tipo;
+	int ocupada;
 }Var;
 
 typedef struct Func
@@ -45,45 +46,57 @@ int parametros_passados_validos(char *parametrosFuncao, char *parametrosPassados
 /***        Decl Variaveis        ***/
 /************************************/
 
-/*metodo para auxiliar a inserção de uma variavel na tabela de simbolos */
-int findVarToInsert(char *id, int escopo, char *tipo) {
+/* método para verificar se uma variavel é valida no determinado escopo*/
+void iniciaVetorVar(){
+	for( int i=0; i<100; i++ ) {
+		vetorVar[i].ocupada = 1; //seta todas as posicoes para nao serem ocupadas
+	}
+}
+/* método para verificar se uma variavel é valida no determinado escopo*/
+int findVar(char *id, int escopo, char *tipo){
 	for( int i=0; i<sizeVectorVar; i++ ) {
-		if( strcmp(id, vetorVar[i].id) == 0 && strcmp(tipo, vetorVar[i].tipo) == 0 ) { //encontrado equivalente no vetor
+		if( vetorVar[i].ocupada == 0 && //espaco do vetor esta sendo usado para uma variavel (caso tenha sido liberado em alguma saída de escopo)
+			strcmp(id, vetorVar[i].id) == 0 && //encontrado id igual
+			strcmp(tipo, vetorVar[i].tipo) == 0 && //encontrada var do mesmo tipo
+			escopo <= vetorVar[i].escopo ){ //encontrada var declarada no mesmo escopo ou escopo anterior
 			return 0; //encontrou id, var declarada
 		}
 	}
-	return 1; //nao encontrou, funcao nao declarada
-}
-/* método para verificar se a chamada de uma variavel é valida */
-int findVar(char *id, int escopo, char *tipo){
-	if( findVarToInsert(id, escopo, tipo) == 1 ) {
-		printf("erro: %s - variavel nao declarada\n", id);
-		return 1; // variavel nao encontrada
-	}
-	return 0; //encontrou var
+	return 1; //nao encontrou, var nao declarada
 }
 /* insere a variavel no vetor caso nao a encontre ja declarada */
 int insertVar(char *id, int escopo, char *tipo){
-	if(findVarToInsert(id, escopo, tipo)==0){
+	if( findVar(id, escopo, tipo) == 0 ){
 		printf("%s %s : variavel ja declarada anteriormente\n", tipo, id);
 		return 1;
 	}
-
-	Var temp;
 	
+	Var temp;
+
+	temp.ocupada = 0; //variavel do vetor sendo utilizada
 	temp.escopo = escopo;
 	
-	char *auxId = (char *)malloc( strlen(id)+1);
+	char *auxId = (char *)malloc( strlen(id)+1 );
 	strcpy(auxId, id);
 	temp.id = auxId;
 	
-	char *auxTipo = (char *)malloc( strlen(tipo)+1);
+	char *auxTipo = (char *)malloc( strlen(tipo)+1 );
 	strcpy(auxTipo, tipo);
 	temp.tipo = auxTipo;
 
+	for( int i=0; i<sizeVectorVar; i++ ) { //para caso tenha variaveis nao utilizadas no meio do vetor util
+		if( vetorVar[i].ocupada == 1 ){ //primeira variavel nao sendo utilizada
+			vetorVar[i] = temp;
+			//printVar();
+			return 0; //adicionou a var com sucesso e finaliza
+		}
+	}
+	
+	//caso nao tenha inserido antes, e por consequencia finalizado, insere na proxima posicao do vetor
 	vetorVar[sizeVectorVar] = temp;
 	sizeVectorVar++;
-
+	
+	//printVar();
 	//printf("sucesso: tipo '%s' e id '%s' - variavel foi declarada \n", temp.tipo, temp.id);
 	return 0; //inseriu a variavel com sucesso
 }
@@ -96,7 +109,7 @@ int insertVars(char *ids, int escopo, char *tipo){
     {
         for (int i = 0; *(tokens + i); i++){
         	if (insertVar( *(tokens + i), escopo, tipo) == 1){ //erro em alguma declaracao
-	        	free(*(tokens + i));
+		       	free(*(tokens + i));
         		free(tokens);
         		return 1;
         	}else{
@@ -106,6 +119,14 @@ int insertVars(char *ids, int escopo, char *tipo){
         free(tokens);
     }
 	return 0; //Completou as declarações com sucesso
+}
+
+void limpar_variaveis_do_escopo(int escopo){
+	for( int i=0; i<sizeVectorVar; i++ ){
+		if( vetorVar[i].escopo == escopo ){
+			vetorVar[i].ocupada = 1; //variavel nao mais ocupada
+		}
+	}
 }
 
 /************************************/
@@ -175,7 +196,7 @@ int insertFunc(char *id, int escopo, char *tipoRetorno, char *tipoParams){
 int printVar(){
 	printf("[ \n");
 	for(int i=0; i<sizeVectorVar; i++){
-		printf("( %s - %i - %s )\n", vetorVar[i].id, vetorVar[i].escopo, vetorVar[i].tipo);
+		printf("( %s - %i - %s - %i )\n", vetorVar[i].id, vetorVar[i].escopo, vetorVar[i].tipo, vetorVar[i].ocupada);
 	}
 	printf(" ]\n");
 	return 0;
@@ -183,7 +204,7 @@ int printVar(){
 int printFunc(){
 	printf("[ ");
 	for(int i=0; i<sizeVectorFunc; i++){
-		printf("( %s - %i - %s )", vetorFunc[i].id, vetorFunc[i].escopo, vetorFunc[i].tipoRetorno);
+		printf("( %s - %i - %s - %s)\n", vetorFunc[i].id, vetorFunc[i].escopo, vetorFunc[i].tipoRetorno, vetorFunc[i].tipoRetorno);
 	}
 	printf(" ]\n");
 	return 0;
@@ -191,7 +212,7 @@ int printFunc(){
 
 Var getVarInfo(char *id, int escopo, char *tipo){
 	Var tmp;
-	if(findVar(id,escopo, tipo) == 0){
+	if(findVar(id,escopo, tipo) == 0){ //encontrou
 		for(int i=0; i<sizeVectorVar; i++){
 			if(strcmp(id, vetorVar[i].id)==0){
 				return vetorVar[i];
@@ -276,6 +297,7 @@ int parametros_passados_validos(char *parametrosFuncao, char *parametrosPassados
         for (int i = 0; *(tokensFuncao + i); i++){
         	Var temp;
         	temp.id = *(tokensFuncao + i);
+        	temp.ocupada = 0;
         	paramsFuncao[i] = temp;
 
         	tamTkFuncao = i; //atualizando o tamanho a cada iteracao
@@ -288,7 +310,8 @@ int parametros_passados_validos(char *parametrosFuncao, char *parametrosPassados
 		for (int i = 0; i<tamTkFuncao; i++){
 			printf("tss ---- %s\n");
 			//se os tipos nao baterem, passagem de parametro invalida
-			if ( strcmp( paramsFuncao[i].tipo, paramsPassados[i].tipo) == 1 ){ 
+			if ( strcmp( paramsFuncao[i].tipo, paramsPassados[i].tipo) == 1 && 
+					paramsFuncao[i].ocupada == 1 && paramsPassados[i].ocupada == 1 ){ //se as posicoes do vetor possuem variaveis sendo usadas
 				retorno = 1;
 				printf("Passagem de parametro invalida. Esperado: %s. Passado: %s\n", paramsFuncao[i].tipo, paramsPassados[i].tipo);
 			}

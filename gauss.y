@@ -32,7 +32,7 @@
   char * sValue;  /* string value */
 }
 
-%token <sValue> NUMERO_REAL
+%token <sValue> NUMERO_REAL FUNC_MAIN
 %token <sValue> CHAVE_ESQUERDA CHAVE_DIREITA PARENTESE_ESQUERDA PARENTESE_DIREITA COLCHETE_ESQUERDA COLCHETE_DIREITA 
 %token <sValue> PONTO_E_VIRGULA VIRGULA PONTO DOIS_PONTOS
 %token <sValue> E_LOGICO E_LOGICO_CURTO_CIRCUITO OU_LOGICO OU_LOGICO_CURTO_CIRCUITO EXCLAMACAO
@@ -50,7 +50,6 @@
 %token <sValue> ID
 %token <sValue> LITERAL_QUALQUER
 
-
 %type <sValue> valor
 %type <sValue> args 
 %type <sValue> type 
@@ -64,12 +63,14 @@
 
 
 %%
-prog                : subprog       {}
-                    | struct_list subprog   {}
+
+prog                : funcao_main {}
+                    | subprog funcao_main     {}
+                    | struct_list subprog funcao_main {}
                     ;
 
-subprog             : funcao                    {}
-                    | subprog funcao            {}
+subprog             : funcao                   {}
+                    | subprog funcao           {}
                     ;
 
 stmts               : stmt              {}
@@ -206,11 +207,15 @@ decl_list           : decl PONTO_E_VIRGULA { $$ = strcat($1,";\n");}
 while_stmt          : WHILE PARENTESE_ESQUERDA 
                     valor PARENTESE_DIREITA
                     {   
+                        escopo++;
                         contador_de_gotos++;
                         char buffer [33];
                         fprintf(arquivo, "condicao%s:\nif(%s){\n",$3,_itoa(contador_de_gotos,buffer, 16)); 
                     } stmts 
-                    END_WHILE {fprintf(arquivo,"\ngoto condicao%s;\n}\n",_itoa(contador_de_gotos,buffer, 16));}
+                    END_WHILE {
+                            limpar_variaveis_do_escopo(escopo);
+                            escopo--;
+                            fprintf(arquivo,"\ngoto condicao%s;\n}\n",_itoa(contador_de_gotos,buffer, 16));}
                     ;
 
 
@@ -221,6 +226,7 @@ for_stmt            : FOR PARENTESE_ESQUERDA
                             valor PONTO_E_VIRGULA 
                             atribuicoes PARENTESE_DIREITA 
                             {
+                                escopo++;
                                 contador_de_gotos++;
                                 char buffer [33];
                                 fprintf(arquivo, "{\n%s;\n", $3);
@@ -228,6 +234,8 @@ for_stmt            : FOR PARENTESE_ESQUERDA
                             } 
                         stmts END_FOR  
                         {
+                            limpar_variaveis_do_escopo(escopo);
+                            escopo--;
                               char buffer [33];
                               fprintf(arquivo, "\n%s;\ngoto condicao%s;\n}\n}\n", $7, _itoa(contador_de_gotos,buffer, 16));
                               
@@ -238,11 +246,12 @@ for_stmt            : FOR PARENTESE_ESQUERDA
 
 if_stmt             : IF PARENTESE_ESQUERDA valor PARENTESE_DIREITA THEN
                     {
+                        escopo++;
                         fprintf(arquivo,"if(%s) {\n", $3);
                     } stmts {fprintf(arquivo,"\n}");} elses_opcoes END_IF 
                     {
-
-                        
+                        limpar_variaveis_do_escopo(escopo);
+                        escopo--;
                     }
                     ;
 
@@ -277,7 +286,10 @@ case_stmt           : case                            {}
                     | case case_stmt                  {}
                     ;
 
-case                : CASE PARENTESE_ESQUERDA id PARENTESE_DIREITA DOIS_PONTOS stmts       {}
+case                : CASE PARENTESE_ESQUERDA id PARENTESE_DIREITA DOIS_PONTOS 
+                                { escopo++; }
+                      stmts     { limpar_variaveis_do_escopo(escopo);
+                                  escopo++; }
                     ;
 
 /************ ATRIBUICOES *****/
@@ -417,13 +429,42 @@ args                :                                                           
                     | type ID VIRGULA args                                      {char teste[15]; sprintf(teste,"%s %s,%s",$1,$2,$4); $$ = teste; }
                     ;
 
-funcao              : FUNCAO ID  PARENTESE_ESQUERDA args 
-                      PARENTESE_DIREITA RETURN type IS
+funcao_main         : FUNC_MAIN IS TBEGIN {  escopo++; 
+                                makeStmt("\n\n");
+                                makeStmt( "int main(){ \n" );
+
+                             } 
+                        stmts END  
+                             {
+                                limpar_variaveis_do_escopo(escopo);
+                                escopo--;
+                                makeStmt("}\n\n"); 
+                             }
+                    ;
+
+funcao              : FUNCAO ID  PARENTESE_ESQUERDA args PARENTESE_DIREITA RETURN type IS
                       TBEGIN {  escopo++; 
                                 makeStmt("\n\n");
-                                makeStmt(strcat(strcat(strcat(strcat(strcat($7," "),$2),"("),$4),"){\n"));
-                                } stmts END ID  
-                      {makeStmt("}\n\n");}
+
+                                char *aux = (char *)malloc( strlen($6) + strlen($2) + 2 );
+                                char *aux2 = (char *)malloc( strlen("(") + 1 );
+                                char *aux3 = (char *)malloc( strlen("){\n") + 1 );
+                                strcpy(aux, "");
+                                strcat(aux, $7);
+                                strcat(aux, " ");
+                                strcat(aux, $2);
+                                strcat(aux, "(");
+                                strcat(aux, "$4");
+                                strcat(aux, "){\n");
+
+                                makeStmt( aux ) ;
+                                //makeStmt(strcat(strcat(strcat(strcat(strcat($7," "),$2),"("),$4),"){\n"));
+                             } 
+                        stmts END ID  
+                             {
+                                limpar_variaveis_do_escopo(escopo);
+                                escopo--;
+                                makeStmt("}\n\n"); }
                     ;
 
 id                  : ID                                                { $$ = $1; }
@@ -452,6 +493,7 @@ int main (void) {
 
     fprintf (arquivo, "#include <%s>\n#include <%s>\n","stdio.h","math.h");
 
+    iniciaVetorVar();
     yyparse ( );
 
     fclose(arquivo);
