@@ -1,9 +1,18 @@
 func main() return int is
 begin
-	float x, y;
+	float x;
+	float y;
 	int c;
+
+	x = 2.0;
+	y = 4.0;
+	c = 3;
+
 	int w = x^2;
 	int z = y+c;
-	int r = w-z;
-	printf(%i,r);
+	float resultado = w-z;
+
+	printf(%.4f,resultado);
+
+
 end main

@@ -32,6 +32,7 @@
   char * sValue;  /* string value */
 }
 
+%token <sValue> NUMERO_REAL
 %token <sValue> CHAVE_ESQUERDA CHAVE_DIREITA PARENTESE_ESQUERDA PARENTESE_DIREITA COLCHETE_ESQUERDA COLCHETE_DIREITA 
 %token <sValue> PONTO_E_VIRGULA VIRGULA PONTO DOIS_PONTOS
 %token <sValue> E_LOGICO E_LOGICO_CURTO_CIRCUITO OU_LOGICO OU_LOGICO_CURTO_CIRCUITO EXCLAMACAO
@@ -45,6 +46,7 @@
 %token <sValue> CARACTERE STRING INTEIRO FLOAT DOUBLE VOID
 %token <sValue> BOOLEANO TRUE FALSE JUMP BREAK TNULL
 %token <iValue> DIGITO
+
 %token <sValue> ID
 %token <sValue> LITERAL_QUALQUER
 
@@ -52,8 +54,8 @@
 %type <sValue> valor
 %type <sValue> args 
 %type <sValue> type 
-%type <sValue> decl vars atribuicoes expressoes atribuicao_simples atribuicao_struct_valor operador operador_composto operador_comp operador_unario atribuicao_unaria atribuicao_composta print prints_list tipos_prints 
-%type <sValue> id expressoes_list id_list 
+%type <sValue> decl vars atribuicoes expressoes atribuicao_simples atribuicao_struct_valor operador operador_composto operador_comp operador_unario atribuicao_unaria atribuicao_composta print prints_list tipos_prints
+%type <sValue> id expressoes_list id_list registro
 %type <sValue> stmt stmts if_stmt while_stmt for_stmt decl_list
 %type <sValue> invoca_procedimento parametros
 
@@ -93,6 +95,7 @@ decl                : type id           {
                                             }
                                         }
                     | type vars         { if(insertVars($2, escopo, $1)==0){
+
                                                 char *um = $1;
                                                 char *dois = $2;
                                                 strcat(um," ");
@@ -104,7 +107,6 @@ decl                : type id           {
                                          
                                                 $$ = aux;
 
-                                                //$$ = strcat(strcat($1," "),$2);
                                            }else{
                                                 yyerror( strcat($2,": Variavel redeclarada") );
                                            }
@@ -144,7 +146,7 @@ struct              : STRUCT ID IS decl_list ENDSTRUCT
                     } 
                     ;
 
-stmt                : decl PONTO_E_VIRGULA                              {printf("\nstmltt%s\n",$1);makeStmt(strcat($1,";\n")); } 
+stmt                : decl PONTO_E_VIRGULA                              {makeStmt(strcat($1,";\n")); } 
                     | if_stmt                                           {}
                     | while_stmt                                        {}
                     | for_stmt                                          {}
@@ -156,8 +158,9 @@ stmt                : decl PONTO_E_VIRGULA                              {printf(
                     | RETURN id PONTO_E_VIRGULA                         {makeStmt(strcat(strcat(strcat($1," "),$2),";\n"));}
                     ;
 
-print               : PRINTF PARENTESE_ESQUERDA prints_list id_list PARENTESE_DIREITA {      
-                                                                                    fprintf(arquivo,"printf(\"%s\" , %s);\n",$3,$4);
+print               : PRINTF PARENTESE_ESQUERDA prints_list id_list PARENTESE_DIREITA {  
+    printf("printf(\"%s\", %s);\n",$3,$4);    
+                                                                                    fprintf(arquivo,"printf(\"%s\", %s);\n",$3,$4);
                                                                              }
                     ;
 
@@ -292,33 +295,28 @@ atribuicao_simples  : id ATRIBUICAO expressoes { $$ = strcat(strcat($1, $2),$3);
 atribuicao_struct_valor  : id PONTO id ATRIBUICAO expressoes 
                     { 
 
+                        char *um = $1;
+                        char *dois = $2;
+                        char *tres = $3;
+                        char *quatro = $4;
+                        char *cinco = $5;
+                        char *aux1=( char *)malloc( strlen(um) + 1 );
+                        char *aux2=( char *)malloc( strlen(dois) + 1 );
+                        char *aux3=( char *)malloc( strlen(tres) + 1 );
+                        char *aux4=( char *)malloc( strlen(quatro) + 1 );
+                        char *aux5=( char *)malloc( strlen(cinco) + 1 );
+                        strcpy(aux1,um);
+                        strcpy(aux2,dois);
+                        strcpy(aux3,tres);
+                        strcpy(aux4,quatro);
+                        strcpy(aux5,cinco);
+                        char *aux6 = strcat(aux1,".");
+                        char *aux9 = strcat(aux6,$3);
+                        char *aux7 = strcat(aux9,$2);
+                        char *aux8 = strcat(aux7, $4);
+                        strcat(aux8,aux5);
+                        $$ = aux8;
 
-                                                char *um = $1;
-                                                char *dois = $2;
-                                                char *tres = $3;
-                                                char *quatro = $4;
-                                                char *cinco = $5;
-
-                                                char *aux1=( char *)malloc( strlen(um) + 1 );
-                                                char *aux2=( char *)malloc( strlen(dois) + 1 );
-                                                char *aux3=( char *)malloc( strlen(tres) + 1 );
-                                                char *aux4=( char *)malloc( strlen(quatro) + 1 );
-                                                char *aux5=( char *)malloc( strlen(cinco) + 1 );
-                                                
-                                                strcpy(aux1,um);
-                                                strcpy(aux2,dois);
-                                                strcpy(aux3,tres);
-                                                strcpy(aux4,quatro);
-                                                strcpy(aux5,cinco);
-
-
-                                                char *aux6 = strcat(aux1,".");
-                                                char *aux7 = strcat(aux6,$2);
-                                                char *aux8 = strcat(aux7, $4);
-                        
-                        $$ = strcat(aux8,aux5);
-
-                        printf("qqqqllllq\n");
                     }
                     ;                    
 
@@ -368,9 +366,13 @@ type                : CARACTERE     {$$ = $1;}
                     | DOUBLE        {$$ = $1;}
                     | VOID          {$$ = $1;}
                     | BOOLEANO      {$$ = $1;}
-                    
-                    
+                    | registro      {$$ = $1;}  
                     ;
+
+registro            : PONTO ID            {
+                        $$ = $2;
+                    }
+                    ;                    
  
 /*Colocar demais operadores*/
 
@@ -381,6 +383,7 @@ valor               : expressoes E_LOGICO expressoes    {$$ = strcat(strcat($1,$
                     ;
 
 expressoes          : id                    {$$ = $1;}
+                    | MENOS_UNARIO id       {$$ = strcat($1,$2);}
                     | id operador id        {
                                             if (strcmp($2,"^") == 0){
                                                 char teste[10];
@@ -425,6 +428,12 @@ funcao              : FUNCAO ID  PARENTESE_ESQUERDA args
 
 id                  : ID                                                { $$ = $1; }
                     | DIGITO                                            { char teste[10]; $$ = _itoa($1,teste,10);}
+                    | NUMERO_REAL                                     { 
+                        //printf( "%f", $1);
+                                                                            char teste[10];
+                                                                            //sprintf(teste, "%f", $1);
+                                                                            $$ = $1;
+                                                                        }
                     | ID COLCHETE_ESQUERDA expressoes COLCHETE_DIREITA COLCHETE_ESQUERDA expressoes COLCHETE_DIREITA  
                     { 
                         printf("matriz\n");
@@ -441,7 +450,7 @@ int main (void) {
 
     arquivo = fopen("compilado.c", "w+");
 
-    fprintf (arquivo, "#include <%s>\n","stdio.h");
+    fprintf (arquivo, "#include <%s>\n#include <%s>\n","stdio.h","math.h");
 
     yyparse ( );
 

@@ -1,45 +1,53 @@
 func main() return int is
 begin
-	int vetor[100];
+  int vetor[100];
 
-	int break = 0;
-	
-	for(int i=0; i<100 || break < 0; i++)
+  for(int k=0; k<100; k++)
+  	vetor[k] = -1;
+  endfor
 
-		scanf(vetor[i], %i);
-		break = vetor[i];
+  int parar = 0;
+  int a;
+  int b;
+  int c;
+  int d;
+  
+  for(int i=0; i<100 && parar >= 0; i++)
 
-	endfor
+    scanf(%i,vetor[i]);
+    parar = vetor[i];
 
-	int a, b, c, d;
-	a = 0;
-	b = 0;
-	c = 0;
-	d = 0;
-	for(int i=0; i<100; i++)
-		if(vetor[i]<=25) then
-			int a++;
-		else if(vetor[i]<=50) then
-			int b = 10;
-		else if(vetor[i]<=75) then
-			int x += 10;
-		else if(vetor[i]<=100) then
-			int x = 10;
-		endif
-	endfor
+  endfor
+  
+  a = 0;
+  b = 0;
+  c = 0;
+  d = 0;
 
-	string x = "[0 e 25]=";
-	printf(x);
-	printf(a, %i);
-	string y = " [26 e 50]=";
-	printf(y);
-	printf(b, %i);
-	string k = " [51 e 75]=";
-	printf(k);
-	printf(c, %i);
-	string w = " [76 e 100]=";
-	printf(w);
-	printf(d, %i);
+  for(int j=0; j<100; j++)
+    if(vetor[j]<=25 && vetor[j]>=0) then
+      a++;
+      
+    else if(vetor[j]<=50 && vetor[j]>25) then
+      b++;
+    else if(vetor[j]<=75 && vetor[j]>50) then
+      c++;
+    else if(vetor[j]<=100 && vetor[j]>75) then
+      d++;
+    endif
+  endfor
 
-	//Crie um programa que leia uma quantidade desconhecida de números e informe quantos deles estão nos seguintes intervalos fechados: [0, 25], [26, 50], [51, 75]	e [76, 100]. A entrada de dados deve terminar quando for lido um número negativo.
+  string x = "[0 e 25]=";
+  printf(%i,a);
+  string y = " [26 e 50]=";
+  printf(%i,b);
+  string k = " [51 e 75]=";
+  printf(%i,c);
+  string w = " [76 e 100]=";
+  printf(%i,d);
+
+  /*Crie um programa que leia uma quantidade desconhecida de números e informe quantos deles estão nos seguintes intervalos fechados: [0, 25], [26, 50], [51, 75]  e [76, 100]. A entrada de dados deve terminar quando for lido um número negativo.*/
+
+
+  return 0;
 end main

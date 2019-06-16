@@ -113,6 +113,7 @@
 "void"			{ yylval.sValue = strdup("void");return (VOID); }
 "true"			{ yylval.sValue = strdup("true");return (TRUE); }
 "false"			{ yylval.sValue = strdup("false");return (FALSE); }
+[0-9]*\.[0-9]+  { yylval.sValue = strdup(yytext); return(NUMERO_REAL);}
 [0-9]+ 			{ yylval.iValue = atoi(yytext);return (DIGITO);}
 [ \t\r]+        { /* Espaços em branco */; }
 \n              { yylineno++; }
