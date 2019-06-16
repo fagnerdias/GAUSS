@@ -1,0 +1,128 @@
+struct rational_t is
+	int numerador;
+	int denominador;
+endstruct
+
+func fracao(int a, int b) return .rational_t is begin
+	.rational_t valor;
+	if (b != 0) then
+	
+	valor.numerador = a;
+	valor.denominador = b;
+	return valor;
+	else then
+		printf(%s, "\nO segundo param não pode ser zero \n");
+		valor.denominador = 0;
+
+		return valor;
+	endif
+
+end fracao
+
+func iguais(.rational_t a, .rational_t b) return int is begin
+	if ( a.numerador == b.numerador && a.denominador == b.denominador) then
+		return 1;
+	else then
+		return 0;
+	endif
+end fracao
+
+
+func soma(.rational_t a, .rational_t b) return float is begin
+	float x = a.numerador/a.denominador;
+	float y = b.numerador/b.denominador;
+	float z = x + y;
+	return z;
+end soma
+
+
+func subtracao(.rational_t a, .rational_t b) return float is begin
+	float x = a.numerador/a.denominador;
+	float y = b.numerador/b.denominador;
+	float z = x - y;
+	return z;
+end subtracao
+
+
+
+func multiplicacao(.rational_t a, .rational_t b) return float is begin
+	float x = a.numerador/a.denominador;
+	float y = b.numerador/b.denominador;
+	float z = x * y;
+	return z;
+end fracao
+
+
+
+func divisao(.rational_t a, .rational_t b) return float is begin
+	float x = a.numerador/a.denominador;
+	float y = b.numerador/b.denominador;
+	float z = x / y;
+	return z;
+end divisao
+
+func negacao(.rational_t a) return float is begin
+	float x = a.numerador/a.denominador;
+	
+	float z = -1 * x;
+	return z;
+end negacao
+
+func inverso(.rational_t a) return float is begin
+	float x = a.denominador/a.numerador;
+
+	return x;
+end inverso
+
+main is begin
+
+	 
+	.rational_t x = fracao(1,0);
+
+	if (x.denominador == 0) then
+		return 0;
+	endif	
+
+	.rational_t y;
+	y = fracao(1,2);
+
+	if (y.denominador == 0) then
+		return 0;
+	endif
+
+	float result;
+	int eq;
+
+	eq = iguais(x, y);
+
+	printf(%s, "Os informados são iguais\n");
+
+	printf(%i, eq);
+	result = soma(x, y);
+	printf(%s, "\nResultado da soma\n");
+
+	printf(%.10f, result);
+	result = subtracao(x, y);
+	printf(%s, "\nResultado da subtracao\n");
+
+	printf(%.10f, result);
+	result = multiplicacao(x, y);
+	printf(%s, "\nResultado da multiplicacao\n");
+
+	printf(%.10f, result);
+	result = divisao(x, y);
+	printf(%s, "\nResultado da divisao\n");
+
+	printf(%.10f, result);
+	result = negacao(x);
+	printf(%s, "\nResultado da negacao\n");
+
+	printf(%.10f, result);
+	result = inverso(x);
+	printf(%s, "\nResultado do inverso\n");
+
+	printf(%.10f, result);
+
+	
+	return 0;
+end

@@ -97,6 +97,11 @@ decl                : atribuicoes {$$ = $1}
                                                 yyerror( strcat($2,": Variavel redeclarada") );
                                             }
                                         }
+                    | id PONTO id                       { 
+                                                            char *aux = (char *)malloc( strlen($1) + strlen($2) + 20 );
+                                                            strcpy(aux,strcat($1,"."));    
+                                                            $$ = strcat(aux,$3); 
+                                                        }                                  
                     | type vars         { if(insertVars($2, escopo, $1)==0){
 
                                                 char *um = $1;
@@ -153,7 +158,7 @@ stmt                : decl PONTO_E_VIRGULA                              {makeStm
                     | if_stmt                                           {}
                     | while_stmt                                        {}
                     | for_stmt                                          {}
-                    | atribuicoes PONTO_E_VIRGULA                       { makeStmt( strcat( $1, ";\n" ) ); }
+                    //| atribuicoes PONTO_E_VIRGULA                       { makeStmt( strcat( $1, ";\n" ) ); }
                     | invoca_procedimento PONTO_E_VIRGULA               { makeStmt( strcat( $1, ";\n" ) ); }
                     | switch_stmt                                       {}
                     | print PONTO_E_VIRGULA                             {/*makeStmt(strcat(strcat($1,";"),"\n"));*/}
@@ -529,7 +534,8 @@ id                  :
                     | MENOS_UNARIO ID                               {
 
                                                                             $$ = strcat($1,$2);
-                                                                        }                                                                        
+                                                                        } 
+                    //| ID                                                { $$ = $1; }                                                                       
                     ;
 
 ids : ID                                                { $$ = $1; }
