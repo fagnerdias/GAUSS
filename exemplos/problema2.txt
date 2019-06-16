@@ -1,5 +1,4 @@
-func main() return int is
-begin
+main is begin
   int vetor[100];
 
   for(int k=0; k<100; k++)
@@ -45,9 +44,10 @@ begin
   printf(%i,c);
   string w = " [76 e 100]=";
   printf(%i,d);
+  printf(%s,"\n\n");
 
   /*Crie um programa que leia uma quantidade desconhecida de números e informe quantos deles estão nos seguintes intervalos fechados: [0, 25], [26, 50], [51, 75]  e [76, 100]. A entrada de dados deve terminar quando for lido um número negativo.*/
 
 
   return 0;
-end main
+end

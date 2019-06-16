@@ -53,8 +53,8 @@
 
 %type <sValue> valor
 %type <sValue> args 
-%type <sValue> type 
-%type <sValue> decl vars atribuicoes expressoes atribuicao_simples atribuicao_struct_valor operador operador_composto operador_comp operador_unario atribuicao_unaria atribuicao_composta print prints_list tipos_prints
+%type <sValue> type expressoes
+%type <sValue> decl vars atribuicoes  atribuicao_simples atribuicao_struct_valor operador operador_composto operador_comp operador_unario atribuicao_unaria atribuicao_composta print prints_list tipos_prints ids 
 %type <sValue> id expressoes_list id_list registro
 %type <sValue> stmt stmts if_stmt while_stmt for_stmt decl_list
 %type <sValue> invoca_procedimento parametros
@@ -122,7 +122,7 @@ decl                : atribuicoes {$$ = $1}
 
                                                 //$$ = strcat(strcat(strcat(strcat($1," "), $2), $3), $4);
 
-                                                char *aux = (char *)malloc( strlen($1) + strlen($2) + strlen($4) + strlen($4) + 4 );
+                                                char *aux = (char *)malloc( strlen($1) + strlen($2) + strlen($4) + strlen($4) + 40 );
                                                 strcpy(aux, "");
                                                 strcat(aux, $1);
                                                 strcat(aux, " ");
@@ -276,7 +276,7 @@ elses_opcoes        : {}
                       {
                         fprintf(arquivo,"else {\n");
                       } stmts {
-                        fprintf(arquivo,"\n}");
+                        fprintf(arquivo,"\n}\n");
                       }
                     | ELSE {fprintf(arquivo," else ");} if_stmt_in_else {}
                     ;
@@ -308,7 +308,14 @@ atribuicoes         : atribuicao_simples                    {$$ = $1;}
                     
                     ;
 
-atribuicao_simples  : id ATRIBUICAO expressoes { $$ = strcat(strcat($1, $2),$3);}
+                        
+atribuicao_simples  : id ATRIBUICAO expressoes { printf("debug\n"); $$ = strcat(strcat($1, $2),$3);}
+                    | id ATRIBUICAO id PARENTESE_ESQUERDA args PARENTESE_DIREITA 
+                        {
+                        printf("debug8\n");
+
+                            $$ = strcat(strcat(strcat(strcat(strcat($1,"="),$3),"("),$5),")");
+                        }
                     ;
 
 atribuicao_struct_valor  : id PONTO id ATRIBUICAO expressoes 
@@ -390,6 +397,7 @@ type                : CARACTERE     {$$ = $1;}
                     ;
 
 registro            : PONTO ID            {
+printf("entrouuu\n");
                         $$ = $2;
                     }
                     ;                    
@@ -402,16 +410,15 @@ valor               : expressoes E_LOGICO expressoes    {$$ = strcat(strcat($1,$
                     | expressoes                        {printf("ffffff\n");$$ = $1;}                          
                     ;
 
-expressoes          : id                    {$$ = $1;}
-                    | MENOS_UNARIO id       {$$ = strcat($1,$2);}
-                    | id operador id        {
+expressoes          : id                    {printf("debug3\n");$$ = $1;}
+                    | id operador id        { printf("debug2\n");
                                             if (strcmp($2,"^") == 0){
-                                                char teste[10];
+                                                char teste[100];
                                                 sprintf(teste,"pow(%s,%s)",$1,$3);
                                                 $$ = teste;
                                             }
                                             else if (strcmp($2,"-") == 0){
-                                                char teste[10];
+                                                char teste[100];
                                                 sprintf(teste,"%s-%s",$1,$3);
                                                 $$ = teste;
                                             }
@@ -419,8 +426,10 @@ expressoes          : id                    {$$ = $1;}
                                                 $$ = strcat(strcat($1,$2),$3);}
                                             }
                     | id operador_comp id   {$$ = strcat(strcat($1,$2),$3);}
-                    
+
                     ;
+
+
 
             
 
@@ -432,9 +441,28 @@ vars                : ID VIRGULA ID     { $$ = strcat(strcat($1,","),$3); }
                     ;
 
 args                :                                                           { $$ = ""; }
-                    | type ID                                                   { $$ = strcat(strcat($1, " "),$2); }
+                    | type ID                                                   {$$ = strcat(strcat($1, " "),$2);}
+                    | id                                                        {$$ = $1;}
                     | type ID COLCHETE_ESQUERDA COLCHETE_DIREITA VIRGULA args   {char teste[15];sprintf(teste, "%s %s[], %s",$1,$2,$6); $$ = teste; }
-                    | type ID VIRGULA args                                      {char teste[15]; sprintf(teste,"%s %s,%s",$1,$2,$4); $$ = teste; }
+                    | id VIRGULA args                                      
+                    {
+                        printf("debug22\n");
+                        char teste[100]; 
+                        sprintf(teste,"%s, %s",$1,$3); 
+                        //printf(teste);
+                        $$ = teste; 
+                        //printf("debugfim\n");
+                    }      
+                    | type id VIRGULA args                                      
+                    {
+                        //printf("debug\n");
+                        char teste[100]; 
+                        sprintf(teste,"%s %s,%s",$1,$2,$4); 
+                        //printf(teste);
+                        $$ = teste; 
+                        //printf("debugfim\n");
+                    }
+              
                     ;
 
 funcao_main         : FUNC_MAIN IS TBEGIN {  escopo++; 
@@ -462,7 +490,7 @@ funcao              : FUNCAO ID  PARENTESE_ESQUERDA args PARENTESE_DIREITA RETUR
                                 strcat(aux, " ");
                                 strcat(aux, $2);
                                 strcat(aux, "(");
-                                strcat(aux, "$4");
+                                strcat(aux, $4);
                                 strcat(aux, "){\n");
 
                                 makeStmt( aux ) ;
@@ -475,8 +503,8 @@ funcao              : FUNCAO ID  PARENTESE_ESQUERDA args PARENTESE_DIREITA RETUR
                                 makeStmt("}\n\n"); }
                     ;
 
-id                  : ID                                                { $$ = $1; }
-                    | DIGITO                                            { char teste[10]; $$ = _itoa($1,teste,10);}
+id                  : 
+                     DIGITO                                            { char teste[10]; $$ = _itoa($1,teste,10);}
                     | NUMERO_REAL                                     { 
                         //printf( "%f", $1);
                                                                             char teste[10];
@@ -492,7 +520,26 @@ id                  : ID                                                { $$ = $
 
                     | PARENTESE_ESQUERDA expressoes PARENTESE_DIREITA   { $$ = strcat(strcat(strcat($1,"("),$3),")");}
                     | LITERAL_QUALQUER                                  { $$ = $1; }
+                    | ids                                                {$$=$1}
+                    | MENOS_UNARIO DIGITO                               {
+                                                                            char teste[10]; 
+                                                                            _itoa($2,teste,10);
+                                                                            $$ = strcat($1,teste);
+                                                                        }
+                    | MENOS_UNARIO ID                               {
+
+                                                                            $$ = strcat($1,$2);
+                                                                        }                                                                        
                     ;
+
+ids : ID                                                { $$ = $1; }
+    | ID PONTO ID                                       { 
+                                                            char *aux = (char *)malloc( strlen($1) + strlen($2) + 20 );
+                                                            strcpy(aux,strcat($1,"."));    
+                                                            $$ = strcat(aux,$3); 
+                                                        }
+;
+
 %%
 
 int main (void) {

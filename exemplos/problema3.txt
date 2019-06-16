@@ -1,5 +1,4 @@
-func main() return int is
-begin
+main is begin
 
 	int i1;
 	int j1;
@@ -133,4 +132,4 @@ begin
 
 
 return 0;
-end main
+end

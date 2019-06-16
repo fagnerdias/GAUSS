@@ -1,5 +1,5 @@
-func main() return int is
-begin
+main is begin
+
 	float x;
 	float y;
 	int c;
@@ -15,4 +15,4 @@ begin
 	printf(%.4f,resultado);
 
 
-end main
+end
