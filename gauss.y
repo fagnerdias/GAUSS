@@ -189,16 +189,16 @@ tipos_prints        : PRINT_INT {$$ = $1;}
                     ;
 
 invoca_procedimento : ID PARENTESE_ESQUERDA parametros PARENTESE_DIREITA {
-                            int size = snprintf(NULL, 0, "%s(%s,%s)", $1, $3,$5);
+                            int size = snprintf(NULL, 0, "%s %s %s %s", $1, $2, $3, $4);
                             char *aux3 = malloc(sizeof(char) * size);
                             strcpy(aux3,$3);
                             if( findFunc($1, escopo, aux3) == 0 ){
 
-                                int size = snprintf(NULL, 0, "%s(%s,%s)", $1, $3,$5);
+                                int size = snprintf(NULL, 0, "%s %s %s %s", $1, $2, $3, $4);
                                 char *aux = malloc(sizeof(char) * size);
                                 //char *aux=( char *)malloc( 100 );
 
-                                sprintf(aux, "%s(%s)", $1, $3,);
+                                sprintf(aux, "%s %s %s %s", $1, $2, $3, $4);
                                 printf("kkkkkk %s\n", aux);
                                 //makeStmt(aux);
                                 $$ = aux;
