@@ -5,6 +5,6 @@ func soma(int a, int b, int c) return int is begin
 end soma
 main is begin
 	int a, b;
-	soma();
+	//soma();
 	return x;
 end
