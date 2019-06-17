@@ -25,6 +25,7 @@ typedef struct Func
 	char *tipoRetorno;
 	char *tipoParams;
 	int qntParams;
+	Var parametros[25];
 
 }Func;
 
@@ -41,6 +42,7 @@ int sizeVectorFunc = 0;
 char** str_split(char* a_str, const char a_delim);
 int printVar();
 int parametros_passados_validos(char *parametrosFuncao, char *parametrosPassados);
+extern int yyerror (char *msg);
 
 /************************************/
 /***        Decl Variaveis        ***/
@@ -67,10 +69,15 @@ int findVar(char *id, int escopo, char *tipo){
 /* insere a variavel no vetor caso nao a encontre ja declarada */
 int insertVar(char *id, int escopo, char *tipo){
 	if( findVar(id, escopo, tipo) == 0 ){
-		printf("%s %s : variavel ja declarada anteriormente\n", tipo, id);
+		char *aux = "variavel ja declarada anteriormente\n";
+        char *aux2 = (char *)malloc( strlen(aux) + strlen(id) + strlen(tipo) + 5 );
+        strcat(aux2, tipo);
+        strcat(aux2, " ");
+        strcat(aux2, id);
+        strcpy(aux2, aux);
+		yyerror(aux2);
 		return 1;
 	}
-	
 	Var temp;
 
 	temp.ocupada = 0; //variavel do vetor sendo utilizada
@@ -96,6 +103,7 @@ int insertVar(char *id, int escopo, char *tipo){
 	vetorVar[sizeVectorVar] = temp;
 	sizeVectorVar++;
 	
+	printVar();
 	//printVar();
 	//printf("sucesso: tipo '%s' e id '%s' - variavel foi declarada \n", temp.tipo, temp.id);
 	return 0; //inseriu a variavel com sucesso
@@ -133,33 +141,43 @@ void limpar_variaveis_do_escopo(int escopo){
 /***     Funcao/Procedimento      **/
 /***********************************/
 
-/*metodo para auxiliar a inserção de uma funcao/procedimento na tabela de simbolos */
-int findFuncToInsert(char *id, int escopo, char *parametros) {
-	for( int i=0; i<sizeVectorFunc; i++ ) {
-		if( strcmp(id, vetorFunc[i].id) == 0 ) { //encontrado equivalente no vetor
-/*
-			if( parametros != NULL && parametros_passados_validos(vetorFunc[i].tipoParams, parametros) == 1){ //chamada de funcao com parametros invalidos
-				return 2;
-			}*/
-
-			return 0; //encontrou id, funcao declarada
-		}
-	}
-	return 1; //nao encontrou, funcao nao declarada
-}
-
 /* método para verificar se a chamada de um procedimento/funcao é valida */
 int findFunc(char *id, int escopo, char *parametros){
-	if( findFuncToInsert(id, escopo, parametros) == 1){ //se procedimento/funcao não foi encontrado, não é válida
-		printf("erro: %s - funcao/procedimento nao declarado\n", id);
+	int encontrou = 1;
+	for( int i=0; i<sizeVectorFunc; i++ ) {
+		if( strcmp(id, vetorFunc[i].id) == 0 ) { //encontrado equivalente no vetor
+			encontrou = 0;
+			if( parametros_passados_validos(vetorFunc[i].tipoParams, parametros) == 1){ //chamada de funcao com parametros invalidos retorna erro
+				encontrou = 2; //nunca vai chegar aqui pq se for 1, vai ser invalido e dar exit no yyerror 
+			}
+			encontrou = 0; //encontrou id, funcao declarada
+		}
 	}
+	if( encontrou == 1){ //se procedimento/funcao não foi encontrado, não é válida
+		char *aux = "Erro: funcao/procedimento nao declarado - ";
+        char *aux2 = (char *)malloc( strlen(aux) + strlen(id) + 1 );
+        strcpy(aux2, aux);
+        strcat(aux2, id);
+		yyerror(aux2);
+	}
+
 	return 0; //encontrou func, é valida
 }
 /* insere a funcao no vetor caso nao a encontre ja declarada */
 int insertFunc(char *id, int escopo, char *tipoRetorno, char *tipoParams){
-
-	if( findFuncToInsert(id, escopo, NULL) == 0){
-		printf("erro: %s - procedimento/funcao ja declarado previamente\n", id);
+	
+	int encontrou = 1;
+	for( int i=0; i<sizeVectorFunc; i++ ) {
+		if( strcmp(id, vetorFunc[i].id) == 0 ) { //encontrado equivalente no vetor
+			encontrou = 0; //encontrou id, funcao declarada
+		}
+	}
+	if( encontrou == 1){
+		char *aux = "erro: procedimento/funcao ja declarado previamente - .";
+        char *aux2 = (char *)malloc( strlen(aux) + strlen(id) + 1 );
+        strcpy(aux2, aux);
+        strcat(aux2, id);
+		yyerror(aux2);
 		return 1; //erro na declaracao
 	}
 
@@ -297,6 +315,7 @@ int parametros_passados_validos(char *parametrosFuncao, char *parametrosPassados
         for (int i = 0; *(tokensFuncao + i); i++){
         	Var temp;
         	temp.id = *(tokensFuncao + i);
+        	temp.tipo = *(tokensFuncao + i);
         	temp.ocupada = 0;
         	paramsFuncao[i] = temp;
 
@@ -306,19 +325,28 @@ int parametros_passados_validos(char *parametrosFuncao, char *parametrosPassados
     }
 
     int retorno = 0;
+
     if(tamTkPassados == tamTkFuncao){
 		for (int i = 0; i<tamTkFuncao; i++){
 			printf("tss ---- %s\n");
 			//se os tipos nao baterem, passagem de parametro invalida
-			if ( strcmp( paramsFuncao[i].tipo, paramsPassados[i].tipo) == 1 && 
+			if ( strcmp( paramsFuncao[i].tipo, paramsPassados[i].tipo) == 1 && //tipos diferentes
 					paramsFuncao[i].ocupada == 1 && paramsPassados[i].ocupada == 1 ){ //se as posicoes do vetor possuem variaveis sendo usadas
 				retorno = 1;
-				printf("Passagem de parametro invalida. Esperado: %s. Passado: %s\n", paramsFuncao[i].tipo, paramsPassados[i].tipo);
+
+				char *aux = "Passagem de parametro invalida. Esperado: ";
+				char *aux2 = " . Passado: ";
+		        char *temp = (char *)malloc( strlen(aux) + strlen(aux2) + strlen(paramsFuncao[i].tipo) + strlen(paramsPassados[i].tipo) + 5 );
+		        strcpy(temp, aux);
+		        strcat(temp, paramsFuncao[i].tipo);
+		        strcat(temp, aux2);
+		        strcat(temp, paramsPassados[i].tipo);
+				yyerror(temp);
 			}
 		}
     }else{
     	retorno = 1; //nao sao validos
-    	printf("Quantidade de parametros passados invalida. Esperado: %i. Passado: %i\n", tamTkFuncao, tamTkPassados);
+		yyerror("Quantidade de parametros passados invalida.");
     }
 
     /*limpar tokens*/
