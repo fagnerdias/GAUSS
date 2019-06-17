@@ -78,7 +78,7 @@ stmts               : stmt              {}
                     | stmt stmts        {}
                     ;
 
-decl                : atribuicoes {$$ = $1}
+decl                : atribuicoes {$$ = $1; }
                     |type id           { 
                                             if(insertVar($2, escopo, $1)==0){
                                             
@@ -566,7 +566,7 @@ id                  :
 
                     | PARENTESE_ESQUERDA expressoes PARENTESE_DIREITA   { $$ = strcat(strcat(strcat($1,"("),$3),")");}
                     | LITERAL_QUALQUER                                  { $$ = $1; }
-                    | ids                                                {$$=$1}
+                    | ids                                               { $$ = $1; }
                     | MENOS_UNARIO DIGITO                               {
                                                                             char teste[10]; 
                                                                             //_itoa($2,teste,10);
