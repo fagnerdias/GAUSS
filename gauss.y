@@ -21,7 +21,6 @@
   void makeStmt(char* stmt);
   void limparBuffer();
 
-
 %}
 
 %union {
@@ -67,6 +66,7 @@
 
 prog                : funcao_main {}
                     | subprog funcao_main     {}
+                    | struct_list funcao_main {}
                     | struct_list subprog funcao_main {}
                     ;
 
@@ -79,7 +79,7 @@ stmts               : stmt              {}
                     ;
 
 decl                : atribuicoes {$$ = $1}
-                    |type id           { 
+                    |type ID           { 
                                             if(insertVar($2, escopo, $1)==0){
                                             
                                                 char *um = $1;
@@ -117,13 +117,13 @@ decl                : atribuicoes {$$ = $1}
                                         } 
                     | type vars decl    { $$ = strcat(strcat(strcat(strcat($1, " "),$2),","),$3);}
 
-                    | type id ATRIBUICAO expressoes
+                    | type ID ATRIBUICAO expressoes
                                         { 
                                             if(insertVar($2, escopo, $1)==0){
 
                                                 //$$ = strcat(strcat(strcat(strcat($1," "), $2), $3), $4);
 
-                                                char *aux = (char *)malloc( strlen($1) + strlen($2) + strlen($4) + strlen($4) + 40 );
+                                                char *aux = (char *)malloc( strlen($1) + strlen($2) + strlen($3) + strlen($4) + 40 );
                                                 strcpy(aux, "");
                                                 strcat(aux, $1);
                                                 strcat(aux, " ");
@@ -186,12 +186,15 @@ tipos_prints        : PRINT_INT {$$ = $1;}
                     | PRINT_STRING {$$ = $1;}
                     ;
 
-invoca_procedimento : ID PARENTESE_ESQUERDA parametros PARENTESE_DIREITA { 
-                            int retornoBusca = findFunc($1, escopo, $3);
-                            if ( retornoBusca == 1 ){
-                                yyerror( strcat($2,": Funcao nao declarada") );
-                            }else if ( retornoBusca == 2 ) {
-                                yyerror( strcat($2,": Parametros incorretos") );
+invoca_procedimento : ID PARENTESE_ESQUERDA parametros PARENTESE_DIREITA {
+                            if( findFunc($1, escopo, $3) == 0 ){
+                                char *aux = (char *)malloc( strlen($1) + strlen($2) + strlen($3) + strlen($4) + 6 );
+                                strcpy(aux, $1);
+                                strcat(aux, " ");
+                                strcat(aux, $2);
+                                strcat(aux, $3);
+                                strcat(aux, $4);
+                                $$ = aux;
                             }
                         }
                     ;
@@ -577,6 +580,7 @@ void makeStmt(char* stmt){
 
 int yyerror (char *msg) {
   fprintf (stderr, "%d: %s at '%s'\n", yylineno, msg, yytext);
+  free(msg);
   exit(1);
   return 0;
 }
