@@ -79,7 +79,7 @@ stmts               : stmt              {}
                     ;
 
 decl                : atribuicoes {$$ = $1}
-                    |type ID           { 
+                    |type id           { 
                                             if(insertVar($2, escopo, $1)==0){
                                             
                                                 char *um = $1;
@@ -581,7 +581,7 @@ void makeStmt(char* stmt){
 
 int yyerror (char *msg) {
   fprintf (stderr, "%d: %s at '%s'\n", yylineno, msg, yytext);
-  free(msg);
+  //free(msg);
   exit(1);
   return 0;
 }
