@@ -45,7 +45,7 @@
 %token <sValue> FUNCAO PROC RETURN TBEGIN CONSTANTE PRINTF SCANF 
 %token <sValue> CARACTERE STRING INTEIRO FLOAT DOUBLE VOID
 %token <sValue> BOOLEANO TRUE FALSE JUMP BREAK TNULL
-%token <iValue> DIGITO
+%token <sValue> DIGITO
 
 %token <sValue> ID
 %token <sValue> LITERAL_QUALQUER
@@ -450,9 +450,13 @@ args                :                                                           
                     | type ID COLCHETE_ESQUERDA COLCHETE_DIREITA VIRGULA args   {char teste[15];sprintf(teste, "%s %s[], %s",$1,$2,$6); $$ = teste; }
                     | id VIRGULA args                                      
                     {
-                        printf("debug22\n");
+                        char *aux1=( char *)malloc( 100 );
+                        strcpy(aux1,$1);
+
+                        printf("debug22\n :::%s\n",$1);
                         char teste[100]; 
                         sprintf(teste,"%s, %s",$1,$3); 
+                        strcat(aux1,$3);
                         //printf(teste);
                         $$ = teste; 
                         //printf("debugfim\n");
@@ -507,10 +511,17 @@ funcao              : FUNCAO ID  PARENTESE_ESQUERDA args PARENTESE_DIREITA RETUR
                     ;
 
 id                  : 
-                     DIGITO                                            { char teste[10]; $$ = _itoa($1,teste,10);}
+                     DIGITO                                            { 
+                                                                            //char *teste = malloc(10*sizeof(char));
+                                                                            printf("\nOPAAA %s\n",$1);
+                                                                            //char teste[10]; 
+                                                                            //$$ = _itoa($1,teste,10);
+                                                                            $$ = $1;
+                                                                            
+                                                                        }
                     | NUMERO_REAL                                     { 
                         //printf( "%f", $1);
-                                                                            char teste[10];
+                                                                            //char teste[10];
                                                                             //sprintf(teste, "%f", $1);
                                                                             $$ = $1;
                                                                         }
@@ -526,8 +537,8 @@ id                  :
                     | ids                                                {$$=$1}
                     | MENOS_UNARIO DIGITO                               {
                                                                             char teste[10]; 
-                                                                            _itoa($2,teste,10);
-                                                                            $$ = strcat($1,teste);
+                                                                            //_itoa($2,teste,10);
+                                                                            $$ = strcat($1,$2);
                                                                         }
                     | MENOS_UNARIO ID                               {
 
