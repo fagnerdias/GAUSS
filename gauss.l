@@ -73,6 +73,7 @@
 "+" 			{ yylval.sValue = strdup("+");return (MAIS); }
 "-" 			{ yylval.sValue = strdup("-");return (MENOS_UNARIO); }
 "^" 			{ yylval.sValue = strdup("^");return (EXPONENCIACAO); }
+"@"             { yylval.sValue = strdup("*"); return(ARROBA);} //REFERENCIA
 
 "main"			{ yylval.sValue = strdup("main");return (FUNC_MAIN); }
 "JUMP" 			{ return (JUMP); }

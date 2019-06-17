@@ -1,127 +1,42 @@
-struct rational_t is
-	int numerador;
-	int denominador;
-endstruct
+func mdc(int n, int m, int r) return int is begin
 
-func fracao(int a, int b) return .rational_t is begin
-	.rational_t valor;
-	if (b != 0) then
-	
-	valor.numerador = a;
-	valor.denominador = b;
-	return valor;
+	if (m == 0) then
+		r = n;
+		return r;
 	else then
-		printf(%s, "\nO segundo param não pode ser zero \n");
-		valor.denominador = 0;
-
-		return valor;
+		int aux = n%m;	
+		return mdc(m,aux, r);
 	endif
 
-end fracao
 
-func iguais(.rational_t a, .rational_t b) return int is begin
-	if ( a.numerador == b.numerador && a.denominador == b.denominador) then
-		return 1;
-	else then
-		return 0;
-	endif
-end fracao
-
-
-func soma(.rational_t a, .rational_t b) return float is begin
-	float x = a.numerador/a.denominador;
-	float y = b.numerador/b.denominador;
-	float z = x + y;
-	return z;
-end soma
-
-
-func subtracao(.rational_t a, .rational_t b) return float is begin
-	float x = a.numerador/a.denominador;
-	float y = b.numerador/b.denominador;
-	float z = x - y;
-	return z;
-end subtracao
-
-
-
-func multiplicacao(.rational_t a, .rational_t b) return float is begin
-	float x = a.numerador/a.denominador;
-	float y = b.numerador/b.denominador;
-	float z = x * y;
-	return z;
-end fracao
-
-
-
-func divisao(.rational_t a, .rational_t b) return float is begin
-	float x = a.numerador/a.denominador;
-	float y = b.numerador/b.denominador;
-	float z = x / y;
-	return z;
-end divisao
-
-func negacao(.rational_t a) return float is begin
-	float x = a.numerador/a.denominador;
-	
-	float z = -1 * x;
-	return z;
-end negacao
-
-func inverso(.rational_t a) return float is begin
-	float x = a.denominador/a.numerador;
-
-	return x;
-end inverso
+end mdc
 
 main is begin
+	int a;
+	int b;
+	int c = 90;
 
-	 
-	.rational_t x = fracao(1,0);
 
-	if (x.denominador == 0) then
-		return 0;
-	endif	
-
-	.rational_t y;
-	y = fracao(1,2);
-
-	if (y.denominador == 0) then
-		return 0;
+	printf(%s, "Digite o primeiro numero Inteiro e Natural:\n");
+	scanf(%i,a);
+	if (a<1) then
+		printf(%s, "O numero deveria ser positivo\n");
 	endif
 
-	float result;
-	int eq;
+	printf(%s,"Digite o segundo numero Inteiro e Natural:\n");
 
-	eq = iguais(x, y);
+	scanf(%i,b);
+	if (b<1) then
+		printf(%s, "O numero deveria ser positivo\n");
+	endif
 
-	printf(%s, "Os informados são iguais\n");
+	
 
-	printf(%i, eq);
-	result = soma(x, y);
-	printf(%s, "\nResultado da soma\n");
+	int v = mdc(a,b, c);
+	printf(%s, "O mdc é: ");
+	printf(%i, v);
+	printf(%s, "\n");
 
-	printf(%.10f, result);
-	result = subtracao(x, y);
-	printf(%s, "\nResultado da subtracao\n");
-
-	printf(%.10f, result);
-	result = multiplicacao(x, y);
-	printf(%s, "\nResultado da multiplicacao\n");
-
-	printf(%.10f, result);
-	result = divisao(x, y);
-	printf(%s, "\nResultado da divisao\n");
-
-	printf(%.10f, result);
-	result = negacao(x);
-	printf(%s, "\nResultado da negacao\n");
-
-	printf(%.10f, result);
-	result = inverso(x);
-	printf(%s, "\nResultado do inverso\n");
-
-	printf(%.10f, result);
 
 	
 	return 0;

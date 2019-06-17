@@ -48,7 +48,7 @@
 %token <sValue> FUNCAO PROC RETURN TBEGIN CONSTANTE PRINTF SCANF 
 %token <sValue> CARACTERE STRING INTEIRO FLOAT DOUBLE VOID
 %token <sValue> BOOLEANO TRUE FALSE JUMP BREAK TNULL
-%token <sValue> DIGITO
+%token <sValue> DIGITO ARROBA
 
 %token <sValue> ID
 %token <sValue> LITERAL_QUALQUER
@@ -162,6 +162,14 @@ stmt                : decl PONTO_E_VIRGULA                              {makeStm
                                                                             makeStmt(aux);
 
                                                                         }
+                    | RETURN invoca_procedimento PONTO_E_VIRGULA                         { 
+                                                                            int size = snprintf(NULL, 0, " %s %s; ", $1, $2);
+                                                                            printf("------------------return---%i-\n", size);
+                                                                            char* aux = malloc(sizeof(char) * size);
+                                                                            sprintf(aux, " %s %s; ", $1, $2);
+                                                                            makeStmt(aux);
+
+                                                                        }                                                                        
                     ;
 
 print               : PRINTF PARENTESE_ESQUERDA prints_list id_list PARENTESE_DIREITA {  
