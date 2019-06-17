@@ -558,41 +558,6 @@ params_virgula      : VIRGULA parametro {
 
                                         }
                     ;
-/*
-varg                : type ID                   {
-                                                    /*Var x = insertVar($2, escopo+1, $1);
-                                                    if(insertVar($2, escopo+1, $1)==0){
-                                                    
-                                                        int size = snprintf(NULL, 0, " %s %s ", $1, $2);
-                                                        char *aux = malloc(sizeof(char) * size);
-                                                        sprintf(aux, " %s %s ", $1, $2);
-                                                 
-                                                        $$ = aux;
-                                                    }
-                                                }
-                    | type ID COLCHETE_ESQUERDA COLCHETE_DIREITA VIRGULA varg   
-                                                { 
-                                                    if(insertVar($2, escopo+1, $1)==0){
-                                                    
-                                                        int size = snprintf(NULL, 0, " %s %s %s ", $1, $2, $4);
-                                                        char *aux = malloc(sizeof(char) * size);
-                                                        sprintf(aux, " %s %s %s ", $1, $2, $4);
-                                                 
-                                                        $$ = aux;
-                                                    }
-                                                }
-                    | type ID VIRGULA varg
-                                                {
-                                                    if(insertVar($2, escopo+1, $1)==0){
-                                                    
-                                                        int size = snprintf(NULL, 0, " %s %s,%s ", $1, $2, $4);
-                                                        char *aux = malloc(sizeof(char) * size);
-                                                        sprintf(aux, " %s %s,%s ", $1, $2, $4);
-                                                 
-                                                        $$ = aux;
-                                                    }
-                                                }
-                    ;*/
 
 id                  : DIGITO                                            { 
                                                                             //char *teste = malloc(10*sizeof(char));
@@ -632,10 +597,10 @@ id                  : DIGITO                                            {
 
 ids : ID                                                { $$ = $1; }
     | ID APONTADOR ID                                       { 
-                                                            char *aux = (char *)malloc( strlen($1) + strlen($2) + 20 );
-                                                            strcpy(aux,strcat($1,"."));    
-                                                            $$ = strcat(aux,$3); 
-                                                        }
+                                                                char *aux = (char *)malloc( strlen($1) + strlen($2) + 20 );
+                                                                strcpy(aux,strcat($1,"."));    
+                                                                $$ = strcat(aux,$3); 
+                                                            }
 ;
 
 %%
@@ -696,6 +661,7 @@ char* _itoa(int valor, char* resultado, int base) {
 
 int insereBufferVar(Var temp){
     for(int i=0; i<size_buffer_args; i++){
+        printf("tipo %s e ocupada %i\n", temp.tipo, temp.ocupada);
         buffer_args[i].tipo = temp.tipo;
         buffer_args[i].ocupada = temp.ocupada;
         return 0;

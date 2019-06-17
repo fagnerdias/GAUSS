@@ -1,4 +1,4 @@
-func soma(int a, int b, int c) return int is begin
+func soma(int a, int b, float c) return int is begin
 	int x = a + b;
 	return x;
 end soma
