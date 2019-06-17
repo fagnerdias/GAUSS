@@ -117,7 +117,7 @@
 "true"			{ yylval.sValue = strdup("true");return (TRUE); }
 "false"			{ yylval.sValue = strdup("false");return (FALSE); }
 [0-9]*\.[0-9]+  { yylval.sValue = strdup(yytext); return(NUMERO_REAL);}
-[0-9]+ 			{ yylval.iValue = atoi(yytext);return (DIGITO);}
+[0-9]+ 			{ yylval.sValue = strdup(yytext);return (DIGITO);}
 [ \t\r]+        { /* Espaços em branco */; }
 \n              { yylineno++; }
 [a-zA-Z\_][a-zA-Z0-9\_]* { yylval.sValue = strdup(yytext);return (ID); }

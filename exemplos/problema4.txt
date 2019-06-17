@@ -1,7 +1,7 @@
 
 struct rational_t is
-	int numerador;
-	int denominador;
+	float numerador;
+	float denominador;
 endstruct
 
 func fracao(int a, int b) return .rational_t is begin
@@ -29,35 +29,65 @@ func iguais(.rational_t a, .rational_t b) return int is begin
 end fracao
 
 
+        
+
 func soma(.rational_t a, .rational_t b) return float is begin
-	float x = a->numerador/a->denominador;
-	float y = b->numerador/b->denominador;
-	float z = x + y;
+	float v;
+	float w;
+	float x;
+	float y;
+	float z;
+	if (a->denominador == b->denominador) then
+		y = a->numerador+b->numerador;
+		x = a->denominador;
+		z = y / x;
+	else then 
+		y = a->numerador*b->denominador;
+		x = b->numerador*a->denominador;
+		v = y + x;
+		w = a->denominador * b->denominador;
+		z = v/w;
+	endif		
+	 
 	return z;
 end soma
 
 
 func subtracao(.rational_t a, .rational_t b) return float is begin
-	float x = a->numerador/a->denominador;
-	float y = b->numerador/b->denominador;
-	float z = x - y;
+	float v;
+	float w;
+	float x;
+	float y;
+	float z;
+	if (a->denominador == b->denominador) then
+		y = a->numerador-b->numerador;
+		x = a->denominador;
+		z = y / x;
+	else then 
+		y = a->numerador*b->denominador;
+		x = b->numerador*a->denominador;
+		v = y - x;
+		w = a->denominador * b->denominador;
+		z = v/w;
+	endif		
+	 
 	return z;
 end subtracao
 
 
 
 func multiplicacao(.rational_t a, .rational_t b) return float is begin
-	float x = a->numerador/a->denominador;
-	float y = b->numerador/b->denominador;
-	float z = x * y;
+	float x = a->numerador*b->numerador;
+	float y = a->denominador*b->denominador;
+	float z = x / y;
 	return z;
 end fracao
 
 
 
 func divisao(.rational_t a, .rational_t b) return float is begin
-	float x = a->numerador/a->denominador;
-	float y = b->numerador/b->denominador;
+	float x = a->numerador*b->denominador;
+	float y = b->numerador*a->denominador;
 	float z = x / y;
 	return z;
 end divisao
@@ -78,14 +108,16 @@ end inverso
 main is begin
 
 	.rational_t x;
-	x = fracao(1,0);
+	x = fracao(4,5);
+
 
 	if (x->denominador == 0) then
 		return 0;
 	endif	
 
 	.rational_t y;
-	y = fracao(1,2);
+	y = fracao(2,3);
+
 
 	if (y->denominador == 0) then
 		return 0;
