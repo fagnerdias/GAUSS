@@ -51,7 +51,7 @@
 %token <sValue> LITERAL_QUALQUER
 
 %type <sValue> valor
-%type <sValue> args 
+%type <sValue> args args_funcao
 %type <sValue> type expressoes
 %type <sValue> decl vars atribuicoes  atribuicao_simples atribuicao_struct_valor operador operador_composto operador_comp operador_unario atribuicao_unaria atribuicao_composta print prints_list tipos_prints ids 
 %type <sValue> id expressoes_list id_list registro
@@ -92,9 +92,6 @@ decl                : atribuicoes {$$ = $1}
                                                 strcat(aux,dois);
                                          
                                                 $$ = aux;
-                                            
-                                            }else{
-                                                yyerror( strcat($2,": Variavel redeclarada") );
                                             }
                                         }
                                 
@@ -118,6 +115,25 @@ decl                : atribuicoes {$$ = $1}
                     | type vars decl    { $$ = strcat(strcat(strcat(strcat($1, " "),$2),","),$3);}
 
                     | type ID ATRIBUICAO expressoes
+                                        { 
+                                            if(insertVar($2, escopo, $1)==0){
+
+                                                //$$ = strcat(strcat(strcat(strcat($1," "), $2), $3), $4);
+
+                                                char *aux = (char *)malloc( strlen($1) + strlen($2) + strlen($3) + strlen($4) + 40 );
+                                                strcpy(aux, "");
+                                                strcat(aux, $1);
+                                                strcat(aux, " ");
+                                                strcat(aux, $2);
+                                                strcat(aux, $3);
+                                                strcat(aux, $4);
+                                                $$ = aux;
+
+                                            }else{
+                                                yyerror( strcat($2,": Variavel redeclarada") );
+                                            }
+                                        }
+                    | type ID ATRIBUICAO invoca_procedimento
                                         { 
                                             if(insertVar($2, escopo, $1)==0){
 
@@ -444,7 +460,7 @@ expressoes_list      : expressoes VIRGULA expressoes { $$ = strcat(strcat($1,","
 vars                : ID VIRGULA ID     { $$ = strcat(strcat($1,","),$3); }
                     | ID VIRGULA vars   { $$ = strcat(strcat($1,","),$3); }
                     ;
-//argumento
+
 args                :                                                           { $$ = ""; }
                     | type ID                                                   {$$ = strcat(strcat($1, " "),$2);}
                     | id                                                        {$$ = $1;}
@@ -487,7 +503,7 @@ funcao_main         : FUNC_MAIN IS TBEGIN {  escopo++;
                              }
                     ;
 
-funcao              : FUNCAO ID  PARENTESE_ESQUERDA args PARENTESE_DIREITA RETURN type IS
+funcao              : FUNCAO ID  PARENTESE_ESQUERDA args_funcao PARENTESE_DIREITA RETURN type IS
                       TBEGIN {  escopo++; 
                                 makeStmt("\n\n");
 
@@ -511,6 +527,56 @@ funcao              : FUNCAO ID  PARENTESE_ESQUERDA args PARENTESE_DIREITA RETUR
                                 escopo--;
                                 makeStmt("}\n\n"); }
                     ;
+
+args_funcao         :                           { $$ = ""; }
+
+                    | type ID                   {
+                                                    if(insertVar($2, escopo+1, $1)==0){
+                                                    
+                                                        char *um = $1;
+                                                        char *dois = $2;
+                                                        strcat(um," ");
+                                                        char *aux=( char *)malloc( strlen(um) + 1 );
+                                                        
+                                                        strcpy(aux,um);
+                                                        strcat(aux,dois);
+                                                 
+                                                        $$ = aux;
+                                                    }
+                                                    $$ = strcat(strcat($1, " "),$2);
+                                                }
+                    | type ID COLCHETE_ESQUERDA COLCHETE_DIREITA VIRGULA args_funcao   
+                                                { 
+                                                    if(insertVar($2, escopo+1, $1)==0){
+                                                    
+                                                        char *um = $1;
+                                                        char *dois = $2;
+                                                        strcat(um," ");
+                                                        char *aux=( char *)malloc( strlen(um) + 1 );
+                                                        
+                                                        strcpy(aux,um);
+                                                        strcat(aux,dois);
+                                                 
+                                                        $$ = aux;
+                                                    }
+                                                    $$ = strcat(strcat($1, " "),$2); }
+                    | type ID VIRGULA args_funcao
+                                                {
+                                                    if(insertVar($2, escopo+1, $1)==0){
+                                                    
+                                                        char *um = $1;
+                                                        char *dois = $2;
+                                                        strcat(um," ");
+                                                        char *aux=( char *)malloc( strlen(um) + 1 );
+                                                        
+                                                        strcpy(aux,um);
+                                                        strcat(aux,dois);
+                                                 
+                                                        $$ = aux;
+                                                    }
+                                                    $$ = strcat(strcat($1, " "),$2);
+                                                }
+
 
 id                  : 
                      DIGITO                                            { 
