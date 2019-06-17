@@ -555,7 +555,15 @@ parametro           : type ID {
                     ;
 
 params_virgula      : VIRGULA parametro {
+                                            int size = snprintf(NULL,0, "%s",$2);
+                                            char *aux = malloc(sizeof(char) * size);
+                                            sprintf(aux,"%s",$2);
 
+                                            Var temp;
+                                            temp.tipo = $1;
+                                            temp.ocupada = 0;
+                                            insereBufferVar(temp);
+                                            $$ = aux;
                                         }
                     ;
 
