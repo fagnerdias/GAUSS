@@ -490,10 +490,11 @@ funcao              : FUNCAO ID  PARENTESE_ESQUERDA args PARENTESE_DIREITA RETUR
                       TBEGIN {  escopo++; 
                                 makeStmt("\n\n");
 
-                                insertFunc($2, $7, $4);
-                                
-                                char *aux = (char *)malloc( strlen($7) + strlen($2) + strlen($4) + 10 );
-                                strcpy(aux, $7);
+                                char *aux = (char *)malloc( strlen($6) + strlen($2) + 2 );
+                                char *aux2 = (char *)malloc( strlen("(") + 1 );
+                                char *aux3 = (char *)malloc( strlen("){\n") + 1 );
+                                strcpy(aux, "");
+                                strcat(aux, $7);
                                 strcat(aux, " ");
                                 strcat(aux, $2);
                                 strcat(aux, "(");
@@ -513,7 +514,7 @@ funcao              : FUNCAO ID  PARENTESE_ESQUERDA args PARENTESE_DIREITA RETUR
 id                  : 
                      DIGITO                                            { 
                                                                             //char *teste = malloc(10*sizeof(char));
-                                                                    
+
                                                                             //char teste[10]; 
                                                                             //$$ = _itoa($1,teste,10);
                                                                             $$ = $1;
