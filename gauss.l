@@ -66,6 +66,8 @@
 
 "?"				{ yylval.sValue = strdup("?");return (OPERADOR_TERNARIO); }
 
+"->" 			{ yylval.sValue = strdup("->");return (APONTADOR); }
+
 "<" 			{ yylval.sValue = strdup("<");return (MENOR_QUE); }
 ">" 			{ yylval.sValue = strdup(">");return (MAIOR_QUE); }
 "+" 			{ yylval.sValue = strdup("+");return (MAIS); }

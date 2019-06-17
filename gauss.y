@@ -35,7 +35,7 @@
 
 %token <sValue> NUMERO_REAL FUNC_MAIN
 %token <sValue> CHAVE_ESQUERDA CHAVE_DIREITA PARENTESE_ESQUERDA PARENTESE_DIREITA COLCHETE_ESQUERDA COLCHETE_DIREITA 
-%token <sValue> PONTO_E_VIRGULA VIRGULA PONTO DOIS_PONTOS
+%token <sValue> PONTO_E_VIRGULA VIRGULA PONTO DOIS_PONTOS APONTADOR
 %token <sValue> E_LOGICO E_LOGICO_CURTO_CIRCUITO OU_LOGICO OU_LOGICO_CURTO_CIRCUITO EXCLAMACAO
 %token <sValue> ASTERISCO PRINT_INT PRINT_FLOAT PRINT_CHAR PRINT_STRING MODULO
 %token <sValue> BARRA INCREMENTO DECREMENTO MAIS MENOS_UNARIO EXPONENCIACAO ATRIBUICAO OPERADOR_TERNARIO
@@ -444,7 +444,7 @@ expressoes_list      : expressoes VIRGULA expressoes { $$ = strcat(strcat($1,","
 vars                : ID VIRGULA ID     { $$ = strcat(strcat($1,","),$3); }
                     | ID VIRGULA vars   { $$ = strcat(strcat($1,","),$3); }
                     ;
-
+//argumento
 args                :                                                           { $$ = ""; }
                     | type ID                                                   {$$ = strcat(strcat($1, " "),$2);}
                     | id                                                        {$$ = $1;}
@@ -539,7 +539,7 @@ id                  :
                     ;
 
 ids : ID                                                { $$ = $1; }
-    | ID PONTO ID                                       { 
+    | ID APONTADOR ID                                       { 
                                                             char *aux = (char *)malloc( strlen($1) + strlen($2) + 20 );
                                                             strcpy(aux,strcat($1,"."));    
                                                             $$ = strcat(aux,$3); 
