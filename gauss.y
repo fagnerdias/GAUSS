@@ -176,7 +176,7 @@ id_list             : id {$$ = $1;}
                     | id VIRGULA id_list {$$ = strcat(strcat($1,","),$3);}
                     ;                    
 
-prints_list         : tipos_prints VIRGULA                                            {$$ = strcat($2,",");}
+prints_list         : tipos_prints VIRGULA                                            {$$ = strcat($2,"");}
                     | tipos_prints VIRGULA prints_list                                {$$ = strcat(strcat($2,","),$3);}
                     ;
 
@@ -314,10 +314,10 @@ atribuicoes         : atribuicao_simples                    {$$ = $1;}
                     ;
 
                         
-atribuicao_simples  : id ATRIBUICAO expressoes { printf("debug\n"); $$ = strcat(strcat($1, $2),$3);}
+atribuicao_simples  : id ATRIBUICAO expressoes { $$ = strcat(strcat($1, $2),$3);}
                     | id ATRIBUICAO id PARENTESE_ESQUERDA args PARENTESE_DIREITA 
                         {
-                        printf("debug8\n");
+                        
 
                             $$ = strcat(strcat(strcat(strcat(strcat($1,"="),$3),"("),$5),")");
                         }
@@ -402,7 +402,7 @@ type                : CARACTERE     {$$ = $1;}
                     ;
 
 registro            : PONTO ID            {
-printf("entrouuu\n");
+
                         $$ = $2;
                     }
                     ;                    
@@ -412,11 +412,11 @@ printf("entrouuu\n");
 
 valor               : expressoes E_LOGICO expressoes    {$$ = strcat(strcat($1,$2),$3);}  
                     | expressoes OU_LOGICO expressoes   {$$ = strcat(strcat($1,$2),$3);}   
-                    | expressoes                        {printf("ffffff\n");$$ = $1;}                          
+                    | expressoes                        {$$ = $1;}                          
                     ;
 
-expressoes          : id                    {printf("debug3\n");$$ = $1;}
-                    | id operador id        { printf("debug2\n");
+expressoes          : id                    {$$ = $1;}
+                    | id operador id        {
                                             if (strcmp($2,"^") == 0){
                                                 char teste[100];
                                                 sprintf(teste,"pow(%s,%s)",$1,$3);
@@ -454,22 +454,22 @@ args                :                                                           
                         char *aux1=( char *)malloc( 100 );
                         strcpy(aux1,$1);
 
-                        printf("debug22\n :::%s\n",$1);
+                        
                         char teste[100]; 
                         sprintf(teste,"%s, %s",$1,$3); 
                         strcat(aux1,$3);
-                        //printf(teste);
+                    
                         $$ = teste; 
-                        //printf("debugfim\n");
+                      
                     }      
                     | type id VIRGULA args                                      
                     {
-                        //printf("debug\n");
+                      
                         char teste[100]; 
                         sprintf(teste,"%s %s,%s",$1,$2,$4); 
-                        //printf(teste);
+                        
                         $$ = teste; 
-                        //printf("debugfim\n");
+                       
                     }
               
                     ;
@@ -514,7 +514,7 @@ funcao              : FUNCAO ID  PARENTESE_ESQUERDA args PARENTESE_DIREITA RETUR
 id                  : 
                      DIGITO                                            { 
                                                                             //char *teste = malloc(10*sizeof(char));
-                                                                            printf("\nOPAAA %s\n",$1);
+                                                                    
                                                                             //char teste[10]; 
                                                                             //$$ = _itoa($1,teste,10);
                                                                             $$ = $1;
