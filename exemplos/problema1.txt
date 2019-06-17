@@ -11,8 +11,13 @@ main is begin
 	int w = x^2;
 	int z = y+c;
 	float resultado = w-z;
+	printf(%s, "O resultado da expressão é: ");
 
 	printf(%.4f,resultado);
 
+	printf(%s, "\n");
+
+
+	return 0;
 
 end

@@ -11,7 +11,10 @@ main is begin
   int c;
   int d;
   
+  printf(%s, "Para sair, digite um número negativo: \n");
+
   for(int i=0; i<100 && parar >= 0; i++)
+    printf(%s, "Informe os dígitos: \n");
 
     scanf(%i,vetor[i]);
     parar = vetor[i];
