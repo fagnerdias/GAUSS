@@ -21,12 +21,12 @@
 
 %%
 
-"{" 			{ return (CHAVE_ESQUERDA); }
-"}" 			{ return (CHAVE_DIREITA); }
-"(" 			{ return (PARENTESE_ESQUERDA); }
-")" 			{ return (PARENTESE_DIREITA); }
-"[" 			{ return (COLCHETE_ESQUERDA); }
-"]" 			{ return (COLCHETE_DIREITA); }
+"{" 			{ yylval.sValue = strdup("{");return (CHAVE_ESQUERDA); }
+"}" 			{ yylval.sValue = strdup("}");return (CHAVE_DIREITA); }
+"(" 			{ yylval.sValue = strdup("(");return (PARENTESE_ESQUERDA); }
+")" 			{ yylval.sValue = strdup(")");return (PARENTESE_DIREITA); }
+"[" 			{ yylval.sValue = strdup("[");return (COLCHETE_ESQUERDA); }
+"]" 			{ yylval.sValue = strdup("]");return (COLCHETE_DIREITA); }
 ";" 			{ yylval.sValue = strdup(";");return (PONTO_E_VIRGULA); }
 "," 			{ return (VIRGULA); }
 \.				{ return (PONTO); }

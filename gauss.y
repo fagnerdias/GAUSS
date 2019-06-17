@@ -150,7 +150,7 @@ stmt                : decl PONTO_E_VIRGULA                              {makeStm
                     | while_stmt                                        {}
                     | for_stmt                                          {}
                     //| atribuicoes PONTO_E_VIRGULA                       { makeStmt( strcat( $1, ";\n" ) ); }
-                    | invoca_procedimento PONTO_E_VIRGULA               { printf("--x--%s-x--\n", $1); makeStmt( strcat( $1, ";\n" ) ); }
+                    | invoca_procedimento PONTO_E_VIRGULA               { /*printf("--x--%s-x--\n", $1);printf("testeeee\n");*/ makeStmt( strcat( $1, ";\n" ) ); }
                     | switch_stmt                                       {}
                     | print PONTO_E_VIRGULA                             {/*makeStmt(strcat(strcat($1,";"),"\n"));*/}
                     | scan PONTO_E_VIRGULA                              {}
@@ -189,25 +189,35 @@ tipos_prints        : PRINT_INT {$$ = $1;}
                     ;
 
 invoca_procedimento : ID PARENTESE_ESQUERDA parametros PARENTESE_DIREITA {
-                            
-                            if( findFunc($1, escopo, $3) == 0 ){
+                            int size = snprintf(NULL, 0, "%s(%s,%s)", $1, $3,$5);
+                            char *aux3 = malloc(sizeof(char) * size);
+                            strcpy(aux3,$3);
+                            if( findFunc($1, escopo, aux3) == 0 ){
 
-                                int size = snprintf(NULL, 0, " %s %s %s %s ", $1, $2, $3, $4);
+                                int size = snprintf(NULL, 0, "%s(%s,%s)", $1, $3,$5);
                                 char *aux = malloc(sizeof(char) * size);
-                                sprintf(aux, " %s %s %s %s ", $1, $2, $3, $4);
+                                //char *aux=( char *)malloc( 100 );
 
+                                sprintf(aux, "%s(%s)", $1, $3,);
+                                printf("kkkkkk %s\n", aux);
+                                //makeStmt(aux);
                                 $$ = aux;
+
                             }
                         }
                     ;
    
 parametros          : { $$ = ""; }
-                    | ID { $$ = $1; }
-                    | ID VIRGULA parametros { 
+                    | id { $$ = $1; }
+                    | id VIRGULA parametros { 
                                         int size = snprintf(NULL, 0, "%s,%s", $1, $3);
                                         char *aux = malloc(sizeof(char) * size);
-                                        sprintf(aux, "%s,%s", $1, $3);
+                                        
+                                        sprintf(aux, "%s,%s\n", $1, $3);
+
                                         $$ = aux; 
+                                        printf("auxl %s\n",$$);
+
                                     }
                     ; 
 
