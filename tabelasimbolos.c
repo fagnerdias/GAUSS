@@ -338,7 +338,7 @@ int parametros_passados_validos(char *parametrosFuncao, char *parametrosPassados
 
     if(tamTkPassados == tamTkFuncao){
 		for (int i = 0; i<tamTkFuncao; i++){
-			printf("tss ---- %s\n");
+			printf("tss ----\n");
 			//se os tipos nao baterem, passagem de parametro invalida
 			if ( strcmp( paramsFuncao[i].tipo, paramsPassados[i].tipo) == 1 && //tipos diferentes
 					paramsFuncao[i].ocupada == 1 && paramsPassados[i].ocupada == 1 ){ //se as posicoes do vetor possuem variaveis sendo usadas
