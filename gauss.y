@@ -155,13 +155,12 @@ stmt                : decl PONTO_E_VIRGULA                              {makeStm
                     | print PONTO_E_VIRGULA                             {/*makeStmt(strcat(strcat($1,";"),"\n"));*/}
                     | scan PONTO_E_VIRGULA                              {}
                     | RETURN id PONTO_E_VIRGULA                         { 
-                                                                            /*int size = snprintf(NULL, 0, " %s %s; ", $1, $2);
+                                                                            int size = snprintf(NULL, 0, " %s %s; ", $1, $2);
                                                                             printf("------------------return---%i-\n", size);
                                                                             char* aux = malloc(sizeof(char) * size);
                                                                             sprintf(aux, " %s %s; ", $1, $2);
-                                                                            makeStmt(aux);*/
+                                                                            makeStmt(aux);
 
-                                                                            makeStmt(strcat($1,$2));
                                                                         }
                     ;
 
@@ -556,12 +555,11 @@ parametro           : type ID {
                     ;
 
 params_virgula      : VIRGULA parametro { 
+                                            int size = snprintf(NULL,0, "%s",$2);
+                                            char *aux = malloc(sizeof(char) * size);
+                                            sprintf(aux,"%s",$2);
 
-                                        int size = snprintf(NULL, 0, ",%s", $1);
-                                        char *aux = malloc(sizeof(char) * size);
-                                        sprintf(aux, ",%s", $1);
-                                        $$ = aux;
-
+                                            $$ = aux;
                                         }
                     ;
 
@@ -668,7 +666,6 @@ char* _itoa(int valor, char* resultado, int base) {
 int insereBufferVar(Var temp){
     for(int i=0; i<size_buffer_args; i++){
         if(buffer_args[i].ocupada==1) {
-            printf("tipo %s e ocupada %i\n", temp.tipo, temp.ocupada);
             buffer_args[i].tipo = temp.tipo;
             buffer_args[i].ocupada = temp.ocupada;
             return 0;

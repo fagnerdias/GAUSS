@@ -143,7 +143,7 @@ int findFunc(char *id, int escopo, char *parametros_passados){
 	for( int i=0; i<sizeVectorFunc; i++ ) {
 		if( strcmp(id, vetorFunc[i].id) == 0 ) { //encontrado equivalente no vetor
 			encontrou = 0;
-			printFunc();
+			//printFunc();
 
 			if( parametros_passados_validos(vetorFunc[i].parametros, parametros_passados) == 1){ //chamada de funcao com parametros invalidos retorna erro
 				encontrou = 2; //nunca vai chegar aqui pq se for 1, vai ser invalido e dar exit no yyerror 
@@ -277,9 +277,12 @@ char** str_split(char* a_str, const char a_delim)
         char* token = strtok(a_str, delim);
 
         while (token){
-            assert(idx < count);
-            *(result + idx++) = strdup(token); //da seg fault aqui no win
-            token = strtok(0, delim);
+            if( (idx < count)== 0) {
+	            *(result + idx++) = strdup(token); //da seg fault aqui no win
+	            token = strtok(0, delim);
+	        }else{
+
+	        }
         }
         assert(idx == count - 1);
         *(result + idx) = 0;
@@ -293,6 +296,23 @@ int parametros_passados_validos(Var *paramsFuncao, char *parametrosPassados){
 	for(int i=0; i<size_buffer_args_t; i++){
 		paramsPassados[i].ocupada = 1;
 	}
+	  int tamTkPassados = 0;
+	  char *p;
+	  p = strtok (parametrosPassados,",:");
+	  while (p!= NULL)
+	  {
+	    printf ("%s\n",p);
+		for( int j = 0; j<sizeVectorVar; j++ ) {
+			if( strcmp(p, vetorVar[j].id) == 0 && vetorVar[j].ocupada == 0 ) {
+	        	paramsPassados[j] = vetorVar[j];
+
+	    		printf ("passados: %s\n",paramsPassados[j].tipo);
+			}
+		}
+        tamTkPassados+=1; //atualizando o tamanho a cada iteracao
+	    p = strtok (NULL, ",:");
+	  }
+  	/*
     char** tokensPassados = str_split(parametrosPassados, ',');
     int tamTkPassados = 0;
     if (tokensPassados) {
@@ -305,11 +325,14 @@ int parametros_passados_validos(Var *paramsFuncao, char *parametrosPassados){
 			}
         	tamTkPassados = i+1; //atualizando o tamanho a cada iteracao
         }
-    }
+    }*/
     int tamTkFuncao = 0;
 	for(int i=0; i<size_buffer_args_t; i++){
-		if(paramsFuncao[i].ocupada == 0)
+
+		if(paramsFuncao[i].ocupada == 0){
+			printf ("da funcao %s\n",paramsFuncao[i].tipo);
 			tamTkFuncao = i+1;
+		}
 	}
 
     int retorno = 0;
@@ -322,8 +345,8 @@ int parametros_passados_validos(Var *paramsFuncao, char *parametrosPassados){
 
 	}else if(tamTkPassados == tamTkFuncao){
 		for (int i = 0; i<tamTkFuncao; i++){
-			printf("tss ----\n");
 			//se os tipos nao baterem, passagem de parametro invalida
+			printf("%s -- %s ----\n", paramsFuncao[i].tipo, paramsPassados[i].tipo);
 			if ( strcmp( paramsFuncao[i].tipo, paramsPassados[i].tipo) == 1 && //tipos diferentes
 					paramsFuncao[i].ocupada == 1 && paramsPassados[i].ocupada == 1 ){ //se as posicoes do vetor possuem variaveis sendo usadas
 				retorno = 1;
@@ -344,12 +367,12 @@ int parametros_passados_validos(Var *paramsFuncao, char *parametrosPassados){
     }
 
     /*limpar tokens*/
-    if (tokensPassados) {
+    /*if (tokensPassados) {
         for (int i = 0; *(tokensPassados + i); i++){
 	        free(*(tokensPassados + i));
         }
         free(tokensPassados);
-    }
+    }*/
 
 	return retorno;
 }
