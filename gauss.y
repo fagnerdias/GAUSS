@@ -199,7 +199,7 @@ invoca_procedimento : ID PARENTESE_ESQUERDA parametros PARENTESE_DIREITA {
                                 //char *aux=( char *)malloc( 100 );
 
                                 sprintf(aux, "%s %s %s %s", $1, $2, $3, $4);
-                                printf("kkkkkk %s\n", aux);
+                                //printf("kkkkkk %s\n", aux);
                                 //makeStmt(aux);
                                 $$ = aux;
 
@@ -213,10 +213,9 @@ parametros          : { $$ = ""; }
                                         int size = snprintf(NULL, 0, "%s,%s", $1, $3);
                                         char *aux = malloc(sizeof(char) * size);
                                         
-                                        sprintf(aux, "%s,%s\n", $1, $3);
+                                        sprintf(aux, "%s,%s", $1, $3);
 
                                         $$ = aux; 
-                                        printf("auxl %s\n",$$);
 
                                     }
                     ; 
@@ -638,7 +637,7 @@ int main (void) {
 
 void makeStmt(char* stmt){
     
-    printf ("stmt--> %s\n",stmt);
+    //printf ("stmt--> %s\n",stmt);
     fprintf (arquivo, "%s",stmt);
 }
 
@@ -678,6 +677,7 @@ int insereBufferVar(Var temp){
     for(int i=0; i<size_buffer_args; i++){
         if(buffer_args[i].ocupada==1) {
             buffer_args[i].tipo = temp.tipo;
+            printf("tipo decl ----- %s\n", buffer_args[i].tipo );
             buffer_args[i].ocupada = temp.ocupada;
             return 0;
         }
