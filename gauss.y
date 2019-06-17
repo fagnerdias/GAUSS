@@ -498,8 +498,8 @@ funcao              : FUNCAO ID  PARENTESE_ESQUERDA args_funcao PARENTESE_DIREIT
 
                                 int size = snprintf(NULL, 0, " %s %s ( %s ){\n ", $7, $2, $4);
                                 char *aux = malloc(sizeof(char) * size);
-                                sprintf(aux, " %s %s ( %s ){\n ", $7, $2, $4);
-
+                                sprintf(aux, "%s %s ( %s ) {\n ", $7, $2, $4);
+                                printf("AUXILIAR %s\n", $4);
                                 makeStmt( aux ) ;
                              } 
                         stmts END ID  
@@ -513,9 +513,10 @@ funcao              : FUNCAO ID  PARENTESE_ESQUERDA args_funcao PARENTESE_DIREIT
 args_funcao         : parametro                         { $$ = $1; }
                     | args_funcao params_virgula        { 
 
-                                        int size = snprintf(NULL, 0, " %s, %s ", $1, $2);
-                                        char *aux = malloc(sizeof(char) * size);
-                                        sprintf(aux, " %s, %s ", $1, $2);
+                                        char *aux = (char *)malloc( strlen($1) + strlen($2) + 100 );
+                                        strcpy(aux,$1);
+                                        strcat(aux,", ");
+                                        strcat(aux,$2);
                                  
                                         $$ = aux;
                                              }
