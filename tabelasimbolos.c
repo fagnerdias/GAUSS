@@ -6,10 +6,6 @@
 #ifndef TABELASIMBOLOS
 #define TABELASIMBOLOS
 
-typedef enum {
-    Tint, Tfloat,Tdouble, Tbool, caractere, string, Tvoid
-} tipo_t;
-
 typedef struct Var
 {
 	char *id;
@@ -24,7 +20,7 @@ typedef struct Func
 	char *tipoRetorno;
 	char *tipoParams;
 	int qntParams;
-	Var parametros[25];
+	Var parametros[25]; //tamanho maximo de parametros
 
 }Func;
 
@@ -69,7 +65,7 @@ int findVar(char *id, int escopo, char *tipo){
 /* insere a variavel no vetor caso nao a encontre ja declarada */
 int insertVar(char *id, int escopo, char *tipo){
 	if( findVar(id, escopo, tipo) == 0 ){
-		char *aux = "variavel ja declarada anteriormente\n";
+		char *aux = " Variavel redeclarada\n";
         char *aux2 = (char *)malloc( strlen(aux) + strlen(id) + strlen(tipo) + 5 );
         strcat(aux2, tipo);
         strcat(aux2, " ");
@@ -93,26 +89,25 @@ int insertVar(char *id, int escopo, char *tipo){
 
 	for( int i=0; i<sizeVectorVar; i++ ) { //para caso tenha variaveis nao utilizadas no meio do vetor util
 		if( vetorVar[i].ocupada == 1 ){ //primeira variavel nao sendo utilizada
-			
-			vetorVar[i] = temp;
-			
-			return 0; //adicionou a var com sucesso e finaliza
+			vetorVar[i] = temp;//adicionou a var com sucesso
+			//printVars();
+			//printf("sucesso: tipo '%s' e id '%s' - variavel foi declarada \n", temp.tipo, temp.id);
+			return 0;
 		}
 	}
-	
 	//caso nao tenha inserido antes, e por consequencia finalizado, insere na proxima posicao do vetor
 	vetorVar[sizeVectorVar] = temp;
 	sizeVectorVar++;
-	
-	//printVar();
+	//printVars();
 	//printf("sucesso: tipo '%s' e id '%s' - variavel foi declarada \n", temp.tipo, temp.id);
 	return 0; //inseriu a variavel com sucesso
 }
 /* insere a variavel no vetor caso nao a encontre ja declarada */
 int insertVars(char *ids, int escopo, char *tipo){
-
     char** tokens;
+                                                printf("entra\n");
     tokens = str_split(ids, ',');
+                                                printf("e sai\n");
     if (tokens)
     {
         for (int i = 0; *(tokens + i); i++){
@@ -120,8 +115,6 @@ int insertVars(char *ids, int escopo, char *tipo){
 		       	free(*(tokens + i));
         		free(tokens);
         		return 1;
-        	}else{
-	        	free(*(tokens + i));
         	}
         }
         free(tokens);
@@ -144,6 +137,7 @@ void limpar_variaveis_do_escopo(int escopo){
 
 /* método para verificar se a chamada de um procedimento/funcao é valida */
 int findFunc(char *id, int escopo, char *parametros){
+	printFunc();
 	int encontrou = 1;
 	for( int i=0; i<sizeVectorFunc; i++ ) {
 		if( strcmp(id, vetorFunc[i].id) == 0 ) { //encontrado equivalente no vetor
@@ -161,7 +155,7 @@ int findFunc(char *id, int escopo, char *parametros){
         strcat(aux2, id);
 		yyerror(aux2);
 	}
-printFunc();
+	//printFunc();
 	return 0; //encontrou func, é valida
 }
 /* insere a funcao no vetor caso nao a encontre ja declarada */
@@ -184,7 +178,7 @@ int insertFunc(char *id, char *tipoRetorno, char *tipoParams){
 	}
 
 	Func temp;
-
+	printf("-- %s -- %s -- %s -- \n", id, tipoRetorno, tipoParams);
 	char *auxId = (char *)malloc( strlen(id)+1);
 	strcpy(auxId, id);
 	temp.id = auxId;
@@ -196,10 +190,10 @@ int insertFunc(char *id, char *tipoRetorno, char *tipoParams){
 	char *auxParans = (char *)malloc( strlen(tipoParams)+1);
 	strcpy(auxParans, tipoParams);
 	temp.tipoParams = auxParans;
-	//temp.qntParams = qntParams; //lembrar de implementar, sepa
-
-	vetorFunc[sizeVectorVar] = temp;
+	
+	vetorFunc[sizeVectorFunc] = temp;
 	sizeVectorFunc++;
+	printFunc();
 
 	printf("sucesso: %s - funcao foi declarada \n", id);
 	return 0; //inseriu a variavel com sucesso
@@ -291,44 +285,55 @@ char** str_split(char* a_str, const char a_delim)
 }
 
 int parametros_passados_validos(char *parametrosFuncao, char *parametrosPassados){
-
-	Var paramsPassados[20];
-
+	printf("ooooooooooooi\n");
+	Var paramsPassados[25];
+	for(int i=0; i<25; i++){
+		paramsPassados[0].ocupada = 1;
+	}
 	if( strlen(parametrosFuncao) == 0 && strlen(parametrosPassados) != 0 || 
 		strlen(parametrosFuncao) != 0 && strlen(parametrosPassados) == 0   ){
 		yyerror("Quantidade de parametros passados invalida.");
+	}else if( strlen(parametrosFuncao) == 0 && strlen(parametrosPassados) == 0 ){
+		return 0;
 	}
+	printf("quase chegou no split\n");
     char** tokensPassados = str_split(parametrosPassados, ',');
     int tamTkPassados = 0;
     if (tokensPassados) {
         for (int i = 0; *(tokensPassados + i); i++){
+    		
 			for( int j = 0; j<sizeVectorVar; j++ ) {
-				if( strcmp(*(tokensPassados + i), vetorVar[j].id) == 0 ) {
+				if( strcmp(*(tokensPassados + i), vetorVar[j].id) == 0 && vetorVar[j].ocupada == 0 ) {
 		        	paramsPassados[i] = vetorVar[j];
 				}
 			}
-
         	tamTkPassados = i; //atualizando o tamanho a cada iteracao
-        	printf("tk ---- %s\n", *(tokensPassados + i));
         }
     }
-
-	Var paramsFuncao[20];
+	printf("saiu primeiro split. entrando no segundo\n");
+	Var paramsFuncao[25];
+	for(int i=0; i<25; i++){
+		paramsFuncao[0].ocupada = 1;
+	}
     char** tokensFuncao = str_split(parametrosFuncao, ',');
     int tamTkFuncao = 0;
     if (tokensFuncao) {
         for (int i = 0; *(tokensFuncao + i); i++){
-        	Var temp;
-        	temp.id = *(tokensFuncao + i);
-        	temp.tipo = *(tokensFuncao + i);
-        	temp.ocupada = 0;
-        	paramsFuncao[i] = temp;
+        	printf("tkxxx-- ---- %s\n", *(tokensPassados + i));
+
+    		char** tokensInts = str_split(*(tokensFuncao + i), ' '); //split no espaco para pegar so o tipo (primeiro pedaco da string)
+    		if (tokensInts) {
+	        	Var temp;
+	        	temp.tipo = *(tokensInts);
+	        	temp.ocupada = 0;
+	        	paramsFuncao[i] = temp;
+    		}
 
         	tamTkFuncao = i; //atualizando o tamanho a cada iteracao
         	printf("tk ---- %s\n", *(tokensFuncao + i));
         }
     }
-
+	printf("saiu segundo split\n");
     int retorno = 0;
 
     if(tamTkPassados == tamTkFuncao){

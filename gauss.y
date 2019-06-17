@@ -14,7 +14,7 @@
   char buffer[33];
   FILE *arquivo;
   
-
+  Var buffer_var[25];
   //typedef enum {false, true} bool;
 
   char* _itoa(int valor, char* resultado, int base);
@@ -82,30 +82,19 @@ decl                : atribuicoes {$$ = $1}
                     |type id           { 
                                             if(insertVar($2, escopo, $1)==0){
                                             
-                                                char *um = $1;
-                                                char *dois = $2;
-                                                strcat(um," ");
-                                                char *aux=( char *)malloc( strlen(um) + 1 );
-                                                
-                                                strcpy(aux,um);
-                                                
-                                                strcat(aux,dois);
-                                         
+                                                int size = snprintf(NULL, 0, " %s %s " , $1, $2);
+                                                char* aux = malloc(sizeof(char) * size);
+                                                sprintf(aux, " %s %s ", $1, $2);
+
                                                 $$ = aux;
                                             }
                                         }
-                                
-                    | type vars         { if(insertVars($2, escopo, $1)==0){
+                    | type vars         {
+                                            if(insertVars($2, escopo, $1)==0){
+                                                int size = snprintf(NULL, 0, " %s %s " , $1, $2);
+                                                char* aux = malloc(sizeof(char) * size);
+                                                sprintf(aux, " %s %s ", $1, $2);
 
-                                                char *um = $1;
-                                                char *dois = $2;
-                                                strcat(um," ");
-                                                char *aux=( char *)malloc( strlen(um) + 1 );
-                                                
-                                                strcpy(aux,um);
-                                                
-                                                strcat(aux,dois);
-                                         
                                                 $$ = aux;
 
                                            }else{
@@ -118,15 +107,10 @@ decl                : atribuicoes {$$ = $1}
                                         { 
                                             if(insertVar($2, escopo, $1)==0){
 
-                                                //$$ = strcat(strcat(strcat(strcat($1," "), $2), $3), $4);
+                                                int size = snprintf(NULL, 0, "%s %s %s %s", $1, $2, $3, $4);
+                                                char* aux = malloc(sizeof(char) * size);
+                                                sprintf(aux, "%s %s %s %s", $1, $2, $3, $4);
 
-                                                char *aux = (char *)malloc( strlen($1) + strlen($2) + strlen($3) + strlen($4) + 40 );
-                                                strcpy(aux, "");
-                                                strcat(aux, $1);
-                                                strcat(aux, " ");
-                                                strcat(aux, $2);
-                                                strcat(aux, $3);
-                                                strcat(aux, $4);
                                                 $$ = aux;
 
                                             }else{
@@ -134,18 +118,13 @@ decl                : atribuicoes {$$ = $1}
                                             }
                                         }
                     | type ID ATRIBUICAO invoca_procedimento
-                                        { 
+                                        {
                                             if(insertVar($2, escopo, $1)==0){
 
-                                                //$$ = strcat(strcat(strcat(strcat($1," "), $2), $3), $4);
+                                                int size = snprintf(NULL, 0, "%s %s %s %s", $1, $2, $3, $4);
+                                                char* aux = malloc(sizeof(char) * size);
+                                                sprintf(aux, "%s %s %s %s", $1, $2, $3, $4);
 
-                                                char *aux = (char *)malloc( strlen($1) + strlen($2) + strlen($3) + strlen($4) + 40 );
-                                                strcpy(aux, "");
-                                                strcat(aux, $1);
-                                                strcat(aux, " ");
-                                                strcat(aux, $2);
-                                                strcat(aux, $3);
-                                                strcat(aux, $4);
                                                 $$ = aux;
 
                                             }else{
@@ -171,11 +150,20 @@ stmt                : decl PONTO_E_VIRGULA                              {makeStm
                     | while_stmt                                        {}
                     | for_stmt                                          {}
                     //| atribuicoes PONTO_E_VIRGULA                       { makeStmt( strcat( $1, ";\n" ) ); }
-                    | invoca_procedimento PONTO_E_VIRGULA               { printf("----%s---\n", $1); makeStmt( strcat( $1, ";\n" ) ); }
+                    | invoca_procedimento PONTO_E_VIRGULA               { printf("--x--%s-x--\n", $1); makeStmt( strcat( $1, ";\n" ) ); }
                     | switch_stmt                                       {}
                     | print PONTO_E_VIRGULA                             {/*makeStmt(strcat(strcat($1,";"),"\n"));*/}
                     | scan PONTO_E_VIRGULA                              {}
-                    | RETURN id PONTO_E_VIRGULA                         {makeStmt(strcat(strcat(strcat($1," "),$2),";\n"));}
+                    | RETURN id PONTO_E_VIRGULA                         { 
+                                                                            
+                                                                            int size = snprintf(NULL, 0, " %s %s; ", $1, $2);
+                                                                            printf("------------------return----\n");
+                                                                            printf("%i\n", size);
+                                                                            char* aux = malloc(sizeof(char) * size);
+                                                                            sprintf(aux, " %s %s; ", $1, $2);
+
+                                                                            makeStmt(aux);
+                                                                        }
                     ;
 
 print               : PRINTF PARENTESE_ESQUERDA prints_list id_list PARENTESE_DIREITA {  
@@ -205,12 +193,11 @@ tipos_prints        : PRINT_INT {$$ = $1;}
 invoca_procedimento : ID PARENTESE_ESQUERDA parametros PARENTESE_DIREITA {
 
                             if( findFunc($1, escopo, $3) == 0 ){
-                                char *aux = (char *)malloc( strlen($1) + strlen($2) + strlen($3) + strlen($4) + 6 );
-                                strcpy(aux, $1);
-                                strcat(aux, " ");
-                                strcat(aux, $2);
-                                strcat(aux, $3);
-                                strcat(aux, $4);
+
+                                int size = snprintf(NULL, 0, " %s %s %s %s ", $1, $2, $3, $4);
+                                char *aux = malloc(sizeof(char) * size);
+                                sprintf(aux, " %s %s %s %s ", $1, $2, $3, $4);
+
                                 $$ = aux;
                             }
                         }
@@ -451,10 +438,7 @@ expressoes          : id                    {$$ = $1;}
                     ;
 
 
-
-            
-
-expressoes_list      : expressoes VIRGULA expressoes { $$ = strcat(strcat($1,","),$3);}
+expressoes_list     : expressoes VIRGULA expressoes { $$ = strcat(strcat($1,","),$3);}
                     ;                                        
 
 vars                : ID VIRGULA ID     { $$ = strcat(strcat($1,","),$3); }
@@ -507,19 +491,13 @@ funcao              : FUNCAO ID  PARENTESE_ESQUERDA args_funcao PARENTESE_DIREIT
                       TBEGIN {  escopo++; 
                                 makeStmt("\n\n");
 
-                                char *aux = (char *)malloc( strlen($6) + strlen($2) + 2 );
-                                char *aux2 = (char *)malloc( strlen("(") + 1 );
-                                char *aux3 = (char *)malloc( strlen("){\n") + 1 );
-                                strcpy(aux, "");
-                                strcat(aux, $7);
-                                strcat(aux, " ");
-                                strcat(aux, $2);
-                                strcat(aux, "(");
-                                strcat(aux, $4);
-                                strcat(aux, "){\n");
+                                insertFunc($2, $7, $4);
+
+                                int size = snprintf(NULL, 0, " %s %s ( %s ){\n ", $7, $2, $4);
+                                char *aux = malloc(sizeof(char) * size);
+                                sprintf(aux, " %s %s ( %s ){\n ", $7, $2, $4);
 
                                 makeStmt( aux ) ;
-                                //makeStmt(strcat(strcat(strcat(strcat(strcat($7," "),$2),"("),$4),"){\n"));
                              } 
                         stmts END ID  
                              {
@@ -529,52 +507,38 @@ funcao              : FUNCAO ID  PARENTESE_ESQUERDA args_funcao PARENTESE_DIREIT
                     ;
 
 args_funcao         :                           { $$ = ""; }
-
                     | type ID                   {
+                                                    /*Var x = insertVar($2, escopo+1, $1);*/
                                                     if(insertVar($2, escopo+1, $1)==0){
                                                     
-                                                        char *um = $1;
-                                                        char *dois = $2;
-                                                        strcat(um," ");
-                                                        char *aux=( char *)malloc( strlen(um) + 1 );
-                                                        
-                                                        strcpy(aux,um);
-                                                        strcat(aux,dois);
+                                                        int size = snprintf(NULL, 0, " %s %s ", $1, $2);
+                                                        char *aux = malloc(sizeof(char) * size);
+                                                        sprintf(aux, " %s %s ", $1, $2);
                                                  
                                                         $$ = aux;
                                                     }
-                                                    $$ = strcat(strcat($1, " "),$2);
                                                 }
                     | type ID COLCHETE_ESQUERDA COLCHETE_DIREITA VIRGULA args_funcao   
                                                 { 
                                                     if(insertVar($2, escopo+1, $1)==0){
                                                     
-                                                        char *um = $1;
-                                                        char *dois = $2;
-                                                        strcat(um," ");
-                                                        char *aux=( char *)malloc( strlen(um) + 1 );
-                                                        
-                                                        strcpy(aux,um);
-                                                        strcat(aux,dois);
+                                                        int size = snprintf(NULL, 0, " %s %s %s ", $1, $2, $4);
+                                                        char *aux = malloc(sizeof(char) * size);
+                                                        sprintf(aux, " %s %s %s ", $1, $2, $4);
                                                  
                                                         $$ = aux;
                                                     }
-                                                    $$ = strcat(strcat($1, " "),$2); }
+                                                }
                     | type ID VIRGULA args_funcao
                                                 {
                                                     if(insertVar($2, escopo+1, $1)==0){
                                                     
-                                                        char *um = $1;
-                                                        char *dois = $2;
-                                                        strcat(um," ");
-                                                        char *aux=( char *)malloc( strlen(um) + 1 );
-                                                        
-                                                        strcpy(aux,um);
-                                                        strcat(aux,dois);
+                                                        int size = snprintf(NULL, 0, " %s %s %s ", $1, $2, $4);
+                                                        char *aux = malloc(sizeof(char) * size);
+                                                        sprintf(aux, " %s %s %s ", $1, $2, $4);
                                                  
                                                         $$ = aux;
                                                     }
-                                                    $$ = strcat(strcat($1, " "),$2);
                                                 }
 
 
@@ -641,6 +605,7 @@ int main (void) {
 
 void makeStmt(char* stmt){
     
+    printf ("stmt--> %s\n",stmt);
     fprintf (arquivo, "%s",stmt);
 }
 
