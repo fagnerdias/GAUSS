@@ -1,7 +1,7 @@
 
 struct rational_t is
-	float numerador;
-	float denominador;
+	int numerador;
+	int denominador;
 endstruct
 
 func fracao(int a, int b) return .rational_t is begin
@@ -92,17 +92,20 @@ func divisao(.rational_t a, .rational_t b) return float is begin
 	return z;
 end divisao
 
-func negacao(.rational_t a) return float is begin
-	float x = a->numerador/a->denominador;
+func negacao(.rational_t a) return .rational_t is begin
 	
-	float z = -1 * x;
+	.rational_t z;
+	z->numerador = -1 *a->numerador;
+	z->denominador = a->denominador;
+	
 	return z;
 end negacao
 
-func inverso(.rational_t a) return float is begin
-	float x = a->denominador/a->numerador;
-
-	return x;
+func inverso(.rational_t a) return .rational_t is begin
+	.rational_t z;
+	z->numerador = a->denominador;
+	z->denominador = a->numerador;
+	return z;
 end inverso
 
 main is begin
@@ -116,7 +119,7 @@ main is begin
 	endif	
 
 	.rational_t y;
-	y = fracao(2,3);
+	y = fracao(4,5);
 
 
 	if (y->denominador == 0) then
@@ -128,9 +131,16 @@ main is begin
 
 	eq = iguais(x, y);
 
-	printf(%s, "Os informados são iguais\n");
+	printf(%s, "Os informados são iguais?\n");
 
-	printf(%i, eq);
+	if(eq == 1) then
+		printf(%s, "Sim\n");
+	else then
+		printf(%s, "Não\n");
+	endif
+
+
+
 	result = soma(x, y);
 	printf(%s, "\nResultado da soma\n");
 
@@ -147,14 +157,22 @@ main is begin
 	printf(%s, "\nResultado da divisao\n");
 
 	printf(%.10f, result);
-	result = negacao(x);
+
+
+	x = negacao(x);
 	printf(%s, "\nResultado da negacao\n");
 
-	printf(%.10f, result);
-	result = inverso(x);
+	printf(%i, x->numerador);
+	printf(%s, "\n");
+	printf(%i, x->denominador);
+
+	x = inverso(x);
 	printf(%s, "\nResultado do inverso\n");
 
-	printf(%.10f, result);
+	printf(%i, x->numerador);
+	printf(%s, "\n");
+	printf(%i, x->denominador);
+	printf(%s, "\n");
 
 	
 	return 0;
