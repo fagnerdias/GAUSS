@@ -21,7 +21,6 @@ typedef struct Var
 typedef struct Func
 {
 	char *id;
-	int escopo;
 	char *tipoRetorno;
 	char *tipoParams;
 	int qntParams;
@@ -93,8 +92,9 @@ int insertVar(char *id, int escopo, char *tipo){
 
 	for( int i=0; i<sizeVectorVar; i++ ) { //para caso tenha variaveis nao utilizadas no meio do vetor util
 		if( vetorVar[i].ocupada == 1 ){ //primeira variavel nao sendo utilizada
+			
 			vetorVar[i] = temp;
-			//printVar();
+			
 			return 0; //adicionou a var com sucesso e finaliza
 		}
 	}
@@ -104,7 +104,6 @@ int insertVar(char *id, int escopo, char *tipo){
 	sizeVectorVar++;
 	
 	printVar();
-	//printVar();
 	//printf("sucesso: tipo '%s' e id '%s' - variavel foi declarada \n", temp.tipo, temp.id);
 	return 0; //inseriu a variavel com sucesso
 }
@@ -164,16 +163,17 @@ int findFunc(char *id, int escopo, char *parametros){
 	return 0; //encontrou func, é valida
 }
 /* insere a funcao no vetor caso nao a encontre ja declarada */
-int insertFunc(char *id, int escopo, char *tipoRetorno, char *tipoParams){
+int insertFunc(char *id, char *tipoRetorno, char *tipoParams){
 	
 	int encontrou = 1;
 	for( int i=0; i<sizeVectorFunc; i++ ) {
+		printf("%s -- %s\n", id, vetorFunc[i].id);
 		if( strcmp(id, vetorFunc[i].id) == 0 ) { //encontrado equivalente no vetor
 			encontrou = 0; //encontrou id, funcao declarada
 		}
 	}
-	if( encontrou == 1){
-		char *aux = "erro: procedimento/funcao ja declarado previamente - .";
+	if( encontrou == 0){
+		char *aux = "Erro: procedimento/funcao ja declarado previamente - ";
         char *aux2 = (char *)malloc( strlen(aux) + strlen(id) + 1 );
         strcpy(aux2, aux);
         strcat(aux2, id);
@@ -182,8 +182,6 @@ int insertFunc(char *id, int escopo, char *tipoRetorno, char *tipoParams){
 	}
 
 	Func temp;
-
-	temp.escopo = escopo;
 
 	char *auxId = (char *)malloc( strlen(id)+1);
 	strcpy(auxId, id);
@@ -222,7 +220,7 @@ int printVar(){
 int printFunc(){
 	printf("[ ");
 	for(int i=0; i<sizeVectorFunc; i++){
-		printf("( %s - %i - %s - %s)\n", vetorFunc[i].id, vetorFunc[i].escopo, vetorFunc[i].tipoRetorno, vetorFunc[i].tipoRetorno);
+		printf("( %s - %i - %s - %s)\n", vetorFunc[i].id, vetorFunc[i].tipoRetorno, vetorFunc[i].tipoRetorno);
 	}
 	printf(" ]\n");
 	return 0;
