@@ -40,6 +40,7 @@ int sizeVectorFunc = 0;
 /************************************/
 char** str_split(char* a_str, const char a_delim);
 int printVar();
+int printFunc();
 int parametros_passados_validos(char *parametrosFuncao, char *parametrosPassados);
 extern int yyerror (char *msg);
 
@@ -103,7 +104,7 @@ int insertVar(char *id, int escopo, char *tipo){
 	vetorVar[sizeVectorVar] = temp;
 	sizeVectorVar++;
 	
-	printVar();
+	//printVar();
 	//printf("sucesso: tipo '%s' e id '%s' - variavel foi declarada \n", temp.tipo, temp.id);
 	return 0; //inseriu a variavel com sucesso
 }
@@ -128,6 +129,7 @@ int insertVars(char *ids, int escopo, char *tipo){
 	return 0; //Completou as declarações com sucesso
 }
 
+//seta as variaveis de um escopo para nao mais ocupadas ao sair desse escopo
 void limpar_variaveis_do_escopo(int escopo){
 	for( int i=0; i<sizeVectorVar; i++ ){
 		if( vetorVar[i].escopo == escopo ){
@@ -159,7 +161,7 @@ int findFunc(char *id, int escopo, char *parametros){
         strcat(aux2, id);
 		yyerror(aux2);
 	}
-
+printFunc();
 	return 0; //encontrou func, é valida
 }
 /* insere a funcao no vetor caso nao a encontre ja declarada */
@@ -220,7 +222,7 @@ int printVar(){
 int printFunc(){
 	printf("[ ");
 	for(int i=0; i<sizeVectorFunc; i++){
-		printf("( %s - %i - %s - %s)\n", vetorFunc[i].id, vetorFunc[i].tipoRetorno, vetorFunc[i].tipoRetorno);
+		printf("( %s - %s - %s)\n", vetorFunc[i].id, vetorFunc[i].tipoRetorno, vetorFunc[i].tipoParams);
 	}
 	printf(" ]\n");
 	return 0;
@@ -291,6 +293,11 @@ char** str_split(char* a_str, const char a_delim)
 int parametros_passados_validos(char *parametrosFuncao, char *parametrosPassados){
 
 	Var paramsPassados[20];
+
+	if( strlen(parametrosFuncao) == 0 && strlen(parametrosPassados) != 0 || 
+		strlen(parametrosFuncao) != 0 && strlen(parametrosPassados) == 0   ){
+		yyerror("Quantidade de parametros passados invalida.");
+	}
     char** tokensPassados = str_split(parametrosPassados, ',');
     int tamTkPassados = 0;
     if (tokensPassados) {
