@@ -1,10 +1,9 @@
 func soma(int a, int b, int c) return int is begin
 	int x = a + b;
-	int k;
 	return x;
 end soma
 main is begin
-	int a, b;
-	//soma();
+	int ava;
+	soma(a,b,c);
 	return x;
 end

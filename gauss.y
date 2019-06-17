@@ -14,12 +14,15 @@
   char buffer[33];
   FILE *arquivo;
   
-  Var buffer_var[25];
+  int size_buffer_args = 25;
+  Var buffer_args[25];
   //typedef enum {false, true} bool;
 
   char* _itoa(int valor, char* resultado, int base);
   void makeStmt(char* stmt);
-  void limparBuffer();
+  void limparBufferArgs();
+  int insereBufferVar(Var temp);
+
 
 %}
 
@@ -51,7 +54,7 @@
 %token <sValue> LITERAL_QUALQUER
 
 %type <sValue> valor
-%type <sValue> args args_funcao
+%type <sValue> args args_funcao params_virgula parametro
 %type <sValue> type expressoes
 %type <sValue> decl vars atribuicoes  atribuicao_simples atribuicao_struct_valor operador operador_composto operador_comp operador_unario atribuicao_unaria atribuicao_composta print prints_list tipos_prints ids 
 %type <sValue> id expressoes_list id_list registro
@@ -81,7 +84,6 @@ stmts               : stmt              {}
 decl                : atribuicoes {$$ = $1; }
                     |type id           { 
                                             if(insertVar($2, escopo, $1)==0){
-                                            
                                                 int size = snprintf(NULL, 0, " %s %s " , $1, $2);
                                                 char* aux = malloc(sizeof(char) * size);
                                                 sprintf(aux, " %s %s ", $1, $2);
@@ -91,14 +93,12 @@ decl                : atribuicoes {$$ = $1; }
                                         }
                     | type vars         {
                                             if(insertVars($2, escopo, $1)==0){
+
                                                 int size = snprintf(NULL, 0, " %s %s " , $1, $2);
                                                 char* aux = malloc(sizeof(char) * size);
                                                 sprintf(aux, " %s %s ", $1, $2);
 
                                                 $$ = aux;
-
-                                           }else{
-                                                yyerror( strcat($2,": Variavel redeclarada") );
                                            }
                                         } 
                     | type vars decl    { $$ = strcat(strcat(strcat(strcat($1, " "),$2),","),$3);}
@@ -155,14 +155,13 @@ stmt                : decl PONTO_E_VIRGULA                              {makeStm
                     | print PONTO_E_VIRGULA                             {/*makeStmt(strcat(strcat($1,";"),"\n"));*/}
                     | scan PONTO_E_VIRGULA                              {}
                     | RETURN id PONTO_E_VIRGULA                         { 
-                                                                            
-                                                                            int size = snprintf(NULL, 0, " %s %s; ", $1, $2);
-                                                                            printf("------------------return----\n");
-                                                                            printf("%i\n", size);
+                                                                            /*int size = snprintf(NULL, 0, " %s %s; ", $1, $2);
+                                                                            printf("------------------return---%i-\n", size);
                                                                             char* aux = malloc(sizeof(char) * size);
                                                                             sprintf(aux, " %s %s; ", $1, $2);
+                                                                            makeStmt(aux);*/
 
-                                                                            makeStmt(aux);
+                                                                            makeStmt(strcat($1,$2));
                                                                         }
                     ;
 
@@ -191,7 +190,7 @@ tipos_prints        : PRINT_INT {$$ = $1;}
                     ;
 
 invoca_procedimento : ID PARENTESE_ESQUERDA parametros PARENTESE_DIREITA {
-
+                            
                             if( findFunc($1, escopo, $3) == 0 ){
 
                                 int size = snprintf(NULL, 0, " %s %s %s %s ", $1, $2, $3, $4);
@@ -204,9 +203,14 @@ invoca_procedimento : ID PARENTESE_ESQUERDA parametros PARENTESE_DIREITA {
                     ;
    
 parametros          : { $$ = ""; }
-                    | expressoes {}
-                    | expressoes VIRGULA parametros {}
-                    ;  
+                    | ID { $$ = $1; }
+                    | ID VIRGULA parametros { 
+                                        int size = snprintf(NULL, 0, "%s,%s", $1, $3);
+                                        char *aux = malloc(sizeof(char) * size);
+                                        sprintf(aux, "%s,%s", $1, $3);
+                                        $$ = aux; 
+                                    }
+                    ; 
 
 decl_list           : decl PONTO_E_VIRGULA { $$ = strcat($1,";\n");}
                     | decl PONTO_E_VIRGULA decl_list    {$$ = strcat(strcat($1,";\n"),$3);}
@@ -491,7 +495,7 @@ funcao              : FUNCAO ID  PARENTESE_ESQUERDA args_funcao PARENTESE_DIREIT
                       TBEGIN {  escopo++; 
                                 makeStmt("\n\n");
 
-                                insertFunc($2, $7, $4);
+                                insertFunc($2, $7, buffer_args);
 
                                 int size = snprintf(NULL, 0, " %s %s ( %s ){\n ", $7, $2, $4);
                                 char *aux = malloc(sizeof(char) * size);
@@ -502,13 +506,61 @@ funcao              : FUNCAO ID  PARENTESE_ESQUERDA args_funcao PARENTESE_DIREIT
                         stmts END ID  
                              {
                                 limpar_variaveis_do_escopo(escopo);
+                                limparBufferArgs();
                                 escopo--;
                                 makeStmt("}\n\n"); }
                     ;
 
-args_funcao         :                           { $$ = ""; }
-                    | type ID                   {
-                                                    /*Var x = insertVar($2, escopo+1, $1);*/
+args_funcao         : parametro                         { $$ = $1; }
+                    | args_funcao params_virgula        { 
+
+                                        int size = snprintf(NULL, 0, " %s, %s ", $1, $2);
+                                        char *aux = malloc(sizeof(char) * size);
+                                        sprintf(aux, " %s, %s ", $1, $2);
+                                 
+                                        $$ = aux;
+                                             }
+                    | { $$ = ""; }
+                    ;
+
+parametro           : type ID { 
+                                    if(insertVar($2, escopo+1, $1)==0){
+                                                
+                                        int size = snprintf(NULL, 0, " %s %s ", $1, $2);
+                                        char *aux = malloc(sizeof(char) * size);
+                                        sprintf(aux, " %s %s ", $1, $2);
+                                        
+                                        Var temp;
+                                        temp.tipo = $1;
+                                        temp.ocupada = 0;
+                                        insereBufferVar(temp);
+                                        $$ = aux;
+                                    }
+                                }
+                    | type ID COLCHETE_ESQUERDA COLCHETE_DIREITA     {
+                                    if(insertVar($2, escopo+1, $1)==0){
+                                                
+                                        int size = snprintf(NULL, 0, " %s %s[] ", $1, $2);
+                                        char *aux = malloc(sizeof(char) * size);
+                                        sprintf(aux, " %s %s[] ", $1, $2);
+                                 
+                                        Var temp;
+                                        temp.tipo = $1;
+                                        temp.ocupada = 0;
+                                        insereBufferVar(temp);
+
+                                        $$ = aux;
+                                    }
+                                }
+                    ;
+
+params_virgula      : VIRGULA parametro {
+
+                                        }
+                    ;
+/*
+varg                : type ID                   {
+                                                    /*Var x = insertVar($2, escopo+1, $1);
                                                     if(insertVar($2, escopo+1, $1)==0){
                                                     
                                                         int size = snprintf(NULL, 0, " %s %s ", $1, $2);
@@ -518,7 +570,7 @@ args_funcao         :                           { $$ = ""; }
                                                         $$ = aux;
                                                     }
                                                 }
-                    | type ID COLCHETE_ESQUERDA COLCHETE_DIREITA VIRGULA args_funcao   
+                    | type ID COLCHETE_ESQUERDA COLCHETE_DIREITA VIRGULA varg   
                                                 { 
                                                     if(insertVar($2, escopo+1, $1)==0){
                                                     
@@ -529,21 +581,20 @@ args_funcao         :                           { $$ = ""; }
                                                         $$ = aux;
                                                     }
                                                 }
-                    | type ID VIRGULA args_funcao
+                    | type ID VIRGULA varg
                                                 {
                                                     if(insertVar($2, escopo+1, $1)==0){
                                                     
-                                                        int size = snprintf(NULL, 0, " %s %s %s ", $1, $2, $4);
+                                                        int size = snprintf(NULL, 0, " %s %s,%s ", $1, $2, $4);
                                                         char *aux = malloc(sizeof(char) * size);
-                                                        sprintf(aux, " %s %s %s ", $1, $2, $4);
+                                                        sprintf(aux, " %s %s,%s ", $1, $2, $4);
                                                  
                                                         $$ = aux;
                                                     }
                                                 }
+                    ;*/
 
-
-id                  : 
-                     DIGITO                                            { 
+id                  : DIGITO                                            { 
                                                                             //char *teste = malloc(10*sizeof(char));
 
                                                                             //char teste[10]; 
@@ -596,6 +647,8 @@ int main (void) {
     fprintf (arquivo, "#include <%s>\n#include <%s>\n","stdio.h","math.h");
 
     iniciaVetorVar();
+    limparBufferArgs();
+
     yyparse ( );
 
     fclose(arquivo);
@@ -639,4 +692,20 @@ char* _itoa(int valor, char* resultado, int base) {
         *ponteiro1++ = tmp_char;
     }
     return resultado;
+}
+
+int insereBufferVar(Var temp){
+    for(int i=0; i<size_buffer_args; i++){
+        buffer_args[i].tipo = temp.tipo;
+        buffer_args[i].ocupada = temp.ocupada;
+        return 0;
+    }
+    yyerror("Quantidade de parametros limite ultrapassada");
+}
+
+void limparBufferArgs(){
+    for( int i=0; i<size_buffer_args; i++ ){
+        buffer_args[i].tipo = "";
+        buffer_args[i].ocupada = 1; //variavel nao mais ocupada
+    }
 }

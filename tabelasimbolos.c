@@ -6,6 +6,8 @@
 #ifndef TABELASIMBOLOS
 #define TABELASIMBOLOS
 
+int size_buffer_args_t = 25;
+
 typedef struct Var
 {
 	char *id;
@@ -37,7 +39,7 @@ int sizeVectorFunc = 0;
 char** str_split(char* a_str, const char a_delim);
 int printVar();
 int printFunc();
-int parametros_passados_validos(char *parametrosFuncao, char *parametrosPassados);
+int parametros_passados_validos(Var *paramsFuncao, char *parametrosPassados);
 extern int yyerror (char *msg);
 
 /************************************/
@@ -105,9 +107,9 @@ int insertVar(char *id, int escopo, char *tipo){
 /* insere a variavel no vetor caso nao a encontre ja declarada */
 int insertVars(char *ids, int escopo, char *tipo){
     char** tokens;
-                                                printf("entra\n");
+            printf("entra\n");
     tokens = str_split(ids, ',');
-                                                printf("e sai\n");
+			printf("e sai\n");
     if (tokens)
     {
         for (int i = 0; *(tokens + i); i++){
@@ -136,13 +138,14 @@ void limpar_variaveis_do_escopo(int escopo){
 /***********************************/
 
 /* método para verificar se a chamada de um procedimento/funcao é valida */
-int findFunc(char *id, int escopo, char *parametros){
-	printFunc();
+int findFunc(char *id, int escopo, char *parametros_passados){
 	int encontrou = 1;
 	for( int i=0; i<sizeVectorFunc; i++ ) {
 		if( strcmp(id, vetorFunc[i].id) == 0 ) { //encontrado equivalente no vetor
 			encontrou = 0;
-			if( parametros_passados_validos(vetorFunc[i].tipoParams, parametros) == 1){ //chamada de funcao com parametros invalidos retorna erro
+    		printf("ka ka ka %i\n", vetorFunc[i].parametros[i]);
+
+			if( parametros_passados_validos(vetorFunc[i].parametros, parametros_passados) == 1){ //chamada de funcao com parametros invalidos retorna erro
 				encontrou = 2; //nunca vai chegar aqui pq se for 1, vai ser invalido e dar exit no yyerror 
 			}
 			encontrou = 0; //encontrou id, funcao declarada
@@ -159,7 +162,7 @@ int findFunc(char *id, int escopo, char *parametros){
 	return 0; //encontrou func, é valida
 }
 /* insere a funcao no vetor caso nao a encontre ja declarada */
-int insertFunc(char *id, char *tipoRetorno, char *tipoParams){
+int insertFunc(char *id, char *tipoRetorno, Var *tipoParams){
 	
 	int encontrou = 1;
 	for( int i=0; i<sizeVectorFunc; i++ ) {
@@ -178,7 +181,6 @@ int insertFunc(char *id, char *tipoRetorno, char *tipoParams){
 	}
 
 	Func temp;
-	printf("-- %s -- %s -- %s -- \n", id, tipoRetorno, tipoParams);
 	char *auxId = (char *)malloc( strlen(id)+1);
 	strcpy(auxId, id);
 	temp.id = auxId;
@@ -187,15 +189,15 @@ int insertFunc(char *id, char *tipoRetorno, char *tipoParams){
 	strcpy(auxTipo, tipoRetorno);
 	temp.tipoRetorno = auxTipo;
 
-	char *auxParans = (char *)malloc( strlen(tipoParams)+1);
-	strcpy(auxParans, tipoParams);
-	temp.tipoParams = auxParans;
+	for (int i = 0; i < size_buffer_args_t; ++i){
+		temp.parametros[i] = tipoParams[i];
+	}
 	
 	vetorFunc[sizeVectorFunc] = temp;
 	sizeVectorFunc++;
-	printFunc();
+	//printFunc();
 
-	printf("sucesso: %s - funcao foi declarada \n", id);
+	//printf("sucesso: %s - funcao foi declarada \n", id);
 	return 0; //inseriu a variavel com sucesso
 
 }
@@ -271,10 +273,9 @@ char** str_split(char* a_str, const char a_delim)
         size_t idx  = 0;
         char* token = strtok(a_str, delim);
 
-        while (token)
-        {
+        while (token){
             assert(idx < count);
-            *(result + idx++) = strdup(token);
+            *(result + idx++) = strdup(token); //da seg fault aqui no win
             token = strtok(0, delim);
         }
         assert(idx == count - 1);
@@ -284,19 +285,11 @@ char** str_split(char* a_str, const char a_delim)
     return result;
 }
 
-int parametros_passados_validos(char *parametrosFuncao, char *parametrosPassados){
-	printf("ooooooooooooi\n");
-	Var paramsPassados[25];
-	for(int i=0; i<25; i++){
-		paramsPassados[0].ocupada = 1;
+int parametros_passados_validos(Var *paramsFuncao, char *parametrosPassados){
+	Var paramsPassados[size_buffer_args_t];
+	for(int i=0; i<size_buffer_args_t; i++){
+		paramsPassados[i].ocupada = 1;
 	}
-	if( strlen(parametrosFuncao) == 0 && strlen(parametrosPassados) != 0 || 
-		strlen(parametrosFuncao) != 0 && strlen(parametrosPassados) == 0   ){
-		yyerror("Quantidade de parametros passados invalida.");
-	}else if( strlen(parametrosFuncao) == 0 && strlen(parametrosPassados) == 0 ){
-		return 0;
-	}
-	printf("quase chegou no split\n");
     char** tokensPassados = str_split(parametrosPassados, ',');
     int tamTkPassados = 0;
     if (tokensPassados) {
@@ -307,36 +300,24 @@ int parametros_passados_validos(char *parametrosFuncao, char *parametrosPassados
 		        	paramsPassados[i] = vetorVar[j];
 				}
 			}
-        	tamTkPassados = i; //atualizando o tamanho a cada iteracao
+        	tamTkPassados = i+1; //atualizando o tamanho a cada iteracao
         }
     }
-	printf("saiu primeiro split. entrando no segundo\n");
-	Var paramsFuncao[25];
-	for(int i=0; i<25; i++){
-		paramsFuncao[0].ocupada = 1;
-	}
-    char** tokensFuncao = str_split(parametrosFuncao, ',');
     int tamTkFuncao = 0;
-    if (tokensFuncao) {
-        for (int i = 0; *(tokensFuncao + i); i++){
-        	printf("tkxxx-- ---- %s\n", *(tokensPassados + i));
+	for(int i=0; i<size_buffer_args_t; i++){
+		if(paramsFuncao[i].ocupada == 0)
+			tamTkFuncao = i+1;
+	}
 
-    		char** tokensInts = str_split(*(tokensFuncao + i), ' '); //split no espaco para pegar so o tipo (primeiro pedaco da string)
-    		if (tokensInts) {
-	        	Var temp;
-	        	temp.tipo = *(tokensInts);
-	        	temp.ocupada = 0;
-	        	paramsFuncao[i] = temp;
-    		}
-
-        	tamTkFuncao = i; //atualizando o tamanho a cada iteracao
-        	printf("tk ---- %s\n", *(tokensFuncao + i));
-        }
-    }
-	printf("saiu segundo split\n");
     int retorno = 0;
+    printf("%i passados. %i esperados\n", tamTkPassados, tamTkFuncao);
+	if( tamTkPassados != tamTkFuncao ){
+		yyerror("Quantidade de parametros passados invalida.");
 
-    if(tamTkPassados == tamTkFuncao){
+	}else if( tamTkPassados == 0 && tamTkFuncao == 0 ){ //caso a quantidade de parametros seja zero, esta valido
+		return 0;
+
+	}else if(tamTkPassados == tamTkFuncao){
 		for (int i = 0; i<tamTkFuncao; i++){
 			printf("tss ----\n");
 			//se os tipos nao baterem, passagem de parametro invalida
@@ -360,12 +341,6 @@ int parametros_passados_validos(char *parametrosFuncao, char *parametrosPassados
     }
 
     /*limpar tokens*/
-    if (tokensFuncao) {
-        for (int i = 0; *(tokensFuncao + i); i++){
-	        free(*(tokensFuncao + i));
-        }
-        free(tokensFuncao);
-    }
     if (tokensPassados) {
         for (int i = 0; *(tokensPassados + i); i++){
 	        free(*(tokensPassados + i));
