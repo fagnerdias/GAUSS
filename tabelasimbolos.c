@@ -143,7 +143,7 @@ int findFunc(char *id, int escopo, char *parametros_passados){
 	for( int i=0; i<sizeVectorFunc; i++ ) {
 		if( strcmp(id, vetorFunc[i].id) == 0 ) { //encontrado equivalente no vetor
 			encontrou = 0;
-    		printf("ka ka ka %i\n", vetorFunc[i].parametros[i]);
+			printFunc();
 
 			if( parametros_passados_validos(vetorFunc[i].parametros, parametros_passados) == 1){ //chamada de funcao com parametros invalidos retorna erro
 				encontrou = 2; //nunca vai chegar aqui pq se for 1, vai ser invalido e dar exit no yyerror 
@@ -218,7 +218,10 @@ int printVar(){
 int printFunc(){
 	printf("[ ");
 	for(int i=0; i<sizeVectorFunc; i++){
-		printf("( %s - %s - %s)\n", vetorFunc[i].id, vetorFunc[i].tipoRetorno, vetorFunc[i].tipoParams);
+		printf("( %s - %s )\n", vetorFunc[i].id, vetorFunc[i].tipoRetorno);
+		for(int j = 0; j<size_buffer_args_t; j++){
+			printf("varzinha( %s - %s )\n", vetorFunc[i].parametros[j].id, vetorFunc[i].parametros[j].tipo);
+		}
 	}
 	printf(" ]\n");
 	return 0;

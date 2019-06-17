@@ -1,5 +1,7 @@
+gauss
 lex.yy.c
 y.tab.c
+y.tab.h
 gauss.tab.h
 gauss.tab.c
 exe.sh

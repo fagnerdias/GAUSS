@@ -494,7 +494,7 @@ funcao_main         : FUNC_MAIN IS TBEGIN {  escopo++;
 funcao              : FUNCAO ID  PARENTESE_ESQUERDA args_funcao PARENTESE_DIREITA RETURN type IS
                       TBEGIN {  escopo++; 
                                 makeStmt("\n\n");
-
+                                printf("---arrrggggs-----%s\n", $4);
                                 insertFunc($2, $7, buffer_args);
 
                                 int size = snprintf(NULL, 0, " %s %s ( %s ){\n ", $7, $2, $4);
@@ -534,6 +534,7 @@ parametro           : type ID {
                                         temp.tipo = $1;
                                         temp.ocupada = 0;
                                         insereBufferVar(temp);
+                                        printFunc();
                                         $$ = aux;
                                     }
                                 }
@@ -554,7 +555,12 @@ parametro           : type ID {
                                 }
                     ;
 
-params_virgula      : VIRGULA parametro {
+params_virgula      : VIRGULA parametro { 
+
+                                        int size = snprintf(NULL, 0, ",%s", $1);
+                                        char *aux = malloc(sizeof(char) * size);
+                                        sprintf(aux, ",%s", $1);
+                                        $$ = aux;
 
                                         }
                     ;
@@ -661,10 +667,12 @@ char* _itoa(int valor, char* resultado, int base) {
 
 int insereBufferVar(Var temp){
     for(int i=0; i<size_buffer_args; i++){
-        printf("tipo %s e ocupada %i\n", temp.tipo, temp.ocupada);
-        buffer_args[i].tipo = temp.tipo;
-        buffer_args[i].ocupada = temp.ocupada;
-        return 0;
+        if(buffer_args[i].ocupada==1) {
+            printf("tipo %s e ocupada %i\n", temp.tipo, temp.ocupada);
+            buffer_args[i].tipo = temp.tipo;
+            buffer_args[i].ocupada = temp.ocupada;
+            return 0;
+        }
     }
     yyerror("Quantidade de parametros limite ultrapassada");
 }
