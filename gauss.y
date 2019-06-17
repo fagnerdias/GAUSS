@@ -97,11 +97,7 @@ decl                : atribuicoes {$$ = $1}
                                                 yyerror( strcat($2,": Variavel redeclarada") );
                                             }
                                         }
-                    | id PONTO id                       { 
-                                                            char *aux = (char *)malloc( strlen($1) + strlen($2) + 20 );
-                                                            strcpy(aux,strcat($1,"."));    
-                                                            $$ = strcat(aux,$3); 
-                                                        }                                  
+                                
                     | type vars         { if(insertVars($2, escopo, $1)==0){
 
                                                 char *um = $1;

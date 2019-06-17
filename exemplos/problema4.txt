@@ -78,7 +78,7 @@ end inverso
 main is begin
 
 	.rational_t x;
-	fracao(1,0);
+	x = fracao(1,0);
 
 	if (x->denominador == 0) then
 		return 0;
