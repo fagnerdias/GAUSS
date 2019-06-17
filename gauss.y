@@ -155,7 +155,7 @@ stmt                : decl PONTO_E_VIRGULA                              {makeStm
                     | while_stmt                                        {}
                     | for_stmt                                          {}
                     //| atribuicoes PONTO_E_VIRGULA                       { makeStmt( strcat( $1, ";\n" ) ); }
-                    | invoca_procedimento PONTO_E_VIRGULA               { makeStmt( strcat( $1, ";\n" ) ); }
+                    | invoca_procedimento PONTO_E_VIRGULA               { printf("----%s---\n", $1); makeStmt( strcat( $1, ";\n" ) ); }
                     | switch_stmt                                       {}
                     | print PONTO_E_VIRGULA                             {/*makeStmt(strcat(strcat($1,";"),"\n"));*/}
                     | scan PONTO_E_VIRGULA                              {}
@@ -187,6 +187,7 @@ tipos_prints        : PRINT_INT {$$ = $1;}
                     ;
 
 invoca_procedimento : ID PARENTESE_ESQUERDA parametros PARENTESE_DIREITA {
+
                             if( findFunc($1, escopo, $3) == 0 ){
                                 char *aux = (char *)malloc( strlen($1) + strlen($2) + strlen($3) + strlen($4) + 6 );
                                 strcpy(aux, $1);
@@ -199,7 +200,7 @@ invoca_procedimento : ID PARENTESE_ESQUERDA parametros PARENTESE_DIREITA {
                         }
                     ;
    
-parametros          : {}
+parametros          : { $$ = ""; }
                     | expressoes {}
                     | expressoes VIRGULA parametros {}
                     ;  
